@@ -1,0 +1,9 @@
+<IfModule mod_rewrite.c>
+	RewriteEngine  on
+	RewriteBase	/pigeonholes/
+    RewriteCond	%{SCRIPT_FILENAME}  -f [OR]
+    RewriteCond	%{SCRIPT_FILENAME}/index.php    -f
+    RewriteRule	^(.*)$            - [L]
+
+	RewriteRule ^(.*)$  index.php?content_id=$1  [L]
+</IfModule>
