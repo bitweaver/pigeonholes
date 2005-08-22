@@ -1,6 +1,6 @@
 <?php
 /**
- * $Header: /cvsroot/bitweaver/_bit_pigeonholes/Attic/servicefunctions_inc.php,v 1.1 2005/08/21 16:22:39 squareing Exp $
+ * $Header: /cvsroot/bitweaver/_bit_pigeonholes/Attic/servicefunctions_inc.php,v 1.2 2005/08/22 18:10:17 squareing Exp $
  *
  * Copyright ( c ) 2004 bitweaver.org
  * All Rights Reserved. See copyright.txt for details and a complete list of authors.
@@ -95,10 +95,12 @@ function pigeonholes_store_content( $pObject, $pParamHash ) {
 			// here we need to work out if we need to save at all
 			// get all originally selected items
 			$selectedItem = array();
-			foreach( $pigeonPathList as $path ) {
-				if( !empty( $path[0]['selected'] ) ) {
-					$pathItem = array_pop( $path );
-					$selectedItem[] = $pathItem['content_id'];
+			if( !empty( $pigeonPathList ) ) {
+				foreach( $pigeonPathList as $path ) {
+					if( !empty( $path[0]['selected'] ) ) {
+						$pathItem = array_pop( $path );
+						$selectedItem[] = $pathItem['content_id'];
+					}
 				}
 			}
 
