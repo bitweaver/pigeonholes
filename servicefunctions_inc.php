@@ -1,6 +1,6 @@
 <?php
 /**
- * $Header: /cvsroot/bitweaver/_bit_pigeonholes/Attic/servicefunctions_inc.php,v 1.2 2005/08/22 18:10:17 squareing Exp $
+ * $Header: /cvsroot/bitweaver/_bit_pigeonholes/Attic/servicefunctions_inc.php,v 1.3 2005/08/30 08:53:49 squareing Exp $
  *
  * Copyright ( c ) 2004 bitweaver.org
  * All Rights Reserved. See copyright.txt for details and a complete list of authors.
@@ -50,6 +50,15 @@ function pigeonholes_input_content( $pObject=NULL ) {
 }
 
 /**
+ * Pigeonhole edit template service
+ */
+function pigeonholes_expunge_member( $pObject=NULL ) {
+	require_once( PIGEONHOLES_PKG_PATH.'Pigeonholes.php' );
+	$pigeonholes = new Pigeonholes( NULL, NULL, FALSE );
+	$pigeonholes->expungePigeonholeMember( NULL, $pObject->mContentId );
+}
+
+/**
  * Pigeonhole preview service
  * when we hit preview, we make the selections persistent
  */
@@ -79,7 +88,7 @@ function pigeonholes_preview_content() {
  * Pigeonhole store service
  * store the content in any pigeonhole it wants
  */
-function pigeonholes_store_content( $pObject, $pParamHash ) {
+function pigeonholes_store_member( $pObject, $pParamHash ) {
 	global $gBitSmarty, $gBitUser;
 	if( $gBitUser->hasPermission( 'bit_p_insert_pigeonhole_member' ) ) {
 		require_once( PIGEONHOLES_PKG_PATH.'Pigeonholes.php' );
