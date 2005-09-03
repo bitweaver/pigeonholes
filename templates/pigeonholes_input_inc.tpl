@@ -11,9 +11,8 @@
 				<br />
 			</label>
 		{foreachelse}
-			{tr}There are no available categories available at the moment.{/tr}
+			<p>{tr}There are no categories available at the moment.{/tr}</p>
 			{if $gBitUser->isAdmin()}
-				<br />
 				{smartlink ititle="Create Category" ipackage="pigeonholes" ifile="edit_pigeonholes.php"}
 			{/if}
 		{/foreach}
