@@ -15,7 +15,6 @@
 
 					{forminput}
 						<select name="max_rows">
-							<option>{tr}All{/tr}</option>
 							<option value="50" {if $smarty.request.max_rows eq 50}selected="selected"{/if}>{tr}50{/tr}</option>
 							<option value="100" {if $smarty.request.max_rows eq 100 or !$smarty.request.max_rows}selected="selected"{/if}>{tr}100{/tr}</option>
 							<option value="200" {if $smarty.request.max_rows eq 200}selected="selected"{/if}>{tr}200{/tr}</option>
