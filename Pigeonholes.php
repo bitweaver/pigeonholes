@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_pigeonholes/Pigeonholes.php,v 1.1 2005/08/21 16:22:44 squareing Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_pigeonholes/Pigeonholes.php,v 1.2 2005/09/11 16:25:08 squareing Exp $
  *
  * +----------------------------------------------------------------------+
  * | Copyright ( c ) 2004, bitweaver.org
@@ -17,7 +17,7 @@
  * Pigeonholes class
  *
  * @author   xing <xing@synapse.plus.com>
- * @version  $Revision: 1.1 $
+ * @version  $Revision: 1.2 $
  * @package  pigeonholes
  */
 
@@ -339,6 +339,7 @@ class Pigeonholes extends LibertyAttachable {
 			$where .= " ORDER BY ".$this->mDb->convert_sortmode( $pListHash['sort_mode'] )." ";
 		}
 
+		// TODO: do this entire get list thing using one query
 		$query = "SELECT bp.`content_id`,
 			uue.`login` AS modifier_user, uue.`real_name` AS modifier_real_name,
 			uuc.`login` AS creator_user, uuc.`real_name` AS creator_real_name
@@ -362,6 +363,7 @@ class Pigeonholes extends LibertyAttachable {
 			$ret['data'][] = $tmpPigeon->mInfo;
 		}
 
+		// TODO: get the correct count
 		$query = "SELECT COUNT( bp.`content_id` )
 			FROM `".BIT_DB_PREFIX."bit_pigeonholes` bp
 			INNER JOIN `".BIT_DB_PREFIX."tiki_structures` ts ON ( ts.`structure_id` = bp.`structure_id` )
