@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_pigeonholes/Pigeonholes.php,v 1.2 2005/09/11 16:25:08 squareing Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_pigeonholes/Pigeonholes.php,v 1.3 2005/09/11 19:05:25 squareing Exp $
  *
  * +----------------------------------------------------------------------+
  * | Copyright ( c ) 2004, bitweaver.org
@@ -17,7 +17,7 @@
  * Pigeonholes class
  *
  * @author   xing <xing@synapse.plus.com>
- * @version  $Revision: 1.2 $
+ * @version  $Revision: 1.3 $
  * @package  pigeonholes
  */
 
@@ -82,7 +82,7 @@ class Pigeonholes extends LibertyAttachable {
 				WHERE $lookupColumn=?";
 			$result = $this->mDb->query( $query, array( $lookupId ) );
 
-			if ( $result && $result->numRows() ) {
+			if( $result && $result->numRows() ) {
 				$this->mInfo = $result->fields;
 				$this->mContentId = $result->fields['content_id'];
 				$this->mStructureId = $result->fields['structure_id'];
@@ -128,6 +128,7 @@ class Pigeonholes extends LibertyAttachable {
 				WHERE bp.`content_id`=?
 				$order";
 			$result = $this->mDb->query( $query, $bindVars );
+
 			$contentTypes = $gLibertySystem->mContentTypes;
 			while( !$result->EOF ) {
 				$i = $result->fields['content_id'];
@@ -339,8 +340,7 @@ class Pigeonholes extends LibertyAttachable {
 			$where .= " ORDER BY ".$this->mDb->convert_sortmode( $pListHash['sort_mode'] )." ";
 		}
 
-		// TODO: do this entire get list thing using one query
-		$query = "SELECT bp.`content_id`,
+		$query = "SELECT bp.*, ts.`root_structure_id`, ts.`parent_id`, tc.`title`, tc.`data`, tc.`content_type_guid`,
 			uue.`login` AS modifier_user, uue.`real_name` AS modifier_real_name,
 			uuc.`login` AS creator_user, uuc.`real_name` AS creator_real_name
 			FROM `".BIT_DB_PREFIX."bit_pigeonholes` bp
@@ -356,14 +356,23 @@ class Pigeonholes extends LibertyAttachable {
 			$result = $this->mDb->query( $query, $bindVars );
 		}
 
-		$pigeonIds = $result->getRows();
-		$ret['data'] = array();
-		foreach( $pigeonIds as $id ) {
-			$tmpPigeon = new Pigeonholes( NULL, $id['content_id'], TRUE, $pExtras );
-			$ret['data'][] = $tmpPigeon->mInfo;
+		while( !$result->EOF ) {
+			$aux = $result->fields;
+			$aux['creator'] = ( isset( $result->fields['creator_real_name'] ) ? $result->fields['creator_real_name'] : $result->fields['creator_user'] );
+			$aux['editor'] = ( isset( $result->fields['modifier_real_name'] ) ? $result->fields['modifier_real_name'] : $result->fields['modifier_user'] );
+			$aux['display_link'] = $this->getDisplayLink( $aux['title'], $aux['content_id'] );
+
+			if( $pExtras ) {
+				$aux['path'] = $this->getPigeonholePath( $aux['structure_id'] );
+				$aux['display_path'] = $this->getDisplayPath( $aux['path'] );
+				$aux['members'] = $this->getPigeonholeMembers( $aux['content_id'] );
+				$aux['members_count'] = count( $aux['members'] );
+			}
+
+			$ret['data'][] = $aux;
+			$result->MoveNext();
 		}
 
-		// TODO: get the correct count
 		$query = "SELECT COUNT( bp.`content_id` )
 			FROM `".BIT_DB_PREFIX."bit_pigeonholes` bp
 			INNER JOIN `".BIT_DB_PREFIX."tiki_structures` ts ON ( ts.`structure_id` = bp.`structure_id` )
@@ -732,7 +741,7 @@ class Pigeonholes extends LibertyAttachable {
 	* @param $pPigeonholeTitle is the pigeonhole we want to see
 	* @return the link to display the page.
 	*/
-	function getDisplayLink( $pPigeonholeTitle=NULL ) {
+	function getDisplayLink( $pPigeonholeTitle=NULL, $pContentId=NULL ) {
 		global $gBitSystem;
 		if( empty( $pPigeonholeTitle ) && !empty( $this ) ) {
 			$pPigeonholeTitle = $this->mInfo['title'];
@@ -740,7 +749,7 @@ class Pigeonholes extends LibertyAttachable {
 
 		$ret = $pPigeonholeTitle;
 		if( $gBitSystem->isPackageActive( 'pigeonholes' ) ) {
-			$ret = '<a href="'.$this->getDisplayUrl().'">'.$pPigeonholeTitle.'</a>';
+			$ret = '<a href="'.$this->getDisplayUrl( $pContentId ).'">'.$pPigeonholeTitle.'</a>';
 		}
 
 		return $ret;

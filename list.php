@@ -3,7 +3,7 @@
  * $Header
  *
  * @author   xing <xing@synapse.plus.com>
- * @version  $Revision: 1.1 $
+ * @version  $Revision: 1.2 $
  * @package  pigeonholes
  * @subpackage functions
  */
@@ -31,8 +31,7 @@ $listHash = array(
 	'find' => !empty( $_REQUEST['find'] ) ? $_REQUEST['find'] : NULL,
 );
 
-$gBitSmarty->assign( 'pigeonList', $pigeonList = $gPigeonholes->getList( $listHash, TRUE, FALSE ) );
-$gBitSmarty->assign( 'numPages', ceil( $pigeonList['cant'] / $gBitSystem->mPrefs['maxRecords'] ) );
+$pigeonList = $gPigeonholes->getList( $listHash, TRUE, FALSE );
 
 // set up structure related stuff
 foreach( $pigeonList['data'] as $key => $pigeonhole ) {
@@ -44,6 +43,7 @@ foreach( $pigeonList['data'] as $key => $pigeonhole ) {
 //$gBitSmarty->assign_by_ref('offset', $offset);
 $gBitSmarty->assign( 'pigeonList', $pigeonList['data'] );
 $gBitSmarty->assign( 'pigeonCount', $pigeonList['cant'] );
+$gBitSmarty->assign( 'numPages', ceil( $pigeonList['cant'] / $gBitSystem->mPrefs['maxRecords'] ) );
 
 $gBitSystem->display( 'bitpackage:pigeonholes/list.tpl', tra( 'List Pigeonholes' ) );
 ?>
