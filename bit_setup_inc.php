@@ -1,16 +1,16 @@
 <?php
 /**
  * @author   xing <xing@synapse.plus.com>
- * @version  $Revision: 1.4 $
+ * @version  $Revision: 1.5 $
  * @package  Pigeonholes
  * @subpackage functions
  */
 global $gBitSystem, $gBitUser;
-$gBitSystem->registerPackage( 'pigeonholes', dirname( __FILE__).'/' );
+$gBitSystem->registerPackage( 'pigeonholes', dirname( __FILE__).'/', TRUE, LIBERTY_SERVICE_CATEGORIZATION );
 
 define( 'PIGEONHOLES_CONTENT_TYPE_GUID', 'pigeonholes' );
 
-if( !empty( $gLibertySystem ) ) {
+if( $gBitSystem->isPackageActive( 'pigeonholes' ) ) {
 	$gLibertySystem->registerService( LIBERTY_SERVICE_CATEGORIZATION, PIGEONHOLES_PKG_NAME, array(
 		'content_display_function' => 'display_pigeonholes',
 		'content_preview_function' => 'pigeonholes_preview_content',
@@ -21,9 +21,7 @@ if( !empty( $gLibertySystem ) ) {
 		'content_view_tpl' => 'bitpackage:pigeonholes/display_members.tpl',
 		'content_nav_tpl' => 'bitpackage:pigeonholes/display_paths.tpl',
 	) );
-}
 
-if( $gBitSystem->isPackageActive( 'pigeonholes' ) ) {
 	// include service functions
 	require_once( PIGEONHOLES_PKG_PATH.'servicefunctions_inc.php' );
 
