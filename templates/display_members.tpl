@@ -1,6 +1,6 @@
 {strip}
-<div class="display pigeonholes">
-	{if $gBitSystem->isFeatureActive( 'display_pigeonhole_members' ) and $pigeonData}
+{if $gBitSystem->isFeatureActive( 'display_pigeonhole_members' ) and $pigeonData}
+	<div class="display pigeonholes">
 		<h2>{tr}Related Items{/tr}</h2>
 		{foreach from=$pigeonData item=pigeonItem}
 			<div class="box">
@@ -49,6 +49,6 @@
 			{* reset the ctg2 value *}
 			{assign var=ctg2 value=''}
 		{/foreach}
-	{/if}
-</div>
+	</div>
+{/if}
 {/strip}
