@@ -1,6 +1,6 @@
 <?php
 /**
- * $Header: /cvsroot/bitweaver/_bit_pigeonholes/Attic/servicefunctions_inc.php,v 1.3 2005/08/30 08:53:49 squareing Exp $
+ * $Header: /cvsroot/bitweaver/_bit_pigeonholes/Attic/servicefunctions_inc.php,v 1.4 2005/10/18 11:31:07 squareing Exp $
  *
  * Copyright ( c ) 2004 bitweaver.org
  * All Rights Reserved. See copyright.txt for details and a complete list of authors.
@@ -14,12 +14,16 @@
  * Pigeonhole display service
  */
 function display_pigeonholes( &$pObject ) {
-	global $gBitSmarty, $gBitUser;
+	global $gBitSmarty, $gBitUser, $gPreviewStyle;
+	require_once( PIGEONHOLES_PKG_PATH.'Pigeonholes.php' );
+	$pigeonholes = new Pigeonholes( NULL, NULL, FALSE );
+
+	$settings = $pigeonholes->getPigeonholeSettings( NULL, $pObject->mContentId );
+	if( !empty( $settings['style'] ) ) {
+		$gPreviewStyle = $settings["style"];
+	}
 
 	if( $gBitUser->hasPermission( 'bit_p_view_pigeonholes' ) ) {
-		require_once( PIGEONHOLES_PKG_PATH.'Pigeonholes.php' );
-		$pigeonholes = new Pigeonholes( NULL, NULL, FALSE );
-
 		if( $pigeons = $pigeonholes->getPigeonholesFromContentId( $pObject->mContentId ) ) {
 			foreach( $pigeons as $pigeon ) {
 				$pigeonholes->mContentId = $pigeon['content_id'];

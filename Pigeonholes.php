@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_pigeonholes/Pigeonholes.php,v 1.4 2005/10/18 11:06:19 squareing Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_pigeonholes/Pigeonholes.php,v 1.5 2005/10/18 11:31:07 squareing Exp $
  *
  * +----------------------------------------------------------------------+
  * | Copyright ( c ) 2004, bitweaver.org
@@ -17,7 +17,7 @@
  * Pigeonholes class
  *
  * @author   xing <xing@synapse.plus.com>
- * @version  $Revision: 1.4 $
+ * @version  $Revision: 1.5 $
  * @package  pigeonholes
  */
 
@@ -590,7 +590,7 @@ class Pigeonholes extends LibertyAttachable {
 		global $gBitUser, $gLibertySystem, $gBitSystem;
 		if( !empty( $this->mContentId ) || !empty( $pContentId ) || !empty( $pMemberId ) ) {
 			if( !empty( $pMemberId ) && $this->verifyId( $pMemberId ) ) {
-				$where = "WHERE bpm.`member_id`=?";
+				$where = "WHERE bpm.`content_id`=?";
 				$bindVars[] = $pMemberId;
 			} else {
 				$where = "WHERE bps.`content_id`=?";
