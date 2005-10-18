@@ -5,6 +5,11 @@ $tables = array(
 		content_id I4 NOTNULL PRIMARY,
 		structure_id I4 NOTNULL PRIMARY
 	",
+	'bit_pigeonhole_settings' => "
+		content_id I4 NOTNULL PRIMARY,
+		name C(40) NOTNULL,
+		value C(40) NULL
+	",
 	'bit_pigeonhole_members' => "
 		parent_id I4 NOTNULL PRIMARY,
 		content_id I4 NOTNULL PRIMARY,

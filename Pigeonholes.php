@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_pigeonholes/Pigeonholes.php,v 1.3 2005/09/11 19:05:25 squareing Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_pigeonholes/Pigeonholes.php,v 1.4 2005/10/18 11:06:19 squareing Exp $
  *
  * +----------------------------------------------------------------------+
  * | Copyright ( c ) 2004, bitweaver.org
@@ -17,7 +17,7 @@
  * Pigeonholes class
  *
  * @author   xing <xing@synapse.plus.com>
- * @version  $Revision: 1.3 $
+ * @version  $Revision: 1.4 $
  * @package  pigeonholes
  */
 
@@ -400,7 +400,7 @@ class Pigeonholes extends LibertyAttachable {
 
 			// this really confusing, strange order way of saving items is due to strange behaviour of GenID
 			// probably has to do with not null default nextval('public.tiki_structures_structure_id_seq'::text)
-			if( $this->mContentId ) {
+			if( !empty( $pParamHash['update'] ) ) {
 				if( !empty( $pParamHash['pigeonhole_store'] ) ) {
 					$locId = array ( "name" => "content_id", "value" => $this->mContentId );
 					$result = $this->mDb->associateUpdate( $table, $pParamHash['pigeonhole_store'], $locId );
@@ -422,8 +422,16 @@ class Pigeonholes extends LibertyAttachable {
 				// get the corrent structure_id
 				// structure_id has to be done like this since it's screwed up in the schema
 				$pParamHash['pigeonhole_store']['structure_id'] =  $this->mDb->getOne( "SELECT MAX( `structure_id` ) FROM `".BIT_DB_PREFIX."tiki_structures`" );
-				$this->mContentId = $pParamHash['pigeonhole_store']['content_id'];
 				$result = $this->mDb->associateInsert( $table, $pParamHash['pigeonhole_store'] );
+			}
+
+			// store pigeonhole settings
+			if( !empty( $pParamHash['pigeonhole_settings_store'] ) ) {
+				// remove previous settings first
+				$this->expungePigeonholeSettings( $this->mContentId );
+				if( !$this->insertPigeonholeSettings( $pParamHash['pigeonhole_settings_store'] ) ) {
+					$this->mErrors['store'] = 'The individual pigeonhole settings could not be stored.';
+				}
 			}
 
 			// store content items
@@ -460,6 +468,7 @@ class Pigeonholes extends LibertyAttachable {
 
 		if( !empty( $this->mContentId ) ) {
 			$pParamHash['content_id'] = $this->mContentId;
+			$pParamHash['update'] = TRUE;
 		}
 
 		// content store
@@ -472,11 +481,11 @@ class Pigeonholes extends LibertyAttachable {
 					$pParamHash['content_store']['title'] = substr( $pParamHash['title'], 0, 160 );
 				}
 			} else {
-				$pParamHash['content_store']['title'] = ( isset( $pParamHash['title'] ) ) ? substr( $pParamHash['title'], 0, 160 ) : $this->mPigeonholeName;
+				$pParamHash['content_store']['title'] = ( isset( $pParamHash['title'] ) ) ? substr( $pParamHash['title'], 0, 160 ) : $this->mInfo['title'];
 			}
 		} elseif( empty( $pParamHash['title'] ) ) {
 			// no name specified
-			$this->mErrors['title'] = 'You must specify a name';
+			$this->mErrors['title'] = 'You must enter a name for this category.';
 		}
 
 		// sort out the description
@@ -514,6 +523,9 @@ class Pigeonholes extends LibertyAttachable {
 				$i++;
 			}
 		}
+
+		// pigeonhole settings store
+		$pParamHash['pigeonhole_settings_store'] = !empty( $pParamHash['settings'] ) ? $pParamHash['settings'] : NULL;
 
 		// structure store
 		if( !empty( $pParamHash['root_structure_id'] ) && $this->verifyId( $pParamHash['root_structure_id'] ) ) {
@@ -569,8 +581,87 @@ class Pigeonholes extends LibertyAttachable {
 	}
 
 	/**
+	* get all content inserted in a given pigeonhole. if no id is given, it gets all content for all pigeonholes
+	* @param $pContentId content id of the pigeonhole
+	* @return array of pigeonhole members with according title and content type guid
+	* @access public
+	**/
+	function getPigeonholeSettings( $pContentId=NULL, $pMemberId=NULL ) {
+		global $gBitUser, $gLibertySystem, $gBitSystem;
+		if( !empty( $this->mContentId ) || !empty( $pContentId ) || !empty( $pMemberId ) ) {
+			if( !empty( $pMemberId ) && $this->verifyId( $pMemberId ) ) {
+				$where = "WHERE bpm.`member_id`=?";
+				$bindVars[] = $pMemberId;
+			} else {
+				$where = "WHERE bps.`content_id`=?";
+				$bindVars[] = $this->verifyId( $pContentId ) ? $pContentId : $this->mContentId;
+			}
+			$query = "SELECT bps.*
+				FROM `".BIT_DB_PREFIX."bit_pigeonhole_settings` bps
+				INNER JOIN `".BIT_DB_PREFIX."bit_pigeonhole_members` bpm ON ( bps.`content_id` = bpm.`parent_id` )
+				$where";
+
+			$ret = array();
+			$result = $this->mDb->query( $query, $bindVars );
+			while( !$result->EOF ) {
+				$ret[$result->fields['name']] = $result->fields['value'];
+				$result->MoveNext();
+			}
+		} else {
+			$this->mErrors['get_members'] = tra( 'No valid content / member id was given.' );
+		}
+		return( !empty( $ret ) ? $ret : NULL );
+	}
+
+	/**
+	* Store pigeonhole settings
+	* @param $pParamHash an array of content to be stored.
+	* @param $pParamHash[parent_id] id of pigeonhole it belongs to, default is $this->mContentId
+	* @param $pParamHash[content_id] content_id of the item to be stored
+	* @return bool TRUE on success, FALSE if store could not occur. If FALSE, $this->mErrors will have reason why
+	* @access public
+	**/
+	function insertPigeonholeSettings( &$pParamHash=NULL, $pContentId=NULL ) {
+		if( $this->verifyPigeonholeSettings( $pParamHash ) ) {
+			foreach( $pParamHash['settings_store'] as $setting ) {
+				$setting['content_id'] = !empty( $pContentId ) ? $pContentId : $this->mContentId;
+				$result = $this->mDb->associateInsert( BIT_DB_PREFIX."bit_pigeonhole_settings", $setting );
+			}
+		} else {
+			vd( $this->mErrors );
+		}
+		return( count( $this->mErrors ) == 0 );
+	}
+
+	/**
+	* verify, clean up and prepare data to be stored
+	* @param $pParamHash all information that is being stored. will update $pParamHash by reference with fixed array of itmes
+	* @return bool TRUE on success, FALSE if store could not occur. If FALSE, $this->mErrors will have reason why
+	* @access private
+	**/
+	function verifyPigeonholeSettings( &$pParamHash=NULL ) {
+		if( !empty( $pParamHash ) )  {
+			$availableSettings = array( 'style' );
+			$i = 0;
+			foreach( $pParamHash as $name => $value ) {
+				if( in_array( $name, $availableSettings ) ) {
+					$pParamHash['settings_store'][$i]['name'] = $name;
+					$pParamHash['settings_store'][$i]['value'] = !empty( $value ) ? $value : NULL;
+					$i++;
+				}
+			}
+		}
+
+		if( empty( $pParamHash['settings_store'] ) ) {
+			$pParamHash['settings_store'] = array();
+		}
+
+		return( count( $this->mErrors ) == 0 );
+	}
+
+	/**
 	* Store pigeonhole member
-	* @param $pParamHash an array of conent to be stored.
+	* @param $pParamHash an array of content to be stored.
 	* @param $pParamHash[parent_id] id of pigeonhole it belongs to, default is $this->mContentId
 	* @param $pParamHash[content_id] content_id of the item to be stored
 	* @return bool TRUE on success, FALSE if store could not occur. If FALSE, $this->mErrors will have reason why
@@ -624,6 +715,21 @@ class Pigeonholes extends LibertyAttachable {
 
 		$this->mDb->CompleteTrans();
 		$pParamHash = $tmp;
+		return( count( $this->mErrors ) == 0 );
+	}
+
+	/**
+	* Expunge pigeonhole settings
+	* @param $pContentId content id for which all settings are to be removed
+	* @access public
+	**/
+	function expungePigeonholeSettings( $pContentId=NULL ) {
+		if( !empty( $pContentId ) && $this->verifyId( $pContentId ) ) {
+			$query = "DELETE FROM `".BIT_DB_PREFIX."bit_pigeonhole_settings` WHERE `content_id` = ?";
+			$result = $this->mDb->query( $query, array( $pContentId ) );
+		} else {
+			$this->mErrors['settings_expunge'] = 'The settings could not be removed.';
+		}
 		return( count( $this->mErrors ) == 0 );
 	}
 
@@ -698,6 +804,7 @@ class Pigeonholes extends LibertyAttachable {
 				$result = $this->mDb->query( $query, array( $contentId ) );
 				$query = "DELETE FROM `".BIT_DB_PREFIX."bit_pigeonhole_members` WHERE `parent_id` = ?";
 				$result = $this->mDb->query( $query, array( $contentId ) );
+				$this->expungePigeonholeSettings( $contentId );
 
 				// remove all entries from content tables
 				$this->mContentId = $contentId;
@@ -739,6 +846,7 @@ class Pigeonholes extends LibertyAttachable {
 	/**
 	* Returns HTML link to display a pigeonhole
 	* @param $pPigeonholeTitle is the pigeonhole we want to see
+	* @param $pContentId content id of the pigeonhole in question
 	* @return the link to display the page.
 	*/
 	function getDisplayLink( $pPigeonholeTitle=NULL, $pContentId=NULL ) {

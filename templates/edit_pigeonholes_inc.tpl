@@ -34,6 +34,14 @@
 	</div>
 
 	<div class="row">
+		{formlabel label="Theme" for="pigeonhole-style"}
+		{forminput}
+			{html_options id="pigeonhole-style" name="pigeonhole[settings][style]" output=$styles values=$styles selected=$pigeonInfo.settings.style}
+			{formhelp note="This theme will be applied when viewing any page belonging to this category."}
+		{/forminput}
+	</div>
+
+	<div class="row">
 		{formlabel label="Content" for="pigeonhole-content"}
 		{forminput}
 			{html_options values=$contentTypes options=$contentTypes name=content_type_guid selected=$contentSelect}
@@ -44,7 +52,7 @@
 		{/forminput}
 
 		{forminput}
-			<input type="text" name="find_objects" value="{$smarty.request.find_objects}" /> 
+			<input type="text" size="30" name="find_objects" value="{$smarty.request.find_objects}" /> 
 			<input type="submit" value="{tr}Apply filter{/tr}" name="search_objects" />
 		{/forminput}
 	</div>
