@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_pigeonholes/Pigeonholes.php,v 1.5 2005/10/18 11:31:07 squareing Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_pigeonholes/Pigeonholes.php,v 1.6 2005/10/19 20:25:34 squareing Exp $
  *
  * +----------------------------------------------------------------------+
  * | Copyright ( c ) 2004, bitweaver.org
@@ -17,7 +17,7 @@
  * Pigeonholes class
  *
  * @author   xing <xing@synapse.plus.com>
- * @version  $Revision: 1.5 $
+ * @version  $Revision: 1.6 $
  * @package  pigeonholes
  */
 
@@ -621,7 +621,7 @@ class Pigeonholes extends LibertyAttachable {
 	* @return bool TRUE on success, FALSE if store could not occur. If FALSE, $this->mErrors will have reason why
 	* @access public
 	**/
-	function insertPigeonholeSettings( &$pParamHash=NULL, $pContentId=NULL ) {
+	function insertPigeonholeSettings( &$pParamHash, $pContentId=NULL ) {
 		if( $this->verifyPigeonholeSettings( $pParamHash ) ) {
 			foreach( $pParamHash['settings_store'] as $setting ) {
 				$setting['content_id'] = !empty( $pContentId ) ? $pContentId : $this->mContentId;
@@ -639,7 +639,7 @@ class Pigeonholes extends LibertyAttachable {
 	* @return bool TRUE on success, FALSE if store could not occur. If FALSE, $this->mErrors will have reason why
 	* @access private
 	**/
-	function verifyPigeonholeSettings( &$pParamHash=NULL ) {
+	function verifyPigeonholeSettings( &$pParamHash ) {
 		if( !empty( $pParamHash ) )  {
 			$availableSettings = array( 'style' );
 			$i = 0;
