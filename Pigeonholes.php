@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_pigeonholes/Pigeonholes.php,v 1.6 2005/10/19 20:25:34 squareing Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_pigeonholes/Pigeonholes.php,v 1.7 2005/10/22 18:02:12 squareing Exp $
  *
  * +----------------------------------------------------------------------+
  * | Copyright ( c ) 2004, bitweaver.org
@@ -17,7 +17,7 @@
  * Pigeonholes class
  *
  * @author   xing <xing@synapse.plus.com>
- * @version  $Revision: 1.6 $
+ * @version  $Revision: 1.7 $
  * @package  pigeonholes
  */
 
@@ -230,12 +230,12 @@ class Pigeonholes extends LibertyAttachable {
 	* @param $pContentId content id of pigeonhole.
 	* @return path in form of an array on success, FALSE ( boolean ) if content is in no pigeonhole
 	* @access public
-	* @TODO sort the array somehow to make sure that the path is always incrementing and looks nice...
 	**/
 	function getPigeonholesPathList( $pContentId=NULL ) {
 		$query = "SELECT bp.`content_id`, bp.`structure_id`
 			FROM `".BIT_DB_PREFIX."bit_pigeonholes` bp
-			ORDER BY bp.`content_id` ASC";
+			JOIN `".BIT_DB_PREFIX."tiki_structures` ts ON ( ts.`structure_id` = bp.`structure_id` )
+			ORDER BY ts.`root_structure_id`, ts.`structure_id` ASC";
 		$result = $this->mDb->query( $query );
 		$pigeonholes = $result->getRows();
 		foreach( $pigeonholes as $pigeonhole ) {
@@ -338,6 +338,9 @@ class Pigeonholes extends LibertyAttachable {
 
 		if( !empty( $pListHash['sort_mode'] ) ) {
 			$where .= " ORDER BY ".$this->mDb->convert_sortmode( $pListHash['sort_mode'] )." ";
+		} else {
+			// default sort mode makes list look nice
+			$where .= " ORDER BY ts.`root_structure_id`, ts.`structure_id` ASC";
 		}
 
 		$query = "SELECT bp.*, ts.`root_structure_id`, ts.`parent_id`, tc.`title`, tc.`data`, tc.`content_type_guid`,
