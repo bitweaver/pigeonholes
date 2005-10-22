@@ -19,10 +19,10 @@
 		<table class="data">
 			<caption>{tr}Available Categories{/tr} <span class="total">[ {$pigeonCount} ]</span></caption>
 			<tr>
-				<th>{smartlink ititle="Title" isort=title page=$page idefault=1} / {smartlink ititle="Description" isort=data page=$page}</th>
-				<th>{tr}Categories{/tr}</th>
+				<th style="width:45%;">{smartlink ititle="Title" isort=title page=$page idefault=1} / {smartlink ititle="Description" isort=data page=$page}</th>
+				<th style="width:45%;">{tr}Categories{/tr}</th>
 				{if $gBitUser->hasPermission( 'bit_p_edit_pigeonholes' )}
-					<th>{tr}Actions{/tr}</th>
+					<th style="width:10%;">{tr}Actions{/tr}</th>
 				{/if}
 			</tr>
 
