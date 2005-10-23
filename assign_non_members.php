@@ -1,6 +1,6 @@
 <?php
 /**
- * $Header: /cvsroot/bitweaver/_bit_pigeonholes/Attic/assign_non_members.php,v 1.2 2005/10/20 21:10:15 squareing Exp $
+ * $Header: /cvsroot/bitweaver/_bit_pigeonholes/Attic/assign_non_members.php,v 1.3 2005/10/23 08:28:55 squareing Exp $
  *
  * Copyright ( c ) 2004 bitweaver.org
  * Copyright ( c ) 2003 tikwiki.org
@@ -8,7 +8,7 @@
  * All Rights Reserved. See copyright.txt for details and a complete list of authors.
  * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details
  *
- * $Id: assign_non_members.php,v 1.2 2005/10/20 21:10:15 squareing Exp $
+ * $Id: assign_non_members.php,v 1.3 2005/10/23 08:28:55 squareing Exp $
  * @package pigeonholes
  * @subpackage functions
  */
@@ -36,7 +36,7 @@ $gBitSmarty->assign( 'contentSelect', $contentSelect = !isset( $_REQUEST['conten
 $listHash = array(
 	'find' => empty( $_REQUEST['find_objects'] ) ? NULL : $_REQUEST['find_objects'],
 	'sort_mode' => empty( $_REQUEST['sort_mode'] ) ? NULL : $_REQUEST['sort_mode'],
-	'max_rows' => ( !empty( $_REQUEST['max_rows'] ) && is_numeric( $_REQUEST['max_rows'] ) ) ? $_REQUEST['max_rows'] : 100,
+	'max_rows' => ( !empty( $_REQUEST['max_rows'] ) && is_numeric( $_REQUEST['max_rows'] ) ) ? $_REQUEST['max_rows'] : 10,
 );
 
 $nonMembers = $gPigeonholes->getNonPigeonholeMembers( $listHash, $contentSelect, ( !empty( $_REQUEST['include'] ) && $_REQUEST['include'] == 'members' ) ? $_REQUEST['include'] : FALSE );
@@ -74,7 +74,14 @@ if( !empty( $_REQUEST['insert_content'] ) && isset( $_REQUEST['pigeonhole'] ) ) 
 	$nonMembers = $gPigeonholes->getNonPigeonholeMembers( $listHash, $contentSelect, ( !empty( $_REQUEST['include'] ) && $_REQUEST['include'] == 'members' ) ? $_REQUEST['include'] : FALSE );
 }
 
-$pigeonList = $gPigeonholes->getList( NULL, FALSE, TRUE );
+$pigeonRootData = $gPigeonholes->getList( NULL, TRUE, FALSE );
+$pigeonRoots[0] = 'All';
+foreach( $pigeonRootData['data'] as $root ) {
+	$pigeonRoots[$root['root_structure_id']] = $root['title'];
+}
+$gBitSmarty->assign( 'pigeonRoots', !empty( $pigeonRoots ) ? $pigeonRoots : NULL );
+
+$pigeonList = $gPigeonholes->getList( array( 'root_structure_id' => !empty( $_REQUEST['root_structure_id'] ) ? $_REQUEST['root_structure_id'] : NULL ) , FALSE, TRUE );
 $gBitSmarty->assign( 'pigeonList', !empty( $pigeonList['data'] ) ? $pigeonList['data'] : NULL );
 $gBitSmarty->assign( 'nonMembers', $nonMembers );
 $gBitSmarty->assign( 'contentCount', count( $nonMembers ) );

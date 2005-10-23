@@ -15,8 +15,9 @@
 
 					{forminput}
 						<select name="max_rows">
-							<option value="50" {if $smarty.request.max_rows eq 50}selected="selected"{/if}>{tr}50{/tr}</option>
-							<option value="100" {if $smarty.request.max_rows eq 100 or !$smarty.request.max_rows}selected="selected"{/if}>{tr}100{/tr}</option>
+							<option value="10"  {if $smarty.request.max_rows eq 10 or !$smarty.request.max_rows}selected="selected"{/if}>{tr}10{/tr}</option>
+							<option value="50"  {if $smarty.request.max_rows eq 50}selected="selected"{/if}>{tr}50{/tr}</option>
+							<option value="100" {if $smarty.request.max_rows eq 100}selected="selected"{/if}>{tr}100{/tr}</option>
 							<option value="200" {if $smarty.request.max_rows eq 200}selected="selected"{/if}>{tr}200{/tr}</option>
 							<option value="500" {if $smarty.request.max_rows eq 500}selected="selected"{/if}>{tr}500{/tr}</option>
 						</select> {tr}Records{/tr}
@@ -36,6 +37,14 @@
 					{forminput}
 						<input type="text" value="{$smarty.request.find_objects}" name="find_objects" />&nbsp;
 						{formhelp note="You can restrict the content listing to a given content type or apply a filter."}
+					{/forminput}
+				</div>
+
+				<div class="row">
+					{formlabel label="Category" for="root_structure_id"}
+					{forminput}
+						{html_options values=$pigeonRoots options=$pigeonRoots name=root_structure_id id=root_structure_id selected=$smarty.request.root_structure_id}
+						{formhelp note="Pick category you want to use to insert content into."}
 					{/forminput}
 				</div>
 
