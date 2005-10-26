@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_pigeonholes/Pigeonholes.php,v 1.7 2005/10/22 18:02:12 squareing Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_pigeonholes/Pigeonholes.php,v 1.8 2005/10/26 17:48:53 squareing Exp $
  *
  * +----------------------------------------------------------------------+
  * | Copyright ( c ) 2004, bitweaver.org
@@ -17,7 +17,7 @@
  * Pigeonholes class
  *
  * @author   xing <xing@synapse.plus.com>
- * @version  $Revision: 1.7 $
+ * @version  $Revision: 1.8 $
  * @package  pigeonholes
  */
 
@@ -95,7 +95,7 @@ class Pigeonholes extends LibertyAttachable {
 			if( $pExtras ) {
 				$this->mInfo['path'] = $this->getPigeonholePath();
 				$this->mInfo['display_path'] = $this->getDisplayPath( $this->mInfo['path'] );
-				$this->mInfo['members'] = $this->getPigeonholeMembers();
+				$this->mInfo['members'] = $this->getMemberList();
 				$this->mInfo['members_count'] = count( $this->mInfo['members'] );
 			}
 		}
@@ -108,47 +108,63 @@ class Pigeonholes extends LibertyAttachable {
 	* @return array of pigeonhole members with according title and content type guid
 	* @access public
 	**/
-	function getPigeonholeMembers( $pContentId=NULL ) {
+	function getMemberList( $pListHash=NULL ) {
 		global $gBitUser, $gLibertySystem, $gBitSystem;
 		$ret = FALSE;
-		if( !empty( $this->mContentId ) || !empty( $pContentId ) ) {
-			if( $gBitSystem->isFeatureActive( 'custom_member_sorting' ) ) {
-				$order = "ORDER BY bpm.`pos` ASC";
-			} else {
-				$order = "ORDER BY tc.`content_type_guid`, tc.`title` ASC";
-			}
 
-			$bindVars[] = $this->verifyId( $pContentId ) ? $pContentId : $this->mContentId;
-			$ret = array();
-			$query = "SELECT bpm.*, tc.`content_id`, tc.`user_id`, tc.`title`, tc.`content_type_guid`, uu.`login`, uu.`real_name`
-				FROM `".BIT_DB_PREFIX."bit_pigeonhole_members` bpm
-				RIGHT JOIN `".BIT_DB_PREFIX."bit_pigeonholes` bp ON ( bp.`content_id` = bpm.`parent_id` )
-				INNER JOIN `".BIT_DB_PREFIX."tiki_content` tc ON ( tc.`content_id` = bpm.`content_id` )
-				LEFT JOIN `".BIT_DB_PREFIX."users_users` uu ON ( uu.`user_id` = tc.`user_id` )
-				WHERE bp.`content_id`=?
-				$order";
-			$result = $this->mDb->query( $query, $bindVars );
-
-			$contentTypes = $gLibertySystem->mContentTypes;
-			while( !$result->EOF ) {
-				$i = $result->fields['content_id'];
-				$ret[$i] = $result->fields;
-				if( !empty( $contentTypes[$ret[$i]['content_type_guid']] ) ) {
-					$type = &$contentTypes[$ret[$i]['content_type_guid']];
-					if( empty( $type['content_object'] ) ) {
-						// create *one* object for each object *type* to  call virtual methods.
-						include_once( $gBitSystem->mPackages[$type['handler_package']]['path'].$type['handler_file'] );
-						$type['content_object'] = new $type['handler_class']();
-					}
-					$ret[$i]['display_link'] = $type['content_object']->getDisplayLink( $ret[$i]['title'], $ret[$i] );
-					$ret[$i]['title'] = $type['content_object']->getTitle( $ret[$i] );
-				}
-				$result->MoveNext();
-			}
-		} else {
-			$this->mErrors['get_members'] = tra( 'No valid pigeonhole id given to collect members from.' );
+		$where = '';
+		$bindVars = array();
+		if( !empty( $this->mContentId ) || ( !empty( $pListHash['content_id'] ) && is_numeric( $pListHash['content_id'] ) ) ) {
+			$where = " WHERE bp.`content_id` = ? ";
+			$bindVars[] = $this->verifyId( $pListHash['content_id'] ) ? $pListHash['content_id'] : $this->mContentId;
 		}
-		return( !empty( $ret ) ? $ret : NULL );
+
+		if( !empty( $pListHash['content_type_guid'] ) ) {
+			$where .= empty( $where ) ? ' WHERE ' : ' AND ';
+			$where .= " tc.content_type_guid = ? ";
+			$bindVars[] = $pListHash['content_type_guid'];
+		}
+
+		if( !empty( $pListHash['title'] ) && is_string( $pListHash['title'] ) ) {
+			$where .= empty( $where ) ? ' WHERE ' : ' AND ';
+			$where .= " UPPER( tc2.`title` ) = ?";
+			$bindVars[] = strtoupper( $pListHash['title'] );
+		}
+
+		if( $gBitSystem->isFeatureActive( 'custom_member_sorting' ) ) {
+			$order = "ORDER BY bpm.`pos` ASC";
+		} else {
+			$order = "ORDER BY tc.`content_type_guid`, tc.`title` ASC";
+		}
+
+		$ret = array();
+		$query = "SELECT bpm.*, tc.`content_id`, tct.`content_description`, tc.`last_modified`, tc.`user_id`, tc.`title`, tc.`content_type_guid`, uu.`login`, uu.`real_name`
+			FROM `".BIT_DB_PREFIX."bit_pigeonhole_members` bpm
+			RIGHT JOIN `".BIT_DB_PREFIX."bit_pigeonholes` bp ON ( bp.`content_id` = bpm.`parent_id` )
+			INNER JOIN `".BIT_DB_PREFIX."tiki_content` tc ON ( tc.`content_id` = bpm.`content_id` )
+			INNER JOIN `".BIT_DB_PREFIX."tiki_content` tc2 ON ( bp.`content_id` = tc2.`content_id` )
+			RIGHT JOIN `".BIT_DB_PREFIX."tiki_content_types` tct ON ( tc.`content_type_guid` = tct.`content_type_guid` )
+			LEFT JOIN `".BIT_DB_PREFIX."users_users` uu ON ( uu.`user_id` = tc.`user_id` )
+			$where $order";
+		$result = $this->mDb->query( $query, $bindVars, !empty( $pListHash['max_records'] ) ? $pListHash['max_records'] : NULL );
+
+		$contentTypes = $gLibertySystem->mContentTypes;
+		while( !$result->EOF ) {
+			$aux = $result->fields;
+			if( !empty( $contentTypes[$aux['content_type_guid']] ) ) {
+				$type = &$contentTypes[$aux['content_type_guid']];
+				if( empty( $type['content_object'] ) ) {
+					// create *one* object for each object *type* to  call virtual methods.
+					include_once( $gBitSystem->mPackages[$type['handler_package']]['path'].$type['handler_file'] );
+					$type['content_object'] = new $type['handler_class']();
+				}
+				$aux['display_link'] = $type['content_object']->getDisplayLink( $aux['title'], $aux );
+				$aux['title'] = $type['content_object']->getTitle( $aux );
+				$ret[] = $aux;
+			}
+			$result->MoveNext();
+		}
+		return( !empty( $this->mErrors ) ? $this->mErrors : $ret );
 	}
 
 	/**
@@ -363,12 +379,12 @@ class Pigeonholes extends LibertyAttachable {
 			$aux = $result->fields;
 			$aux['creator'] = ( isset( $result->fields['creator_real_name'] ) ? $result->fields['creator_real_name'] : $result->fields['creator_user'] );
 			$aux['editor'] = ( isset( $result->fields['modifier_real_name'] ) ? $result->fields['modifier_real_name'] : $result->fields['modifier_user'] );
-			$aux['display_link'] = $this->getDisplayLink( $aux['title'], $aux['content_id'] );
+			$aux['display_link'] = Pigeonholes::getDisplayLink( $aux['title'], $aux );
 
 			if( $pExtras ) {
 				$aux['path'] = $this->getPigeonholePath( $aux['structure_id'] );
 				$aux['display_path'] = $this->getDisplayPath( $aux['path'] );
-				$aux['members'] = $this->getPigeonholeMembers( $aux['content_id'] );
+				$aux['members'] = $this->getMemberList( array( 'content_id' => $aux['content_id'] ) );
 				$aux['members_count'] = count( $aux['members'] );
 			}
 
@@ -512,7 +528,7 @@ class Pigeonholes extends LibertyAttachable {
 
 			// if this is not the first save, we need to get positional data from members and insert them
 			if( !empty( $this->mContentId ) ) {
-				$members = $this->getPigeonholeMembers( $this->mContentId );
+				$members = $this->getMemberList( array( 'content_id' => $this->mContentId ) );
 				$pos = count( $members ) + 1;
 			}
 
@@ -830,7 +846,7 @@ class Pigeonholes extends LibertyAttachable {
 	* @param $pContentId is the pigeonhole id we want to see
 	* @return the link to display the page.
 	*/
-	function getDisplayUrl( $pContentId=NULL ) {
+	function getDisplayUrl( $pContentId=NULL, $pMixed=NULL ) {
 		global $gBitSystem;
 		if( empty( $pContentId ) ) {
 			$pContentId = $this->mContentId;
@@ -852,15 +868,19 @@ class Pigeonholes extends LibertyAttachable {
 	* @param $pContentId content id of the pigeonhole in question
 	* @return the link to display the page.
 	*/
-	function getDisplayLink( $pPigeonholeTitle=NULL, $pContentId=NULL ) {
+	function getDisplayLink( $pPigeonholeTitle=NULL, $pMixed=NULL ) {
 		global $gBitSystem;
 		if( empty( $pPigeonholeTitle ) && !empty( $this ) ) {
 			$pPigeonholeTitle = $this->mInfo['title'];
 		}
 
+		if( empty( $pMixed ) && !empty( $this ) ) {
+			$pMixed = $this->mInfo;
+		}
+
 		$ret = $pPigeonholeTitle;
 		if( $gBitSystem->isPackageActive( 'pigeonholes' ) ) {
-			$ret = '<a href="'.$this->getDisplayUrl( $pContentId ).'">'.$pPigeonholeTitle.'</a>';
+			$ret = '<a href="'.Pigeonholes::getDisplayUrl( $pMixed['content_id'] ).'">'.$pPigeonholeTitle.'</a>';
 		}
 
 		return $ret;

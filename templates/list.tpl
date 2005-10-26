@@ -20,9 +20,9 @@
 			<caption>{tr}Available Categories{/tr} <span class="total">[ {$pigeonCount} ]</span></caption>
 			<tr>
 				<th style="width:45%;">{smartlink ititle="Title" isort=title page=$page idefault=1} / {smartlink ititle="Description" isort=data page=$page}</th>
-				<th style="width:45%;">{tr}Categories{/tr}</th>
+				<th style="width:42%;">{tr}Categories{/tr}</th>
 				{if $gBitUser->hasPermission( 'bit_p_edit_pigeonholes' )}
-					<th style="width:10%;">{tr}Actions{/tr}</th>
+					<th style="width:9%;">{tr}Actions{/tr}</th>
 				{/if}
 			</tr>
 
@@ -32,7 +32,7 @@
 						<h2>{$item.display_link}</h2>
 						{$item.data}
 					</td>
-					<td>{include file="bitpackage:pigeonholes/view_structure_inc.tpl" plain=true subtree=$item.subtree}</td>
+					<td style="white-space:nowrap">{include file="bitpackage:pigeonholes/view_structure_inc.tpl" plain=true subtree=$item.subtree}</td>
 					{if $gBitUser->hasPermission( 'bit_p_edit_pigeonholes' )}
 						<td class="actionicon">
 							{smartlink ititle="Insert new Category" ifile="edit_pigeonholes.php" ibiticon="liberty/new" structure_id=`$item.structure_id` action=create}
