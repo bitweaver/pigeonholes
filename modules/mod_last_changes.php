@@ -1,5 +1,5 @@
 <?php
-// $Header: /cvsroot/bitweaver/_bit_pigeonholes/modules/Attic/mod_last_changes.php,v 1.1 2005/10/26 17:46:45 squareing Exp $
+// $Header: /cvsroot/bitweaver/_bit_pigeonholes/modules/Attic/mod_last_changes.php,v 1.2 2005/10/27 21:23:02 squareing Exp $
 /**
  * Params:
  * - content_type_guid : if set, show only those content_type_guid's
@@ -44,7 +44,4 @@ if( empty( $module_title ) ) {
 if( !empty( $module_params['show_date'] ) ) {
 	$gBitSmarty->assign( 'showDate' , TRUE );
 }
-
-$modLastContent = $gBitUser->getContentList( $listHash );
-$gBitSmarty->assign_by_ref( 'modLastContent', $modLastContent['data'] );
 ?>
