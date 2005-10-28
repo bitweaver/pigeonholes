@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_pigeonholes/Pigeonholes.php,v 1.8 2005/10/26 17:48:53 squareing Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_pigeonholes/Pigeonholes.php,v 1.9 2005/10/28 19:08:19 squareing Exp $
  *
  * +----------------------------------------------------------------------+
  * | Copyright ( c ) 2004, bitweaver.org
@@ -17,7 +17,7 @@
  * Pigeonholes class
  *
  * @author   xing <xing@synapse.plus.com>
- * @version  $Revision: 1.8 $
+ * @version  $Revision: 1.9 $
  * @package  pigeonholes
  */
 
@@ -143,7 +143,7 @@ class Pigeonholes extends LibertyAttachable {
 			RIGHT JOIN `".BIT_DB_PREFIX."bit_pigeonholes` bp ON ( bp.`content_id` = bpm.`parent_id` )
 			INNER JOIN `".BIT_DB_PREFIX."tiki_content` tc ON ( tc.`content_id` = bpm.`content_id` )
 			INNER JOIN `".BIT_DB_PREFIX."tiki_content` tc2 ON ( bp.`content_id` = tc2.`content_id` )
-			RIGHT JOIN `".BIT_DB_PREFIX."tiki_content_types` tct ON ( tc.`content_type_guid` = tct.`content_type_guid` )
+			LEFT JOIN `".BIT_DB_PREFIX."tiki_content_types` tct ON ( tc.`content_type_guid` = tct.`content_type_guid` )
 			LEFT JOIN `".BIT_DB_PREFIX."users_users` uu ON ( uu.`user_id` = tc.`user_id` )
 			$where $order";
 		$result = $this->mDb->query( $query, $bindVars, !empty( $pListHash['max_records'] ) ? $pListHash['max_records'] : NULL );
