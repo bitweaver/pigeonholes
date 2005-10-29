@@ -28,7 +28,7 @@
 	<div class="row">
 		{formlabel label="Description" for="pigeonhole-desc"}
 		{forminput}
-			<textarea id="pigeonhole-desc" name="pigeonhole[edit]" rows="3" cols="80">{$pigeonInfo.data|escape}</textarea>
+			<textarea id="pigeonhole-desc" name="pigeonhole[edit]" rows="3" cols="50">{$pigeonInfo.data|escape}</textarea>
 			{formhelp note="A description of the category. This will be visible when users view this particular category."}
 		{/forminput}
 	</div>
