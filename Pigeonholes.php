@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_pigeonholes/Pigeonholes.php,v 1.10 2005/11/03 16:08:54 squareing Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_pigeonholes/Pigeonholes.php,v 1.11 2005/11/22 20:29:24 bitweaver Exp $
  *
  * +----------------------------------------------------------------------+
  * | Copyright ( c ) 2004, bitweaver.org
@@ -17,7 +17,7 @@
  * Pigeonholes class
  *
  * @author   xing <xing@synapse.plus.com>
- * @version  $Revision: 1.10 $
+ * @version  $Revision: 1.11 $
  * @package  pigeonholes
  */
 
@@ -113,6 +113,7 @@ class Pigeonholes extends LibertyAttachable {
 		$ret = FALSE;
 
 		$where = '';
+		$join = '';
 		$bindVars = array();
 		if( !empty( $this->mContentId ) || ( !empty( $pListHash['content_id'] ) && is_numeric( $pListHash['content_id'] ) ) ) {
 			$where = " WHERE bp.`content_id` = ? ";
@@ -127,7 +128,8 @@ class Pigeonholes extends LibertyAttachable {
 
 		if( !empty( $pListHash['title'] ) && is_string( $pListHash['title'] ) ) {
 			$where .= empty( $where ) ? ' WHERE ' : ' AND ';
-			$where .= " UPPER( tc2.`title` ) = ?";
+			$where .= " bp.`content_id` = tc2.`content_id` AND UPPER( tc2.`title` ) = ?";
+			$join = ", `".BIT_DB_PREFIX."tiki_content` tc2";
 			$bindVars[] = strtoupper( $pListHash['title'] );
 		}
 
@@ -140,14 +142,12 @@ class Pigeonholes extends LibertyAttachable {
 		$ret = array();
 		$query = "SELECT bpm.*, tc.`content_id`, tct.`content_description`, tc.`last_modified`, tc.`user_id`, tc.`title`, tc.`content_type_guid`, uu.`login`, uu.`real_name`
 			FROM `".BIT_DB_PREFIX."bit_pigeonhole_members` bpm
-			RIGHT JOIN `".BIT_DB_PREFIX."bit_pigeonholes` bp ON ( bp.`content_id` = bpm.`parent_id` )
-			INNER JOIN `".BIT_DB_PREFIX."tiki_content` tc ON ( tc.`content_id` = bpm.`content_id` )
-			INNER JOIN `".BIT_DB_PREFIX."tiki_content` tc2 ON ( bp.`content_id` = tc2.`content_id` )
-			LEFT JOIN `".BIT_DB_PREFIX."tiki_content_types` tct ON ( tc.`content_type_guid` = tct.`content_type_guid` )
-			LEFT JOIN `".BIT_DB_PREFIX."users_users` uu ON ( uu.`user_id` = tc.`user_id` )
-			$where $order";
+				INNER JOIN `".BIT_DB_PREFIX."bit_pigeonholes` bp ON ( bp.`content_id` = bpm.`parent_id` )
+				INNER JOIN `".BIT_DB_PREFIX."tiki_content` tc ON ( tc.`content_id` = bpm.`content_id` )
+				INNER JOIN `".BIT_DB_PREFIX."tiki_content_types` tct ON ( tc.`content_type_guid` = tct.`content_type_guid` )
+				INNER JOIN `".BIT_DB_PREFIX."users_users` uu ON ( uu.`user_id` = tc.`user_id` )
+			$join $where $order";
 		$result = $this->mDb->query( $query, $bindVars, !empty( $pListHash['max_records'] ) ? $pListHash['max_records'] : NULL );
-
 		$contentTypes = $gLibertySystem->mContentTypes;
 		while( !$result->EOF ) {
 			$aux = $result->fields;
