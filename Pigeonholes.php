@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_pigeonholes/Pigeonholes.php,v 1.11 2005/11/22 20:29:24 bitweaver Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_pigeonholes/Pigeonholes.php,v 1.11.2.1 2005/12/20 18:15:04 squareing Exp $
  *
  * +----------------------------------------------------------------------+
  * | Copyright ( c ) 2004, bitweaver.org
@@ -17,7 +17,7 @@
  * Pigeonholes class
  *
  * @author   xing <xing@synapse.plus.com>
- * @version  $Revision: 1.11 $
+ * @version  $Revision: 1.11.2.1 $
  * @package  pigeonholes
  */
 
@@ -115,7 +115,7 @@ class Pigeonholes extends LibertyAttachable {
 		$where = '';
 		$join = '';
 		$bindVars = array();
-		if( !empty( $this->mContentId ) || ( !empty( $pListHash['content_id'] ) && is_numeric( $pListHash['content_id'] ) ) ) {
+		if( $this->verifyId( $this->mContentId ) || $this->verifyId( $pListHash['content_id'] ) ) {
 			$where = " WHERE bp.`content_id` = ? ";
 			$bindVars[] = $this->verifyId( $pListHash['content_id'] ) ? $pListHash['content_id'] : $this->mContentId;
 		}
@@ -224,7 +224,7 @@ class Pigeonholes extends LibertyAttachable {
 			}
 
 			// generate a map of what items are assigned to what pigeonholes
-			if( $pIncludeMembers && !empty( $result->fields['parent_id'] ) ) {
+			if( $pIncludeMembers && $this->verifyId( $result->fields['parent_id'] ) ) {
 				$map[$i][] = $result->fields['parent_id'];
 			}
 
@@ -533,7 +533,7 @@ class Pigeonholes extends LibertyAttachable {
 			}
 
 			foreach( $pParamHash['members'] as $c_id ) {
-				if( !empty( $members[$c_id]['pos'] ) ) {
+				if( $this->verifyId( $members[$c_id]['pos'] ) ) {
 					$pParamHash['pigeonhole_members_store'][$i]['pos'] = $members[$c_id]['pos'];
 				} else {
 					$pParamHash['pigeonhole_members_store'][$i]['pos'] = $pos++;
