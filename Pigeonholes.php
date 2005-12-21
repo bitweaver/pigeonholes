@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_pigeonholes/Pigeonholes.php,v 1.11.2.3 2005/12/21 21:47:48 squareing Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_pigeonholes/Pigeonholes.php,v 1.11.2.4 2005/12/21 23:55:53 mej Exp $
  *
  * +----------------------------------------------------------------------+
  * | Copyright ( c ) 2004, bitweaver.org
@@ -17,7 +17,7 @@
  * Pigeonholes class
  *
  * @author   xing <xing@synapse.plus.com>
- * @version  $Revision: 1.11.2.3 $
+ * @version  $Revision: 1.11.2.4 $
  * @package  pigeonholes
  */
 
@@ -180,7 +180,7 @@ class Pigeonholes extends LibertyAttachable {
 		$bindVars = array();
 
 		if( !$pIncludeMembers ) {
-			$where .= "WHERE tc.`content_id` NOT IN ( SELECT DISTINCT( `content_id` ) FROM `".BIT_DB_PREFIX."bit_pigeonhole_members` )";
+			$where .= "WHERE bpm.`content_id` IS NULL";
 		}
 
 		if( !empty( $pListHash['find'] ) && is_string( $pListHash['find'] ) ) {
