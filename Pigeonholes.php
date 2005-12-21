@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_pigeonholes/Pigeonholes.php,v 1.11.2.2 2005/12/20 19:41:55 squareing Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_pigeonholes/Pigeonholes.php,v 1.11.2.3 2005/12/21 21:47:48 squareing Exp $
  *
  * +----------------------------------------------------------------------+
  * | Copyright ( c ) 2004, bitweaver.org
@@ -17,7 +17,7 @@
  * Pigeonholes class
  *
  * @author   xing <xing@synapse.plus.com>
- * @version  $Revision: 1.11.2.2 $
+ * @version  $Revision: 1.11.2.3 $
  * @package  pigeonholes
  */
 
@@ -67,7 +67,7 @@ class Pigeonholes extends LibertyAttachable {
 	* @access public
 	**/
 	function load( $pExtras=FALSE ) {
-		if( $this->verifyId( $this->mContentId ) || $this->verifyId( $this->mStructureId ) ) {
+		if( @BitBase::verifyId( $this->mContentId ) || @BitBase::verifyId( $this->mStructureId ) ) {
 			global $gBitSystem;
 			$lookupColumn = ( @BitBase::verifyId( $this->mContentId ) ? 'tc.`content_id`' : 'ts.`structure_id`' );
 			$lookupId = ( @BitBase::verifyId( $this->mContentId ) ? $this->mContentId : $this->mStructureId );
@@ -115,9 +115,9 @@ class Pigeonholes extends LibertyAttachable {
 		$where = '';
 		$join = '';
 		$bindVars = array();
-		if( $this->verifyId( $this->mContentId ) || $this->verifyId( $pListHash['content_id'] ) ) {
+		if( @BitBase::verifyId( $this->mContentId ) || @BitBase::verifyId( $pListHash['content_id'] ) ) {
 			$where = " WHERE bp.`content_id` = ? ";
-			$bindVars[] = $this->verifyId( $pListHash['content_id'] ) ? $pListHash['content_id'] : $this->mContentId;
+			$bindVars[] = @BitBase::verifyId( $pListHash['content_id'] ) ? $pListHash['content_id'] : $this->mContentId;
 		}
 
 		if( !empty( $pListHash['content_type_guid'] ) ) {
@@ -224,7 +224,7 @@ class Pigeonholes extends LibertyAttachable {
 			}
 
 			// generate a map of what items are assigned to what pigeonholes
-			if( $pIncludeMembers && $this->verifyId( $result->fields['parent_id'] ) ) {
+			if( $pIncludeMembers && @BitBase::verifyId( $result->fields['parent_id'] ) ) {
 				$map[$i][] = $result->fields['parent_id'];
 			}
 
@@ -274,7 +274,7 @@ class Pigeonholes extends LibertyAttachable {
 	* @access public
 	**/
 	function getPigeonholesFromContentId( $pContentId ) {
-		if( $this->verifyId( $pContentId ) ) {
+		if( @BitBase::verifyId( $pContentId ) ) {
 			$query = "SELECT bp.*
 				FROM `".BIT_DB_PREFIX."bit_pigeonhole_members` bpm
 				INNER JOIN `".BIT_DB_PREFIX."bit_pigeonholes` bp ON ( bp.`content_id` = bpm.`parent_id` )
@@ -292,11 +292,11 @@ class Pigeonholes extends LibertyAttachable {
 	* @access public
 	**/
 	function getPigeonholePath( $pStructureId=NULL ) {
-		if( !$this->verifyId( $pStructureId ) ) {
+		if( !@BitBase::verifyId( $pStructureId ) ) {
 			$pStructureId = $this->mStructureId;
 		}
 
-		if( $this->verifyId( $pStructureId ) ) {
+		if( @BitBase::verifyId( $pStructureId ) ) {
 			global $gStructure;
 			// create new object if needed
 			if( empty( $gStructure ) ) {
@@ -341,7 +341,7 @@ class Pigeonholes extends LibertyAttachable {
 			$bindVars[] = '%'.strtoupper( $pListHash['find'] ).'%';
 		}
 
-		if( @$this->verifyId( $pListHash['root_structure_id'] ) ) {
+		if( @BitBase::verifyId( $pListHash['root_structure_id'] ) ) {
 			$where .= empty( $where ) ? ' WHERE ' : ' AND ';
 			$where .= " ts.`root_structure_id`=? ";
 			$bindVars[] = $pListHash['root_structure_id'];
@@ -533,7 +533,7 @@ class Pigeonholes extends LibertyAttachable {
 			}
 
 			foreach( $pParamHash['members'] as $c_id ) {
-				if( $this->verifyId( $members[$c_id]['pos'] ) ) {
+				if( @BitBase::verifyId( $members[$c_id]['pos'] ) ) {
 					$pParamHash['pigeonhole_members_store'][$i]['pos'] = $members[$c_id]['pos'];
 				} else {
 					$pParamHash['pigeonhole_members_store'][$i]['pos'] = $pos++;
@@ -547,13 +547,13 @@ class Pigeonholes extends LibertyAttachable {
 		$pParamHash['pigeonhole_settings_store'] = !empty( $pParamHash['settings'] ) ? $pParamHash['settings'] : NULL;
 
 		// structure store
-		if( @$this->verifyId( $pParamHash['root_structure_id'] ) ) {
+		if( @BitBase::verifyId( $pParamHash['root_structure_id'] ) ) {
 			$pParamHash['structure_store']['root_structure_id'] = $pParamHash['root_structure_id'];
 		} else {
 			$pParamHash['structure_store']['root_structure_id'] = NULL;
 		}
 
-		if( @$this->verifyId( $pParamHash['parent_id'] ) ) {
+		if( @BitBase::verifyId( $pParamHash['parent_id'] ) ) {
 			$pParamHash['structure_store']['parent_id'] = $pParamHash['parent_id'];
 		} else {
 			$pParamHash['structure_store']['parent_id'] = NULL;
@@ -706,7 +706,7 @@ class Pigeonholes extends LibertyAttachable {
 	function verifyPigeonholeMember( &$pParamHash ) {
 		$this->mDb->StartTrans();
 		foreach( $pParamHash as $key => $item ) {
-			if( isset( $item['parent_id'] ) && $this->verifyId( $item['parent_id'] ) ) {
+			if( isset( $item['parent_id'] ) && @BitBase::verifyId( $item['parent_id'] ) ) {
 				$tmp['member_store'][$key]['parent_id'] = $item['parent_id'];
 			} elseif( @BitBase::verifyId( $this->mContentId ) ) {
 				$tmp['member_store'][$key]['parent_id'] = $this->mContentId;
@@ -715,7 +715,7 @@ class Pigeonholes extends LibertyAttachable {
 				$this->mErrors['store_members'] = tra( 'The content could not be inserted because the parent_id was missing.' );
 			}
 
-			if( isset( $item['content_id'] ) && $this->verifyId( $item['content_id'] ) ) {
+			if( isset( $item['content_id'] ) && @BitBase::verifyId( $item['content_id'] ) ) {
 				$tmp['member_store'][$key]['content_id'] = $item['content_id'];
 			} else {
 				$this->mErrors['store_members'] = 'The content id is not valid.';
@@ -762,12 +762,12 @@ class Pigeonholes extends LibertyAttachable {
 	function expungePigeonholeMember( $pParentId=NULL, $pMemberId=NULL ) {
 		if( @BitBase::verifyId( $pParentId ) || @BitBase::verifyId( $pMemberId ) ) {
 			$where = '';
-			if( $this->verifyId( $pParentId ) ) {
+			if( @BitBase::verifyId( $pParentId ) ) {
 				$where .= "WHERE `parent_id`=?";
 				$bindVars[] = $pParentId;
 			}
 
-			if( $this->verifyId( $pMemberId ) ) {
+			if( @BitBase::verifyId( $pMemberId ) ) {
 				$where .= ( empty( $where ) ? "WHERE" : "AND" )." `content_id`=?";
 				$bindVars[] = $pMemberId;
 			}
