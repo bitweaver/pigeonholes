@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_pigeonholes/Pigeonholes.php,v 1.11.2.6 2005/12/22 08:05:14 squareing Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_pigeonholes/Pigeonholes.php,v 1.11.2.7 2005/12/22 08:12:36 squareing Exp $
  *
  * +----------------------------------------------------------------------+
  * | Copyright ( c ) 2004, bitweaver.org
@@ -17,7 +17,7 @@
  * Pigeonholes class
  *
  * @author   xing <xing@synapse.plus.com>
- * @version  $Revision: 1.11.2.6 $
+ * @version  $Revision: 1.11.2.7 $
  * @package  pigeonholes
  */
 
@@ -722,7 +722,7 @@ class Pigeonholes extends LibertyAttachable {
 			}
 
 			// if no positional info is given, we just append the items.
-			if( isset( $item['pos'] ) && is_numeric( $item['content_id'] ) ) {
+			if( @BitBase::verifyId( $item['content_id'] ) ) {
 				$tmp['member_store'][$key]['pos'] = $item['pos'];
 			} elseif( !empty( $tmp['member_store'][$key-1]['pos'] ) ) {
 				$tmp['member_store'][$key]['pos'] = $tmp['member_store'][$key-1]['pos'] + 1;
