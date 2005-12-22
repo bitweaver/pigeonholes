@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_pigeonholes/Pigeonholes.php,v 1.11.2.4 2005/12/21 23:55:53 mej Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_pigeonholes/Pigeonholes.php,v 1.11.2.5 2005/12/22 00:18:53 mej Exp $
  *
  * +----------------------------------------------------------------------+
  * | Copyright ( c ) 2004, bitweaver.org
@@ -17,7 +17,7 @@
  * Pigeonholes class
  *
  * @author   xing <xing@synapse.plus.com>
- * @version  $Revision: 1.11.2.4 $
+ * @version  $Revision: 1.11.2.5 $
  * @package  pigeonholes
  */
 
@@ -250,7 +250,7 @@ class Pigeonholes extends LibertyAttachable {
 	function getPigeonholesPathList( $pContentId=NULL ) {
 		$query = "SELECT bp.`content_id`, bp.`structure_id`
 			FROM `".BIT_DB_PREFIX."bit_pigeonholes` bp
-			JOIN `".BIT_DB_PREFIX."tiki_structures` ts ON ( ts.`structure_id` = bp.`structure_id` )
+			INNER JOIN `".BIT_DB_PREFIX."tiki_structures` ts ON ( ts.`structure_id` = bp.`structure_id` )
 			ORDER BY ts.`root_structure_id`, ts.`structure_id` ASC";
 		$result = $this->mDb->query( $query );
 		$pigeonholes = $result->getRows();
