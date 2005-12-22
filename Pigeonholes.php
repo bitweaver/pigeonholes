@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_pigeonholes/Pigeonholes.php,v 1.11.2.7 2005/12/22 08:12:36 squareing Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_pigeonholes/Pigeonholes.php,v 1.11.2.8 2005/12/22 12:50:55 squareing Exp $
  *
  * +----------------------------------------------------------------------+
  * | Copyright ( c ) 2004, bitweaver.org
@@ -17,7 +17,7 @@
  * Pigeonholes class
  *
  * @author   xing <xing@synapse.plus.com>
- * @version  $Revision: 1.11.2.7 $
+ * @version  $Revision: 1.11.2.8 $
  * @package  pigeonholes
  */
 
@@ -722,9 +722,9 @@ class Pigeonholes extends LibertyAttachable {
 			}
 
 			// if no positional info is given, we just append the items.
-			if( @BitBase::verifyId( $item['content_id'] ) ) {
+			if( @BitBase::verifyId( $item['pos'] ) ) {
 				$tmp['member_store'][$key]['pos'] = $item['pos'];
-			} elseif( !empty( $tmp['member_store'][$key-1]['pos'] ) ) {
+			} elseif( @BitBase::verifyId( $tmp['member_store'][$key-1]['pos'] ) ) {
 				$tmp['member_store'][$key]['pos'] = $tmp['member_store'][$key-1]['pos'] + 1;
 			} else {
 				$query = "SELECT COUNT(*) FROM `".BIT_DB_PREFIX."bit_pigeonhole_members` WHERE `parent_id`=?";
