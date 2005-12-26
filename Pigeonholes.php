@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_pigeonholes/Pigeonholes.php,v 1.12 2005/12/20 13:41:46 mej Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_pigeonholes/Pigeonholes.php,v 1.13 2005/12/26 12:28:01 squareing Exp $
  *
  * +----------------------------------------------------------------------+
  * | Copyright ( c ) 2004, bitweaver.org
@@ -17,7 +17,7 @@
  * Pigeonholes class
  *
  * @author   xing <xing@synapse.plus.com>
- * @version  $Revision: 1.12 $
+ * @version  $Revision: 1.13 $
  * @package  pigeonholes
  */
 
@@ -67,10 +67,10 @@ class Pigeonholes extends LibertyAttachable {
 	* @access public
 	**/
 	function load( $pExtras=FALSE ) {
-		if( $this->verifyId( $this->mContentId ) || $this->verifyId( $this->mStructureId ) ) {
+		if( @BitBase::verifyId( $this->mContentId ) || @BitBase::verifyId( $this->mStructureId ) ) {
 			global $gBitSystem;
-			$lookupColumn = ( !empty( $this->mContentId ) ? 'tc.`content_id`' : 'ts.`structure_id`' );
-			$lookupId = ( !empty( $this->mContentId ) ? $this->mContentId : $this->mStructureId );
+			$lookupColumn = ( @BitBase::verifyId( $this->mContentId ) ? 'tc.`content_id`' : 'ts.`structure_id`' );
+			$lookupId = ( @BitBase::verifyId( $this->mContentId ) ? $this->mContentId : $this->mStructureId );
 			$query = "SELECT bp.*, ts.`root_structure_id`, ts.`parent_id`, tc.`title`, tc.`data`, tc.`content_type_guid`,
 				uue.`login` AS modifier_user, uue.`real_name` AS modifier_real_name,
 				uuc.`login` AS creator_user, uuc.`real_name` AS creator_real_name
@@ -115,9 +115,9 @@ class Pigeonholes extends LibertyAttachable {
 		$where = '';
 		$join = '';
 		$bindVars = array();
-		if( !empty( $this->mContentId ) || ( !empty( $pListHash['content_id'] ) && is_numeric( $pListHash['content_id'] ) ) ) {
+		if( @BitBase::verifyId( $this->mContentId ) || @BitBase::verifyId( $pListHash['content_id'] ) ) {
 			$where = " WHERE bp.`content_id` = ? ";
-			$bindVars[] = $this->verifyId( $pListHash['content_id'] ) ? $pListHash['content_id'] : $this->mContentId;
+			$bindVars[] = @BitBase::verifyId( $pListHash['content_id'] ) ? $pListHash['content_id'] : $this->mContentId;
 		}
 
 		if( !empty( $pListHash['content_type_guid'] ) ) {
@@ -147,7 +147,7 @@ class Pigeonholes extends LibertyAttachable {
 				INNER JOIN `".BIT_DB_PREFIX."tiki_content_types` tct ON ( tc.`content_type_guid` = tct.`content_type_guid` )
 				INNER JOIN `".BIT_DB_PREFIX."users_users` uu ON ( uu.`user_id` = tc.`user_id` )
 			$join $where $order";
-		$result = $this->mDb->query( $query, $bindVars, !empty( $pListHash['max_records'] ) ? $pListHash['max_records'] : NULL );
+		$result = $this->mDb->query( $query, $bindVars, @BitBase::verifyId( $pListHash['max_records'] ) ? $pListHash['max_records'] : NULL );
 		$contentTypes = $gLibertySystem->mContentTypes;
 		while( !$result->EOF ) {
 			$aux = $result->fields;
@@ -180,7 +180,7 @@ class Pigeonholes extends LibertyAttachable {
 		$bindVars = array();
 
 		if( !$pIncludeMembers ) {
-			$where .= "WHERE tc.`content_id` NOT IN ( SELECT DISTINCT( `content_id` ) FROM `".BIT_DB_PREFIX."bit_pigeonhole_members` )";
+			$where .= "WHERE bpm.`content_id` IS NULL";
 		}
 
 		if( !empty( $pListHash['find'] ) && is_string( $pListHash['find'] ) ) {
@@ -206,7 +206,7 @@ class Pigeonholes extends LibertyAttachable {
 			LEFT JOIN `".BIT_DB_PREFIX."bit_pigeonhole_members` bpm ON ( bpm.`content_id` = tc.`content_id` )
 			LEFT JOIN `".BIT_DB_PREFIX."users_users` uu ON ( uu.`user_id` = tc.`user_id` )
 			$where";
-		$result = $this->mDb->query( $query, $bindVars, empty( $pListHash['max_rows'] ) ? NULL : $pListHash['max_rows'] );
+		$result = $this->mDb->query( $query, $bindVars, @BitBase::verifyId( $pListHash['max_rows'] ) ? $pListHash['max_rows'] : NULL );
 
 		$contentTypes = $gLibertySystem->mContentTypes;
 		while( !$result->EOF ) {
@@ -224,7 +224,7 @@ class Pigeonholes extends LibertyAttachable {
 			}
 
 			// generate a map of what items are assigned to what pigeonholes
-			if( $pIncludeMembers && !empty( $result->fields['parent_id'] ) ) {
+			if( $pIncludeMembers && @BitBase::verifyId( $result->fields['parent_id'] ) ) {
 				$map[$i][] = $result->fields['parent_id'];
 			}
 
@@ -258,7 +258,7 @@ class Pigeonholes extends LibertyAttachable {
 			$ret[$pigeonhole['content_id']] = $this->getPigeonholePath( $pigeonhole['structure_id'] );
 		}
 
-		if( !empty( $pContentId ) && $assigned = $this->getPigeonholesFromContentId( $pContentId ) ) {
+		if( @BitBase::verifyId( $pContentId ) && $assigned = $this->getPigeonholesFromContentId( $pContentId ) ) {
 			foreach( $assigned as $a ) {
 				$ret[$a['content_id']][0]['selected'] = TRUE;
 			}
@@ -274,7 +274,7 @@ class Pigeonholes extends LibertyAttachable {
 	* @access public
 	**/
 	function getPigeonholesFromContentId( $pContentId ) {
-		if( $this->verifyId( $pContentId ) ) {
+		if( @BitBase::verifyId( $pContentId ) ) {
 			$query = "SELECT bp.*
 				FROM `".BIT_DB_PREFIX."bit_pigeonhole_members` bpm
 				INNER JOIN `".BIT_DB_PREFIX."bit_pigeonholes` bp ON ( bp.`content_id` = bpm.`parent_id` )
@@ -292,11 +292,11 @@ class Pigeonholes extends LibertyAttachable {
 	* @access public
 	**/
 	function getPigeonholePath( $pStructureId=NULL ) {
-		if( !$this->verifyId( $pStructureId ) ) {
+		if( !@BitBase::verifyId( $pStructureId ) ) {
 			$pStructureId = $this->mStructureId;
 		}
 
-		if( $this->verifyId( $pStructureId ) ) {
+		if( @BitBase::verifyId( $pStructureId ) ) {
 			global $gStructure;
 			// create new object if needed
 			if( empty( $gStructure ) ) {
@@ -317,7 +317,7 @@ class Pigeonholes extends LibertyAttachable {
 		$ret = '';
 		if( !empty( $pPath ) && is_array( $pPath ) ) {
 			foreach( $pPath as $node ) {
-				$ret .= ( !empty( $node['parent_id'] ) ? ' &raquo; ' : '' ).'<a href="'.PIGEONHOLES_PKG_URL.'view.php?structure_id='.$node['structure_id'].'">'.$node['title'].'</a>';
+				$ret .= ( @BitBase::verifyId( $node['parent_id'] ) ? ' &raquo; ' : '' ).'<a title="'.$node['title'].'" href="'.PIGEONHOLES_PKG_URL.'view.php?structure_id='.$node['structure_id'].'">'.$node['title'].'</a>';
 			}
 		}
 		return $ret;
@@ -341,7 +341,7 @@ class Pigeonholes extends LibertyAttachable {
 			$bindVars[] = '%'.strtoupper( $pListHash['find'] ).'%';
 		}
 
-		if( !empty( $pListHash['root_structure_id'] ) && $this->verifyId( $pListHash['root_structure_id'] ) ) {
+		if( @BitBase::verifyId( $pListHash['root_structure_id'] ) ) {
 			$where .= empty( $where ) ? ' WHERE ' : ' AND ';
 			$where .= " ts.`root_structure_id`=? ";
 			$bindVars[] = $pListHash['root_structure_id'];
@@ -485,7 +485,7 @@ class Pigeonholes extends LibertyAttachable {
 			$pParamHash['content_type_guid'] = $this->mContentTypeGuid;
 		}
 
-		if( !empty( $this->mContentId ) ) {
+		if( @BitBase::verifyId( $this->mContentId ) ) {
 			$pParamHash['content_id'] = $this->mContentId;
 			$pParamHash['update'] = TRUE;
 		}
@@ -493,7 +493,7 @@ class Pigeonholes extends LibertyAttachable {
 		// content store
 		// check for name issues, first truncate length if too long
 		if( !empty( $pParamHash['title'] ) )  {
-			if( empty( $this->mContentId ) ) {
+			if( !@BitBase::verifyId( $this->mContentId ) ) {
 				if( empty( $pParamHash['title'] ) ) {
 					$this->mErrors['title'] = 'You must enter a name for this category.';
 				} else {
@@ -527,13 +527,13 @@ class Pigeonholes extends LibertyAttachable {
 			$pos = 1;
 
 			// if this is not the first save, we need to get positional data from members and insert them
-			if( !empty( $this->mContentId ) ) {
+			if( @BitBase::verifyId( $this->mContentId ) ) {
 				$members = $this->getMemberList( array( 'content_id' => $this->mContentId ) );
 				$pos = count( $members ) + 1;
 			}
 
 			foreach( $pParamHash['members'] as $c_id ) {
-				if( !empty( $members[$c_id]['pos'] ) ) {
+				if( @BitBase::verifyId( $members[$c_id]['pos'] ) ) {
 					$pParamHash['pigeonhole_members_store'][$i]['pos'] = $members[$c_id]['pos'];
 				} else {
 					$pParamHash['pigeonhole_members_store'][$i]['pos'] = $pos++;
@@ -547,13 +547,13 @@ class Pigeonholes extends LibertyAttachable {
 		$pParamHash['pigeonhole_settings_store'] = !empty( $pParamHash['settings'] ) ? $pParamHash['settings'] : NULL;
 
 		// structure store
-		if( !empty( $pParamHash['root_structure_id'] ) && $this->verifyId( $pParamHash['root_structure_id'] ) ) {
+		if( @BitBase::verifyId( $pParamHash['root_structure_id'] ) ) {
 			$pParamHash['structure_store']['root_structure_id'] = $pParamHash['root_structure_id'];
 		} else {
 			$pParamHash['structure_store']['root_structure_id'] = NULL;
 		}
 
-		if( !empty( $pParamHash['parent_id'] ) && $this->verifyId( $pParamHash['parent_id'] ) ) {
+		if( @BitBase::verifyId( $pParamHash['parent_id'] ) ) {
 			$pParamHash['structure_store']['parent_id'] = $pParamHash['parent_id'];
 		} else {
 			$pParamHash['structure_store']['parent_id'] = NULL;
@@ -571,7 +571,7 @@ class Pigeonholes extends LibertyAttachable {
 	* @access public
 	**/
 	function moveMember( $pParentId, $pMemberId, $pOrientation ) {
-		if( $this->isValid() && !empty( $pParentId ) && is_numeric( $pParentId ) && !empty( $pMemberId ) && is_numeric( $pMemberId ) ) {
+		if( $this->isValid() && @BitBase::verifyId( $pParentId ) && @BitBase::verifyId( $pMemberId ) ) {
 			if( !empty( $pOrientation ) && $pOrientation == 'north' ) {
 				$query = "SELECT `parent_id`, `content_id`, `pos` FROM `".BIT_DB_PREFIX."bit_pigeonhole_members` WHERE `pos`<? AND `parent_id`=? ORDER BY `pos` DESC";
 			} elseif ( !empty( $pOrientation ) && $pOrientation == 'south' ) {
@@ -607,13 +607,13 @@ class Pigeonholes extends LibertyAttachable {
 	**/
 	function getPigeonholeSettings( $pContentId=NULL, $pMemberId=NULL ) {
 		global $gBitUser, $gLibertySystem, $gBitSystem;
-		if( !empty( $this->mContentId ) || !empty( $pContentId ) || !empty( $pMemberId ) ) {
-			if( !empty( $pMemberId ) && $this->verifyId( $pMemberId ) ) {
+		if( @BitBase::verifyId( $this->mContentId ) || @BitBase::verifyId( $pContentId ) || @BitBase::verifyId( $pMemberId ) ) {
+			if( @BitBase::verifyId( $pMemberId ) ) {
 				$where = "WHERE bpm.`content_id`=?";
 				$bindVars[] = $pMemberId;
 			} else {
 				$where = "WHERE bps.`content_id`=?";
-				$bindVars[] = $this->verifyId( $pContentId ) ? $pContentId : $this->mContentId;
+				$bindVars[] = @BitBase::verifyId( $pContentId ) ? $pContentId : $this->mContentId;
 			}
 			$query = "SELECT bps.*
 				FROM `".BIT_DB_PREFIX."bit_pigeonhole_settings` bps
@@ -643,7 +643,7 @@ class Pigeonholes extends LibertyAttachable {
 	function insertPigeonholeSettings( &$pParamHash, $pContentId=NULL ) {
 		if( $this->verifyPigeonholeSettings( $pParamHash ) ) {
 			foreach( $pParamHash['settings_store'] as $setting ) {
-				$setting['content_id'] = !empty( $pContentId ) ? $pContentId : $this->mContentId;
+				$setting['content_id'] = @BitBase::verifyId( $pContentId ) ? $pContentId : $this->mContentId;
 				$result = $this->mDb->associateInsert( BIT_DB_PREFIX."bit_pigeonhole_settings", $setting );
 			}
 		} else {
@@ -706,25 +706,25 @@ class Pigeonholes extends LibertyAttachable {
 	function verifyPigeonholeMember( &$pParamHash ) {
 		$this->mDb->StartTrans();
 		foreach( $pParamHash as $key => $item ) {
-			if( isset( $item['parent_id'] ) && $this->verifyId( $item['parent_id'] ) ) {
+			if( isset( $item['parent_id'] ) && @BitBase::verifyId( $item['parent_id'] ) ) {
 				$tmp['member_store'][$key]['parent_id'] = $item['parent_id'];
-			} elseif( !empty( $this->mContentId ) ) {
+			} elseif( @BitBase::verifyId( $this->mContentId ) ) {
 				$tmp['member_store'][$key]['parent_id'] = $this->mContentId;
 				$pParamHash[$key]['parent_id'] = $this->mContentId;
 			} else {
 				$this->mErrors['store_members'] = tra( 'The content could not be inserted because the parent_id was missing.' );
 			}
 
-			if( isset( $item['content_id'] ) && $this->verifyId( $item['content_id'] ) ) {
+			if( isset( $item['content_id'] ) && @BitBase::verifyId( $item['content_id'] ) ) {
 				$tmp['member_store'][$key]['content_id'] = $item['content_id'];
 			} else {
 				$this->mErrors['store_members'] = 'The content id is not valid.';
 			}
 
 			// if no positional info is given, we just append the items.
-			if( isset( $item['pos'] ) && is_numeric( $item['content_id'] ) ) {
+			if( @BitBase::verifyId( $item['pos'] ) ) {
 				$tmp['member_store'][$key]['pos'] = $item['pos'];
-			} elseif( !empty( $tmp['member_store'][$key-1]['pos'] ) ) {
+			} elseif( @BitBase::verifyId( $tmp['member_store'][$key-1]['pos'] ) ) {
 				$tmp['member_store'][$key]['pos'] = $tmp['member_store'][$key-1]['pos'] + 1;
 			} else {
 				$query = "SELECT COUNT(*) FROM `".BIT_DB_PREFIX."bit_pigeonhole_members` WHERE `parent_id`=?";
@@ -743,7 +743,7 @@ class Pigeonholes extends LibertyAttachable {
 	* @access public
 	**/
 	function expungePigeonholeSettings( $pContentId=NULL ) {
-		if( !empty( $pContentId ) && $this->verifyId( $pContentId ) ) {
+		if( @BitBase::verifyId( $pContentId ) ) {
 			$query = "DELETE FROM `".BIT_DB_PREFIX."bit_pigeonhole_settings` WHERE `content_id` = ?";
 			$result = $this->mDb->query( $query, array( $pContentId ) );
 		} else {
@@ -760,21 +760,21 @@ class Pigeonholes extends LibertyAttachable {
 	* @access public
 	**/
 	function expungePigeonholeMember( $pParentId=NULL, $pMemberId=NULL ) {
-		if( !empty( $pParentId ) && $this->verifyId( $pParentId ) || !empty( $pMemberId ) && $this->verifyId( $pMemberId ) ) {
+		if( @BitBase::verifyId( $pParentId ) || @BitBase::verifyId( $pMemberId ) ) {
 			$where = '';
-			if( $this->verifyId( $pParentId ) ) {
+			if( @BitBase::verifyId( $pParentId ) ) {
 				$where .= "WHERE `parent_id`=?";
 				$bindVars[] = $pParentId;
 			}
 
-			if( $this->verifyId( $pMemberId ) ) {
+			if( @BitBase::verifyId( $pMemberId ) ) {
 				$where .= ( empty( $where ) ? "WHERE" : "AND" )." `content_id`=?";
 				$bindVars[] = $pMemberId;
 			}
 
 			$this->mDb->StartTrans();
 			// depending on what data we've been given, we need to shift several items up to keep pos continuous
-			if( !empty( $pMemberId ) ) {
+			if( @BitBase::verifyId( $pMemberId ) ) {
 				$query = "SELECT * FROM `".BIT_DB_PREFIX."bit_pigeonhole_members` $where";
 				$result = $this->mDb->query( $query, $bindVars );
 				$members = $result->getRows();
@@ -848,7 +848,7 @@ class Pigeonholes extends LibertyAttachable {
 	*/
 	function getDisplayUrl( $pContentId=NULL, $pMixed=NULL ) {
 		global $gBitSystem;
-		if( empty( $pContentId ) ) {
+		if( !@BitBase::verifyId( $pContentId ) ) {
 			$pContentId = $this->mContentId;
 		}
 
@@ -880,7 +880,7 @@ class Pigeonholes extends LibertyAttachable {
 
 		$ret = $pPigeonholeTitle;
 		if( $gBitSystem->isPackageActive( 'pigeonholes' ) ) {
-			$ret = '<a href="'.Pigeonholes::getDisplayUrl( $pMixed['content_id'] ).'">'.$pPigeonholeTitle.'</a>';
+			$ret = '<a title="'.$pPigeonholeTitle.'" href="'.Pigeonholes::getDisplayUrl( $pMixed['content_id'] ).'">'.$pPigeonholeTitle.'</a>';
 		}
 
 		return $ret;
