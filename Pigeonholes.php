@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_pigeonholes/Pigeonholes.php,v 1.11.2.8 2005/12/22 12:50:55 squareing Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_pigeonholes/Pigeonholes.php,v 1.11.2.9 2005/12/30 17:38:10 squareing Exp $
  *
  * +----------------------------------------------------------------------+
  * | Copyright ( c ) 2004, bitweaver.org
@@ -17,7 +17,7 @@
  * Pigeonholes class
  *
  * @author   xing <xing@synapse.plus.com>
- * @version  $Revision: 1.11.2.8 $
+ * @version  $Revision: 1.11.2.9 $
  * @package  pigeonholes
  */
 
@@ -848,39 +848,46 @@ class Pigeonholes extends LibertyAttachable {
 	*/
 	function getDisplayUrl( $pContentId=NULL, $pMixed=NULL ) {
 		global $gBitSystem;
-		if( !@BitBase::verifyId( $pContentId ) ) {
+		$ret = NULL;
+		// try to get the correct content_id from anywhere possible
+		if( !@BitBase::verifyId( $pContentId ) && !empty( $this ) ) {
 			$pContentId = $this->mContentId;
+		} elseif( !@BitBase::verifyId( $pContentId ) && !empty( $pMixed ) ) {
+			$pContentId = $pMixed['content_id'];
 		}
 
-		$rewrite_tag = $gBitSystem->isFeatureActive( 'feature_pretty_urls_extended' ) ? 'view/' : '';
-		if( $gBitSystem->isFeatureActive( 'pretty_urls' ) || $gBitSystem->isFeatureActive( 'feature_pretty_urls_extended' ) ) {
-			$baseUrl = PIGEONHOLES_PKG_URL.$rewrite_tag.$pContentId;
-		} else {
-			$baseUrl = PIGEONHOLES_PKG_URL.'view.php?content_id='.$pContentId;
+		if( @BitBase::verifyId( $pContentId ) ) {
+			$rewrite_tag = $gBitSystem->isFeatureActive( 'feature_pretty_urls_extended' ) ? 'view/' : '';
+			if( $gBitSystem->isFeatureActive( 'pretty_urls' ) || $gBitSystem->isFeatureActive( 'feature_pretty_urls_extended' ) ) {
+				$ret = PIGEONHOLES_PKG_URL.$rewrite_tag.$pContentId;
+			} else {
+				$ret = PIGEONHOLES_PKG_URL.'view.php?content_id='.$pContentId;
+			}
 		}
-
-		return $baseUrl;
+		return $ret;
 	}
 
 	/**
 	* Returns HTML link to display a pigeonhole
-	* @param $pPigeonholeTitle is the pigeonhole we want to see
+	* @param $pTitle is the pigeonhole we want to see
 	* @param $pContentId content id of the pigeonhole in question
 	* @return the link to display the page.
 	*/
-	function getDisplayLink( $pPigeonholeTitle=NULL, $pMixed=NULL ) {
+	function getDisplayLink( $pTitle=NULL, $pMixed=NULL ) {
 		global $gBitSystem;
-		if( empty( $pPigeonholeTitle ) && !empty( $this ) ) {
-			$pPigeonholeTitle = $this->mInfo['title'];
+		if( empty( $pTitle ) && !empty( $this ) ) {
+			$pTitle = $this->getTitle();
 		}
 
 		if( empty( $pMixed ) && !empty( $this ) ) {
 			$pMixed = $this->mInfo;
 		}
 
-		$ret = $pPigeonholeTitle;
-		if( $gBitSystem->isPackageActive( 'pigeonholes' ) ) {
-			$ret = '<a title="'.$pPigeonholeTitle.'" href="'.Pigeonholes::getDisplayUrl( $pMixed['content_id'] ).'">'.$pPigeonholeTitle.'</a>';
+		if( !empty( $pTitle ) && !empty( $pMixed ) ) {
+			$ret = $pTitle;
+			if( $gBitSystem->isPackageActive( 'pigeonholes' ) ) {
+				$ret = '<a title="'.$pTitle.'" href="'.Pigeonholes::getDisplayUrl( $pMixed['content_id'] ).'">'.$pTitle.'</a>';
+			}
 		}
 
 		return $ret;
