@@ -1,6 +1,6 @@
 <?php
 /**
- * $Header: /cvsroot/bitweaver/_bit_pigeonholes/edit_pigeonholes.php,v 1.4 2005/10/18 11:06:19 squareing Exp $
+ * $Header: /cvsroot/bitweaver/_bit_pigeonholes/edit_pigeonholes.php,v 1.4.2.1 2006/01/13 23:18:43 squareing Exp $
  *
  * Copyright ( c ) 2004 bitweaver.org
  * Copyright ( c ) 2003 tikwiki.org
@@ -8,7 +8,7 @@
  * All Rights Reserved. See copyright.txt for details and a complete list of authors.
  * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details
  *
- * $Id: edit_pigeonholes.php,v 1.4 2005/10/18 11:06:19 squareing Exp $
+ * $Id: edit_pigeonholes.php,v 1.4.2.1 2006/01/13 23:18:43 squareing Exp $
  * @package pigeonholes
  * @subpackage functions
  */
@@ -25,6 +25,11 @@ include_once( LIBERTY_PKG_PATH.'LibertyStructure.php' );
 include_once( THEMES_PKG_PATH.'theme_control_lib.php' );
 include_once( PIGEONHOLES_PKG_PATH.'lookup_pigeonholes_inc.php' );
 
+if( !empty( $_REQUEST['pigeonhole_store_and_create'] ) ) {
+	$_REQUEST['pigeonhole_store'] = TRUE;
+	$_REQUEST['action'] = 'create';
+}
+
 // include edit structure file only when structure_id is known
 if( !empty( $_REQUEST["structure_id"] ) && ( empty( $_REQUEST['action'] ) || $_REQUEST['action'] != 'remove' ) ) {
 	$verifyStructurePermission = 'bit_p_edit_pigeonholes';
@@ -38,7 +43,6 @@ if( !empty( $_REQUEST["structure_id"] ) && ( empty( $_REQUEST['action'] ) || $_R
 }
 
 global $gStructure;
-
 // store the form if we need to
 if( !empty( $_REQUEST['pigeonhole_store'] ) ) {
 	if( ( empty( $_REQUEST['pigeonhole']['title'] ) ) ) {
@@ -54,7 +58,7 @@ if( !empty( $_REQUEST['pigeonhole_store'] ) ) {
 	$pigeonStore->mContentId = !empty( $_REQUEST['content_id'] ) ? $_REQUEST['content_id'] : NULL;
 	$pigeonStore->load();
 	if( $pigeonStore->store( $_REQUEST['pigeonhole'] ) ) {
-		header( "Location: ".$_SERVER['PHP_SELF'].'?structure_id='.$pigeonStore->mStructureId );
+		header( "Location: ".$_SERVER['PHP_SELF'].'?structure_id='.$pigeonStore->mStructureId.( !empty( $_REQUEST['action'] ) ? '&action='.$_REQUEST['action'] : '' ) );
 	} else {
 		vd( $gPigeonholes->mErrors );
 		$gBitSmarty->assign( 'msg', tra( "There was a problem trying to store the pigeonhole." ) );
@@ -100,7 +104,7 @@ if( !empty( $_REQUEST['search_objects'] ) ) {
 				header( "Location: ".$_SERVER['PHP_SELF'].'?structure_id='.$gPigeonholes->mInfo["parent_id"] );
 				die;
 			} else {
-				vd( $gPigeonhole->mErrors );
+				vd( $gPigeonholes->mErrors );
 			}
 		}
 		$gBitSystem->setBrowserTitle( 'Confirm removal of '.$gPigeonholes->mInfo['title'] );
@@ -136,7 +140,8 @@ $gBitSmarty->assign( 'contentSelect', $contentSelect );
 $gBitSmarty->assign( 'contentTypes', $contentTypes );
 
 $listHash['root_structure_id'] = $gPigeonholes->mInfo['root_structure_id'];
-$pigeonList = $gPigeonholes->getList( $listHash, FALSE, TRUE );
+$listHash['force_extras'] = TRUE;
+$pigeonList = $gPigeonholes->getList( $listHash );
 $gBitSmarty->assign( 'pigeonList', empty( $pigeonList['data'] ) ? NULL : $pigeonList['data'] );
 
 $gBitSmarty->assign( 'feedback', !empty( $feedback ) ? $feedback : NULL );

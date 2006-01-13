@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_pigeonholes/modules/Attic/mod_last_changes.php,v 1.3 2005/10/30 21:03:50 lsces Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_pigeonholes/modules/Attic/mod_last_changes.php,v 1.3.2.1 2006/01/13 23:18:45 squareing Exp $
  * @package liberty
  * @subpackage modules
  * Params:
@@ -15,7 +15,7 @@ global $gBitUser, $module_rows, $module_params, $gLibertySystem, $module_title;
 
 if( $gBitUser->hasPermission( 'bit_p_view_pigeonholes' ) ) {
 	require_once( PIGEONHOLES_PKG_PATH.'Pigeonholes.php' );
-	$pigeonholes = new Pigeonholes( NULL, NULL, FALSE );
+	$pigeonholes = new Pigeonholes();
 
 	$listHash = array(
 		'title' => !empty( $module_params['category'] ) ? $module_params['category'] : NULL,

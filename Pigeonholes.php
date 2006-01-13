@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_pigeonholes/Pigeonholes.php,v 1.11.2.10 2005/12/30 17:44:02 squareing Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_pigeonholes/Pigeonholes.php,v 1.11.2.11 2006/01/13 23:18:41 squareing Exp $
  *
  * +----------------------------------------------------------------------+
  * | Copyright ( c ) 2004, bitweaver.org
@@ -17,7 +17,7 @@
  * Pigeonholes class
  *
  * @author   xing <xing@synapse.plus.com>
- * @version  $Revision: 1.11.2.10 $
+ * @version  $Revision: 1.11.2.11 $
  * @package  pigeonholes
  */
 
@@ -42,7 +42,7 @@ class Pigeonholes extends LibertyAttachable {
 	* @return none
 	* @access public
 	**/
-	function Pigeonholes( $pStructureId=NULL, $pContentId=NULL, $pAutoLoad=TRUE, $pExtras=FALSE ) {
+	function Pigeonholes( $pStructureId=NULL, $pContentId=NULL ) {
 		LibertyAttachable::LibertyAttachable();
 		$this->registerContentType( PIGEONHOLES_CONTENT_TYPE_GUID, array(
 			'content_type_guid' => PIGEONHOLES_CONTENT_TYPE_GUID,
@@ -55,9 +55,6 @@ class Pigeonholes extends LibertyAttachable {
 		$this->mContentId = $pContentId;
 		$this->mStructureId = $pStructureId;
 		$this->mContentTypeGuid = PIGEONHOLES_CONTENT_TYPE_GUID;
-		if( $pAutoLoad ) {
-			$this->load( $pExtras );
-		}
 	}
 
 	/**
@@ -333,9 +330,13 @@ class Pigeonholes extends LibertyAttachable {
 	* @return array of pigeonholes in 'data' and count of pigeonholes in 'cant'
 	* @access public
 	**/
-	function getList( $pListHash=NULL, $pOnlyGetRoot=FALSE, $pExtras=FALSE ) {
+	function getList( $pListHash = NULL ) {
+		global $gBitSystem;
+		LibertyContent::prepGetList( $pListHash );
+
 		$bindVars = array();
 		$where = '';
+
 		if( !empty( $pListHash['find'] ) ) {
 			$where .= " WHERE UPPER( tc.`title` ) LIKE ? ";
 			$bindVars[] = '%'.strtoupper( $pListHash['find'] ).'%';
@@ -347,7 +348,7 @@ class Pigeonholes extends LibertyAttachable {
 			$bindVars[] = $pListHash['root_structure_id'];
 		}
 
-		if( $pOnlyGetRoot ) {
+		if( !empty( $pListHash['load_only_root'] ) ) {
 			$where .= empty( $where ) ? ' WHERE ' : ' AND ';
 			$where .= " ts.`structure_id`=ts.`root_structure_id` ";
 		}
@@ -369,11 +370,7 @@ class Pigeonholes extends LibertyAttachable {
 			INNER JOIN `".BIT_DB_PREFIX."tiki_structures` ts ON ( ts.`structure_id` = bp.`structure_id` )
 			$where";
 
-		if( isset( $pListHash['max_rows'] ) && is_numeric( $pListHash['max_rows'] ) && isset( $pListHash['offset'] ) && is_numeric( $pListHash['offset'] ) ) {
-			$result = $this->mDb->query( $query, $bindVars, $pListHash['max_rows'], $pListHash['offset'] );
-		} else {
-			$result = $this->mDb->query( $query, $bindVars );
-		}
+		$result = $this->mDb->query( $query, $bindVars, $pListHash['max_records'], $pListHash['offset'] );
 
 		while( !$result->EOF ) {
 			$aux = $result->fields;
@@ -381,11 +378,19 @@ class Pigeonholes extends LibertyAttachable {
 			$aux['editor'] = ( isset( $result->fields['modifier_real_name'] ) ? $result->fields['modifier_real_name'] : $result->fields['modifier_user'] );
 			$aux['display_link'] = Pigeonholes::getDisplayLink( $aux['title'], $aux );
 
-			if( $pExtras ) {
+			if( !empty( $pListHash['force_extras'] ) ||
+				( !empty( $pListHash['load_extras'] ) && $gBitSystem->getPreference( 'pigeonholes_list_style' ) != 'table' ) ||
+				( !empty( $pListHash['load_extras'] ) && $aux['structure_id'] == @$pListHash['structure_id'] && $gBitSystem->getPreference( 'pigeonholes_list_style' ) == 'table' )
+			) {
 				$aux['path'] = $this->getPigeonholePath( $aux['structure_id'] );
 				$aux['display_path'] = $this->getDisplayPath( $aux['path'] );
 				$aux['members'] = $this->getMemberList( array( 'content_id' => $aux['content_id'] ) );
 				$aux['members_count'] = count( $aux['members'] );
+				if( $gBitSystem->getPreference( 'pigeonholes_list_style' ) == 'table' ) {
+					$this->alphabetiseMembers( $aux['members'] );
+				}
+			} else {
+//				$aux['members_count'] = $this->mDb->getOne( "SELECT COUNT(*) FROM `".BIT_DB_PREFIX."bit_pigeonhole_members` WHERE `parent_id`=?", array( $aux['content_id'] ) );
 			}
 
 			$ret['data'][] = $aux;
@@ -399,6 +404,22 @@ class Pigeonholes extends LibertyAttachable {
 		$ret['cant'] = $this->mDb->getOne( $query );
 
 		return $ret;
+	}
+
+	function alphabetiseMembers( &$pParamHash ) {
+		if( !empty( $pParamHash ) ) {
+			usort( $pParamHash, "pigeonholes_alphabetiser" );
+			$per_column = ceil( count( $pParamHash ) / 3 );
+			$i = 1;
+			$j = 1;
+			foreach( $pParamHash as $member ) {
+				$column = ( $i++ % $per_column == 0 ) ? $j++ : $j;
+				$index = strtoupper( substr( $member['title'], 0, 1 ) );
+				$ret[$column][$index][] = $member;
+			}
+			$pParamHash = $ret;
+			unset( $ret );
+		}
 	}
 
 	/**
@@ -799,34 +820,45 @@ class Pigeonholes extends LibertyAttachable {
 	* @return bool TRUE on success, FALSE if store could not occur.
 	* @access public
 	**/
-	function expunge() {
+	function expunge( $pStructureId = NULL ) {
 		$ret = FALSE;
+		// if we have a custom structure id we want to remove, load it
+		if( @BitBase::verifyId( $pStructureId ) ) {
+			$this->mStructureId = $pStructureId;
+			$this->load();
+		}
+
 		if( $this->isValid() ) {
 			$this->mDb->StartTrans();
 			// get all items that are part of the sub tree
 			require_once( LIBERTY_PKG_PATH.'LibertyStructure.php' );
 			$struct = new LibertyStructure();
 
+			// include the current structure id as well
+			$structureIds[] = $this->mStructureId;
 			$tree = $struct->getSubTree( $this->mStructureId );
 			foreach( $tree as $node ) {
 				$structureIds[] = $node['structure_id'];
 			}
 
 			$structureIds = array_unique( $structureIds );
+			$where = '';
 			foreach( $structureIds as $structureId ) {
-				$contentIds[] = $this->mDb->getOne( "SELECT `content_id` FROM `".BIT_DB_PREFIX."tiki_structures` WHERE `structure_id`=?", array( $structureId ) );
+				$where .= ( empty( $where ) ? " WHERE " : " OR ")."`structure_id`=?";
 			}
+			$result = $this->mDb->query( "SELECT `content_id` FROM `".BIT_DB_PREFIX."tiki_structures` $where", $structureIds );
+			$contentIds = $result->getRows();
 
-			foreach( $contentIds as $contentId ) {
+			foreach( $contentIds as $id ) {
 				// now we have the content ids - let the nuking begin
 				$query = "DELETE FROM `".BIT_DB_PREFIX."bit_pigeonholes` WHERE `content_id` = ?";
-				$result = $this->mDb->query( $query, array( $contentId ) );
+				$result = $this->mDb->query( $query, array( $id['content_id'] ) );
 				$query = "DELETE FROM `".BIT_DB_PREFIX."bit_pigeonhole_members` WHERE `parent_id` = ?";
-				$result = $this->mDb->query( $query, array( $contentId ) );
-				$this->expungePigeonholeSettings( $contentId );
+				$result = $this->mDb->query( $query, array( $id['content_id'] ) );
+				$this->expungePigeonholeSettings( $id['content_id'] );
 
 				// remove all entries from content tables
-				$this->mContentId = $contentId;
+				$this->mContentId = $id['content_id'];
 				if( LibertyAttachable::expunge() ) {
 					$ret = TRUE;
 					$this->mDb->CompleteTrans();
@@ -893,4 +925,9 @@ class Pigeonholes extends LibertyAttachable {
 		return $ret;
 	}
 }
+
+function pigeonholes_alphabetiser($a, $b) {
+   return strcasecmp( $a["title"], $b["title"] );
+}
+
 ?>

@@ -1,4 +1,4 @@
-{* $Header: /cvsroot/bitweaver/_bit_pigeonholes/templates/admin_pigeonholes.tpl,v 1.1 2005/08/21 16:22:47 squareing Exp $ *}
+{* $Header: /cvsroot/bitweaver/_bit_pigeonholes/templates/admin_pigeonholes.tpl,v 1.1.1.1.2.1 2006/01/13 23:18:45 squareing Exp $ *}
 {strip}
 {form}
 	{legend legend="Category Settings"}
@@ -12,6 +12,14 @@
 				{/forminput}
 			</div>
 		{/foreach}
+
+		<div class="row">
+			{formlabel label="List style" for="pigeonholes_list_style"}
+			{forminput}
+				{html_options name="pigeonholes_list_style" options=$listStyles values=$listStyles selected=`$gBitSystemPrefs.pigeonholes_list_style` id=pigeonholes_list_style}
+				{formhelp note="Select the display method. Table listing is better suited for large categories.<br />Custom sorting only works with the dynamic list method."}
+			{/forminput}
+		</div>
 
 		<div class="row">
 			{formlabel label="Number of Members" for="member_number"}

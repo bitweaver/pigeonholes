@@ -32,7 +32,7 @@
 						<h2>{$item.display_link}</h2>
 						{$item.data}
 					</td>
-					<td style="white-space:nowrap">{include file="bitpackage:pigeonholes/view_structure_inc.tpl" plain=true subtree=$item.subtree}</td>
+					<td style="white-space:nowrap">{include file="bitpackage:pigeonholes/view_structure_inc.tpl" no_edit=TRUE subtree=$item.subtree}</td>
 					{if $gBitUser->hasPermission( 'bit_p_edit_pigeonholes' )}
 						<td class="actionicon">
 							{smartlink ititle="Insert new Category" ifile="edit_pigeonholes.php" ibiticon="liberty/new" structure_id=`$item.structure_id` action=create}
