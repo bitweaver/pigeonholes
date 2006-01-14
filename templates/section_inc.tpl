@@ -1,5 +1,4 @@
 {strip}
-{$list_style}
 {if $list_style == "table"}
 
 	{* ======= this display method requires "alphabetisation" ======= *}
