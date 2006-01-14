@@ -1,11 +1,7 @@
 <?php
-// $Header: /cvsroot/bitweaver/_bit_pigeonholes/admin/admin_pigeonholes_inc.php,v 1.1 2005/08/21 16:22:48 squareing Exp $
+// $Header: /cvsroot/bitweaver/_bit_pigeonholes/admin/admin_pigeonholes_inc.php,v 1.2 2006/01/14 19:55:19 squareing Exp $
 
 $pigeonholeSettings = array(
-	'custom_member_sorting' => array(
-		'label' => 'Custom Sorting',
-		'note' => 'This will change the way category members are displayed. It allows you to sort the members manually.',
-	),
 	'display_pigeonhole_path' => array(
 		'label' => 'Display Path',
 		'note' => 'Display category paths above the page leading to the object.',
@@ -18,11 +14,21 @@ $pigeonholeSettings = array(
 		'label' => 'Display Description',
 		'note' => 'When showing the category members, you can display the category description as well.',
 	),
+	'custom_member_sorting' => array(
+		'label' => 'Custom Sorting',
+		'note' => 'This will change the way category members are displayed. It allows you to sort the members manually.',
+	),
 );
 $gBitSmarty->assign( 'pigeonholeSettings', $pigeonholeSettings );
 
+$listStyles = array(
+	'dynamic' => tra( 'Dynamic list' ),
+	'table' => tra( 'Table based list' ),
+);
+$gBitSmarty->assign( 'listStyles', $listStyles );
+
 $memberLimit = array(
-	'9999' => 'Unlimited',
+	'9999' => tra( 'Unlimited' ),
 	'10' => 10,
 	'20' => 20,
 	'30' => 30,
@@ -37,5 +43,6 @@ if( !empty( $_REQUEST['pigeonhole_settings'] ) ) {
 	}
 
 	simple_set_value( 'limit_member_number', PIGEONHOLES_PKG_NAME );
+	simple_set_value( 'pigeonholes_list_style', PIGEONHOLES_PKG_NAME );
 }
 ?>

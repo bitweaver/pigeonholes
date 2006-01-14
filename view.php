@@ -1,6 +1,6 @@
 <?php
 /**
- * $Header: /cvsroot/bitweaver/_bit_pigeonholes/view.php,v 1.1 2005/08/21 16:22:45 squareing Exp $
+ * $Header: /cvsroot/bitweaver/_bit_pigeonholes/view.php,v 1.2 2006/01/14 19:55:19 squareing Exp $
  *
  * Copyright ( c ) 2004 bitweaver.org
  * Copyright ( c ) 2003 tikwiki.org
@@ -8,7 +8,7 @@
  * All Rights Reserved. See copyright.txt for details and a complete list of authors.
  * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details
  *
- * $Id: view.php,v 1.1 2005/08/21 16:22:45 squareing Exp $
+ * $Id: view.php,v 1.2 2006/01/14 19:55:19 squareing Exp $
  * @package pigeonholes
  * @subpackage functions
  */
@@ -37,9 +37,10 @@ $gBitSmarty->assign_by_ref( 'gStructure', $gStructure );
 $gBitSmarty->assign( 'structureInfo', $gStructure->mInfo );
 $gBitSmarty->assign( 'subtree', $gStructure->getSubTree( $gStructure->mStructureId ) );
 
-$listHash = array( 'root_structure_id' => $gPigeonholes->mInfo['root_structure_id'] );
-$pigeonList = $gPigeonholes->getList( $listHash, FALSE, TRUE );
+$listHash = array( 'root_structure_id' => $gPigeonholes->mInfo['root_structure_id'], 'structure_id' => $gPigeonholes->mInfo['structure_id'], 'load_extras' => TRUE );
+$pigeonList = $gPigeonholes->getList( $listHash );
 $gBitSmarty->assign( 'pigeonList', $pigeonList['data'] );
+$gBitSmarty->assign( 'list_style', $gBitSystem->getPreference( 'pigeonholes_list_style', 'dynamic' ) );
 
 // Display the template
 $gBitSystem->display( 'bitpackage:pigeonholes/view_structure.tpl', tra( 'View Pigeonhole' ) );

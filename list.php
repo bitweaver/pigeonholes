@@ -3,7 +3,7 @@
  * $Header
  *
  * @author   xing <xing@synapse.plus.com>
- * @version  $Revision: 1.3 $
+ * @version  $Revision: 1.4 $
  * @package  pigeonholes
  * @subpackage functions
  */
@@ -29,9 +29,10 @@ $listHash = array(
 	'max_rows' => $gBitSystem->mPrefs['maxRecords'],
 	'offset' => ( $page - 1 ) * $gBitSystem->mPrefs['maxRecords'],
 	'find' => !empty( $_REQUEST['find'] ) ? $_REQUEST['find'] : NULL,
+	'load_only_root' => TRUE,
 );
 
-$pigeonList = $gPigeonholes->getList( $listHash, TRUE, FALSE );
+$pigeonList = $gPigeonholes->getList( $listHash );
 
 // set up structure related stuff
 if( !empty( $pigeonList['data'] ) ) {

@@ -4,20 +4,11 @@
 		{section name=ix loop=$subtree}
 			{assign var=structId value=$subtree[ix].structure_id}
 			{if $subtree[ix].pos eq ''}
-				{if $plain}
-					{$subtree[ix].title}
-				{else}
-					{include file="bitpackage:pigeonholes/structure_section_inc.tpl"}
-				{/if}
+				{include file="bitpackage:pigeonholes/section_inc.tpl"}
 			{else}
 				{if $subtree[ix].first}<ul>{else}</li>{/if}
 				{if $subtree[ix].last}</ul>{else}
-					<li>
-						{if $plain}
-							{$subtree[ix].title}
-						{else}
-							{include file="bitpackage:pigeonholes/structure_section_inc.tpl"}
-						{/if}
+					<li>{include file="bitpackage:pigeonholes/section_inc.tpl"}
 				{/if}
 			{/if}
 		{/section}

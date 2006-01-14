@@ -1,6 +1,6 @@
 <?php
 /**
- * $Header: /cvsroot/bitweaver/_bit_pigeonholes/Attic/servicefunctions_inc.php,v 1.4 2005/10/18 11:31:07 squareing Exp $
+ * $Header: /cvsroot/bitweaver/_bit_pigeonholes/Attic/servicefunctions_inc.php,v 1.5 2006/01/14 19:55:18 squareing Exp $
  *
  * Copyright ( c ) 2004 bitweaver.org
  * All Rights Reserved. See copyright.txt for details and a complete list of authors.
@@ -16,7 +16,7 @@
 function display_pigeonholes( &$pObject ) {
 	global $gBitSmarty, $gBitUser, $gPreviewStyle;
 	require_once( PIGEONHOLES_PKG_PATH.'Pigeonholes.php' );
-	$pigeonholes = new Pigeonholes( NULL, NULL, FALSE );
+	$pigeonholes = new Pigeonholes();
 
 	$settings = $pigeonholes->getPigeonholeSettings( NULL, $pObject->mContentId );
 	if( !empty( $settings['style'] ) ) {
@@ -44,7 +44,7 @@ function pigeonholes_input_content( $pObject=NULL ) {
 
 	if( $gBitUser->hasPermission( 'bit_p_insert_pigeonhole_member' ) ) {
 		require_once( PIGEONHOLES_PKG_PATH.'Pigeonholes.php' );
-		$pigeonholes = new Pigeonholes( NULL, NULL, FALSE );
+		$pigeonholes = new Pigeonholes();
 
 		// get pigeonholes path list
 		if( $pigeonPathList = $pigeonholes->getPigeonholesPathList( !empty( $pObject->mContentId ) ? $pObject->mContentId : NULL ) ) {
@@ -58,7 +58,7 @@ function pigeonholes_input_content( $pObject=NULL ) {
  */
 function pigeonholes_expunge_member( $pObject=NULL ) {
 	require_once( PIGEONHOLES_PKG_PATH.'Pigeonholes.php' );
-	$pigeonholes = new Pigeonholes( NULL, NULL, FALSE );
+	$pigeonholes = new Pigeonholes();
 	$pigeonholes->expungePigeonholeMember( NULL, $pObject->mContentId );
 }
 
@@ -72,7 +72,7 @@ function pigeonholes_preview_content() {
 
 	if( $gBitUser->hasPermission( 'bit_p_insert_pigeonhole_member' ) ) {
 		require_once( PIGEONHOLES_PKG_PATH.'Pigeonholes.php' );
-		$pigeonholes = new Pigeonholes( NULL, NULL, FALSE );
+		$pigeonholes = new Pigeonholes();
 
 		// get pigeonholes path list
 		if( $pigeonPathList = $pigeonholes->getPigeonholesPathList() ) {
@@ -102,7 +102,7 @@ function pigeonholes_store_member( $pObject, $pParamHash ) {
 				$pParamHash['content_id'] = $pObject->mContentId;
 			}
 
-			$pigeonholes = new Pigeonholes( NULL, NULL, FALSE );
+			$pigeonholes = new Pigeonholes();
 			$pigeonPathList = $pigeonholes->getPigeonholesPathList( $pParamHash['content_id'] );
 
 			// here we need to work out if we need to save at all

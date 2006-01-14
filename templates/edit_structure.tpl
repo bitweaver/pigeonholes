@@ -6,6 +6,6 @@
 	</div>
 
 	<div class="body">
-		{include file="bitpackage:liberty/edit_structure_inc.tpl" hide_extended=TRUE}
+		{include file="bitpackage:liberty/edit_structure_inc.tpl" no_delete=TRUE}
 	</div><!-- end .body -->
 </div><!-- end .edit -->
