@@ -1,5 +1,5 @@
 {strip}
-<ul class="toc">
+<ul>
 	<li>
 		{section name=ix loop=$subtree}
 			{assign var=structId value=$subtree[ix].structure_id}

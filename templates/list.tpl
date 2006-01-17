@@ -1,7 +1,7 @@
 {strip}
 <div class="listing pigeonholes">
 	<div class="header">
-		<h1>{tr}Categories Listing{/tr}</h1>
+		<h1>{tr}Categories Listing{/tr} <span class="total">[ {$listInfo.cant} ]</span></h1>
 	</div>
 
 	{* user sort related assigning *}
@@ -15,40 +15,36 @@
 
 	<div class="body">
 		{minifind}
+		<div class="navbar">
+			<ul>
+				<li>{biticon ipackage=liberty iname=sort iexplain=sort}</li>
+				<li>{smartlink ititle="Title" isort=title page=$page idefault=1}</li>
+				<li>{smartlink ititle="Description" isort=data page=$page}</li>
+			</ul>
+		</div>
+		<div class="clear"></div>
 
-		<table class="data">
-			<caption>{tr}Available Categories{/tr} <span class="total">[ {$pigeonCount} ]</span></caption>
-			<tr>
-				<th style="width:45%;">{smartlink ititle="Title" isort=title page=$page idefault=1} / {smartlink ititle="Description" isort=data page=$page}</th>
-				<th style="width:42%;">{tr}Categories{/tr}</th>
-				{if $gBitUser->hasPermission( 'bit_p_edit_pigeonholes' )}
-					<th style="width:9%;">{tr}Actions{/tr}</th>
-				{/if}
-			</tr>
+		<hr />
+		{foreach from=$pigeonList item=item}
+			{if $gBitUser->hasPermission( 'bit_p_edit_pigeonholes' )}
+				<div class="floaticon">
+					{smartlink ititle="Insert new Category" ifile="edit_pigeonholes.php" ibiticon="liberty/new" structure_id=`$item.structure_id` action=create}
+					{smartlink ititle="Edit Category" ifile="edit_pigeonholes.php" ibiticon="liberty/edit" structure_id=`$item.structure_id`}
+					{smartlink ititle="Change Structure" ifile="edit_structure.php" ibiticon="pigeonholes/organise" structure_id=`$item.structure_id`}
+					{smartlink ititle="Remove Category" ifile="edit_pigeonholes.php" ibiticon="liberty/delete" action="remove" structure_id=`$item.structure_id`}
+				</div>
+			{/if}
+			<h2>{$item.display_link}</h2>
+			{$item.data}
+			{include file="bitpackage:pigeonholes/view_structure_inc.tpl" no_edit=TRUE subtree=$item.subtree no_details=true}
+			<hr />
+		{foreachelse}
+			<div class="norecords">
+				<td colspan="5">{tr}No Records Found{/tr}</td>
+			</div>
+		{/foreach}
 
-			{foreach from=$pigeonList item=item}
-				<tr class="{cycle values='odd,even'}">
-					<td>
-						<h2>{$item.display_link}</h2>
-						{$item.data}
-					</td>
-					<td style="white-space:nowrap">{include file="bitpackage:pigeonholes/view_structure_inc.tpl" no_edit=TRUE subtree=$item.subtree}</td>
-					{if $gBitUser->hasPermission( 'bit_p_edit_pigeonholes' )}
-						<td class="actionicon">
-							{smartlink ititle="Insert new Category" ifile="edit_pigeonholes.php" ibiticon="liberty/new" structure_id=`$item.structure_id` action=create}
-							{smartlink ititle="Edit Category" ifile="edit_pigeonholes.php" ibiticon="liberty/edit" structure_id=`$item.structure_id`}
-							{smartlink ititle="Change Structure" ifile="edit_structure.php" ibiticon="pigeonholes/organise" structure_id=`$item.structure_id`}
-							{smartlink ititle="Remove Category" ifile="edit_pigeonholes.php" ibiticon="liberty/delete" action="remove" structure_id=`$item.structure_id`}
-						</td>
-					{/if}
-				</tr>
-			{foreachelse}
-				<tr class="norecords">
-					<td colspan="5">{tr}No Records Found{/tr}</td>
-				</tr>
-			{/foreach}
-		</table>
-
+		{pagination}
 		{libertypagination numPages=$numPages page=$curPage sort_mode=$sort_mode content_type=$contentSelect user_id=$user_id}
 	</div><!-- end .body -->
 </div><!-- end .liberty -->

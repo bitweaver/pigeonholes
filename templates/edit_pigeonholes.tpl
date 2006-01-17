@@ -68,7 +68,6 @@
 
 			<div class="row submit">
 				<input type="submit" name="pigeonhole_store" value="{tr}Save Category{/tr}" />
-				<input type="submit" name="pigeonhole_store_and_create" value="{tr}Save and Insert a new Category{/tr}" />
 			</div>
 		{/form}
 

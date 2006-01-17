@@ -1,6 +1,6 @@
 <?php
 /**
- * $Header: /cvsroot/bitweaver/_bit_pigeonholes/edit_pigeonholes.php,v 1.5 2006/01/14 19:55:18 squareing Exp $
+ * $Header: /cvsroot/bitweaver/_bit_pigeonholes/edit_pigeonholes.php,v 1.6 2006/01/17 13:40:49 squareing Exp $
  *
  * Copyright ( c ) 2004 bitweaver.org
  * Copyright ( c ) 2003 tikwiki.org
@@ -8,7 +8,7 @@
  * All Rights Reserved. See copyright.txt for details and a complete list of authors.
  * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details
  *
- * $Id: edit_pigeonholes.php,v 1.5 2006/01/14 19:55:18 squareing Exp $
+ * $Id: edit_pigeonholes.php,v 1.6 2006/01/17 13:40:49 squareing Exp $
  * @package pigeonholes
  * @subpackage functions
  */
@@ -24,11 +24,6 @@ $gBitSystem->verifyPermission( 'bit_p_edit_pigeonholes' );
 include_once( LIBERTY_PKG_PATH.'LibertyStructure.php' );
 include_once( THEMES_PKG_PATH.'theme_control_lib.php' );
 include_once( PIGEONHOLES_PKG_PATH.'lookup_pigeonholes_inc.php' );
-
-if( !empty( $_REQUEST['pigeonhole_store_and_create'] ) ) {
-	$_REQUEST['pigeonhole_store'] = TRUE;
-	$_REQUEST['action'] = 'create';
-}
 
 // include edit structure file only when structure_id is known
 if( !empty( $_REQUEST["structure_id"] ) && ( empty( $_REQUEST['action'] ) || $_REQUEST['action'] != 'remove' ) ) {
@@ -142,8 +137,7 @@ $gBitSmarty->assign( 'contentTypes', $contentTypes );
 $listHash['root_structure_id'] = $gPigeonholes->mInfo['root_structure_id'];
 $listHash['force_extras'] = TRUE;
 $pigeonList = $gPigeonholes->getList( $listHash );
-$gBitSmarty->assign( 'pigeonList', empty( $pigeonList['data'] ) ? NULL : $pigeonList['data'] );
-
+$gBitSmarty->assign( 'pigeonList', $pigeonList );
 $gBitSmarty->assign( 'feedback', !empty( $feedback ) ? $feedback : NULL );
 
 // Get list of available styles

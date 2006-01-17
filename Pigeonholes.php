@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_pigeonholes/Pigeonholes.php,v 1.15 2006/01/14 19:55:17 squareing Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_pigeonholes/Pigeonholes.php,v 1.16 2006/01/17 13:40:49 squareing Exp $
  *
  * +----------------------------------------------------------------------+
  * | Copyright ( c ) 2004, bitweaver.org
@@ -17,7 +17,7 @@
  * Pigeonholes class
  *
  * @author   xing <xing@synapse.plus.com>
- * @version  $Revision: 1.15 $
+ * @version  $Revision: 1.16 $
  * @package  pigeonholes
  */
 
@@ -330,12 +330,13 @@ class Pigeonholes extends LibertyAttachable {
 	* @return array of pigeonholes in 'data' and count of pigeonholes in 'cant'
 	* @access public
 	**/
-	function getList( $pListHash = NULL ) {
+	function getList( &$pListHash ) {
 		global $gBitSystem;
 		LibertyContent::prepGetList( $pListHash );
 
 		$bindVars = array();
 		$where = '';
+		$ret = array();
 
 		if( !empty( $pListHash['find'] ) ) {
 			$where .= " WHERE UPPER( tc.`title` ) LIKE ? ";
@@ -389,11 +390,9 @@ class Pigeonholes extends LibertyAttachable {
 				if( $gBitSystem->getPreference( 'pigeonholes_list_style' ) == 'table' ) {
 					$this->alphabetiseMembers( $aux['members'] );
 				}
-			} else {
-//				$aux['members_count'] = $this->mDb->getOne( "SELECT COUNT(*) FROM `".BIT_DB_PREFIX."bit_pigeonhole_members` WHERE `parent_id`=?", array( $aux['content_id'] ) );
 			}
 
-			$ret['data'][] = $aux;
+			$ret[] = $aux;
 			$result->MoveNext();
 		}
 
@@ -401,7 +400,8 @@ class Pigeonholes extends LibertyAttachable {
 			FROM `".BIT_DB_PREFIX."bit_pigeonholes` bp
 			INNER JOIN `".BIT_DB_PREFIX."tiki_structures` ts ON ( ts.`structure_id` = bp.`structure_id` )
 			WHERE  ts.`structure_id`=ts.`root_structure_id`";
-		$ret['cant'] = $this->mDb->getOne( $query );
+		$pListHash['cant'] = $this->mDb->getOne( $query );
+		LibertyContent::postGetList( $pListHash );
 
 		return $ret;
 	}
