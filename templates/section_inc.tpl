@@ -2,7 +2,7 @@
 {if $list_style == "table"}
 
 	{* ======= this display method requires "alphabetisation" ======= *}
-	<h3><a href="{$smarty.const.PIGEONHOLES_PKG_URL}view.php?structure_id={$subtree[ix].structure_id}">{$subtree[ix].title}</a></h3>
+	<h3><a href="{$smarty.const.PIGEONHOLES_PKG_URL}view.php?structure_id={$subtree[ix].structure_id}">{$subtree[ix].title|escape}</a></h3>
 
 	{foreach from=$pigeonList item=pigeonItem}
 		{if $pigeonItem.structure_id eq $subtree[ix].structure_id && $pigeonItem.members}
@@ -17,7 +17,7 @@
 							<ul>
 								{foreach from=$members item=member}
 									<li>
-										<a href="{$smarty.const.BIT_ROOT_URL}index.php?content_id={$member.content_id}">{$member.title}</a>
+										<a href="{$smarty.const.BIT_ROOT_URL}index.php?content_id={$member.content_id}">{$member.title|escape}</a>
 										<br />
 										<small>{$member.content_type_description}</small>
 									</li>
@@ -48,7 +48,7 @@
 		{/if}
 
 		<a href="javascript:icntoggle('sid{$subtree[ix].structure_id}');">
-			{biticon ipackage=liberty iname=$iname id=sid`$subtree[ix].structure_id`img"} {$subtree[ix].title}
+			{biticon ipackage=liberty iname=$iname id=sid`$subtree[ix].structure_id`img"} {$subtree[ix].title|escape}
 		</a> &nbsp;
 
 		<script type="text/javascript">
@@ -88,7 +88,7 @@
 										{biticon ipackage="liberty" iname="spacer"}
 									{/if}
 								{/if}
-								&nbsp; <a href="{$smarty.const.BIT_ROOT_URL}index.php?content_id={$pigeonMember.content_id}">{$pigeonMember.title}</a> &nbsp;
+								&nbsp; <a href="{$smarty.const.BIT_ROOT_URL}index.php?content_id={$pigeonMember.content_id}">{$pigeonMember.title|escape}</a> &nbsp;
 								{if $edit}
 									{smartlink ititle="Remove Item" ibiticon="liberty/delete_small" expand_all=$smarty.request.expand_all ifile="edit_pigeonholes.php" action=demember structure_id=$pigeonItem.structure_id parent_id=$pigeonMember.content_id content_id=$pigeonItem.content_id}
 								{/if}
@@ -109,7 +109,7 @@
 							{/if}
 
 							<li>
-								<a href="{$smarty.const.BIT_ROOT_URL}index.php?content_id={$pigeonMember.content_id}">{$pigeonMember.title}</a>
+								<a href="{$smarty.const.BIT_ROOT_URL}index.php?content_id={$pigeonMember.content_id}">{$pigeonMember.title|escape}</a>
 								{if $edit}
 									&nbsp; {smartlink ititle="Remove Item" ibiticon="liberty/delete_small" expand_all=$smarty.request.expand_all ifile="edit_pigeonholes.php" action=demember structure_id=$pigeonItem.structure_id parent_id=$pigeonMember.content_id content_id=$pigeonItem.content_id}
 								{/if}
@@ -138,12 +138,14 @@
 		</div>
 	{/if}
 
-	<h3><a href="{$smarty.const.PIGEONHOLES_PKG_URL}view.php?structure_id={$subtree[ix].structure_id}">{$subtree[ix].title}</a></h3>
+	<a href="{$smarty.const.PIGEONHOLES_PKG_URL}view.php?structure_id={$subtree[ix].structure_id}">{$subtree[ix].title|escape}</a>
 
-	{foreach from=$pigeonList item=pigeonItem}
-		{if $pigeonItem.structure_id eq $subtree[ix].structure_id and $pigeonItem.members_count}
-			 {tr}{$pigeonItem.members_count} Item(s){/tr}
-		{/if}
-	{/foreach}
+	{if !$no_details}
+		{foreach from=$pigeonList item=pigeonItem}
+			{if $pigeonItem.structure_id eq $subtree[ix].structure_id}
+				{$pigeonItem.data|escape} <small> [ {tr}{$pigeonItem.members_count|default:0} Item(s){/tr} ] </small>
+			{/if}
+		{/foreach}
+	{/if}
 {/if}
 {/strip}
