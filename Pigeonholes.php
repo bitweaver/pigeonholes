@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_pigeonholes/Pigeonholes.php,v 1.16 2006/01/17 13:40:49 squareing Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_pigeonholes/Pigeonholes.php,v 1.17 2006/01/17 17:23:40 squareing Exp $
  *
  * +----------------------------------------------------------------------+
  * | Copyright ( c ) 2004, bitweaver.org
@@ -17,7 +17,7 @@
  * Pigeonholes class
  *
  * @author   xing <xing@synapse.plus.com>
- * @version  $Revision: 1.16 $
+ * @version  $Revision: 1.17 $
  * @package  pigeonholes
  */
 
@@ -918,7 +918,7 @@ class Pigeonholes extends LibertyAttachable {
 		$ret = $pTitle;
 		if( !empty( $pTitle ) && !empty( $pMixed ) ) {
 			if( $gBitSystem->isPackageActive( 'pigeonholes' ) ) {
-				$ret = '<a title="'.$pTitle.'" href="'.Pigeonholes::getDisplayUrl( $pMixed['content_id'] ).'">'.$pTitle.'</a>';
+				$ret = '<a title="'.$pTitle.'" href="'.Pigeonholes::getDisplayUrl( $pMixed['content_id'] ).'">'.htmlspecialchars( $pTitle ).'</a>';
 			}
 		}
 
