@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_pigeonholes/Pigeonholes.php,v 1.17 2006/01/17 17:23:40 squareing Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_pigeonholes/Pigeonholes.php,v 1.18 2006/01/18 11:14:51 squareing Exp $
  *
  * +----------------------------------------------------------------------+
  * | Copyright ( c ) 2004, bitweaver.org
@@ -17,7 +17,7 @@
  * Pigeonholes class
  *
  * @author   xing <xing@synapse.plus.com>
- * @version  $Revision: 1.17 $
+ * @version  $Revision: 1.18 $
  * @package  pigeonholes
  */
 
@@ -314,7 +314,7 @@ class Pigeonholes extends LibertyAttachable {
 		$ret = '';
 		if( !empty( $pPath ) && is_array( $pPath ) ) {
 			foreach( $pPath as $node ) {
-				$ret .= ( @BitBase::verifyId( $node['parent_id'] ) ? ' &raquo; ' : '' ).'<a title="'.$node['title'].'" href="'.PIGEONHOLES_PKG_URL.'view.php?structure_id='.$node['structure_id'].'">'.$node['title'].'</a>';
+				$ret .= ( @BitBase::verifyId( $node['parent_id'] ) ? ' &raquo; ' : '' ).'<a title="'.$node['title'].'" href="'.PIGEONHOLES_PKG_URL.'view.php?structure_id='.$node['structure_id'].'">'.htmlspecialchars( $node['title'] ).'</a>';
 			}
 		}
 		return $ret;
@@ -334,14 +334,8 @@ class Pigeonholes extends LibertyAttachable {
 		global $gBitSystem;
 		LibertyContent::prepGetList( $pListHash );
 
-		$bindVars = array();
-		$where = '';
-		$ret = array();
-
-		if( !empty( $pListHash['find'] ) ) {
-			$where .= " WHERE UPPER( tc.`title` ) LIKE ? ";
-			$bindVars[] = '%'.strtoupper( $pListHash['find'] ).'%';
-		}
+		$ret = $bindVars = array();
+		$where = $order = '';
 
 		if( @BitBase::verifyId( $pListHash['root_structure_id'] ) ) {
 			$where .= empty( $where ) ? ' WHERE ' : ' AND ';
@@ -354,11 +348,17 @@ class Pigeonholes extends LibertyAttachable {
 			$where .= " ts.`structure_id`=ts.`root_structure_id` ";
 		}
 
+		if( !empty( $pListHash['find'] ) ) {
+			$where .= empty( $where ) ? ' WHERE ' : ' AND ';
+			$where .= " UPPER( tc.`title` ) LIKE ? ";
+			$bindVars[] = '%'.strtoupper( $pListHash['find'] ).'%';
+		}
+
 		if( !empty( $pListHash['sort_mode'] ) ) {
-			$where .= " ORDER BY ".$this->mDb->convert_sortmode( $pListHash['sort_mode'] )." ";
+			$order .= " ORDER BY ".$this->mDb->convert_sortmode( $pListHash['sort_mode'] )." ";
 		} else {
 			// default sort mode makes list look nice
-			$where .= " ORDER BY ts.`root_structure_id`, ts.`structure_id` ASC";
+			$order .= " ORDER BY ts.`root_structure_id`, ts.`structure_id` ASC";
 		}
 
 		$query = "SELECT bp.*, ts.`root_structure_id`, ts.`parent_id`, tc.`title`, tc.`data`, tc.`content_type_guid`,
@@ -369,7 +369,7 @@ class Pigeonholes extends LibertyAttachable {
 			LEFT JOIN `".BIT_DB_PREFIX."users_users` uue ON ( uue.`user_id` = tc.`modifier_user_id` )
 			LEFT JOIN `".BIT_DB_PREFIX."users_users` uuc ON ( uuc.`user_id` = tc.`user_id` )
 			INNER JOIN `".BIT_DB_PREFIX."tiki_structures` ts ON ( ts.`structure_id` = bp.`structure_id` )
-			$where";
+			$where $order";
 
 		$result = $this->mDb->query( $query, $bindVars, $pListHash['max_records'], $pListHash['offset'] );
 
@@ -384,7 +384,7 @@ class Pigeonholes extends LibertyAttachable {
 				( !empty( $pListHash['load_extras'] ) && $aux['structure_id'] == @$pListHash['structure_id'] && $gBitSystem->getPreference( 'pigeonholes_list_style' ) == 'table' )
 			) {
 				$aux['path'] = $this->getPigeonholePath( $aux['structure_id'] );
-				$aux['display_path'] = $this->getDisplayPath( $aux['path'] );
+				$aux['display_path'] = Pigeonholes::getDisplayPath( $aux['path'] );
 				$aux['members'] = $this->getMemberList( array( 'content_id' => $aux['content_id'] ) );
 				$aux['members_count'] = count( $aux['members'] );
 				if( $gBitSystem->getPreference( 'pigeonholes_list_style' ) == 'table' ) {
@@ -396,13 +396,16 @@ class Pigeonholes extends LibertyAttachable {
 			$result->MoveNext();
 		}
 
-		$query = "SELECT COUNT( bp.`content_id` )
+		$query = "SELECT COUNT( tc.`title` )
 			FROM `".BIT_DB_PREFIX."bit_pigeonholes` bp
+			INNER JOIN `".BIT_DB_PREFIX."tiki_content` tc ON ( tc.`content_id` = bp.`content_id` )
+			LEFT JOIN `".BIT_DB_PREFIX."users_users` uue ON ( uue.`user_id` = tc.`modifier_user_id` )
+			LEFT JOIN `".BIT_DB_PREFIX."users_users` uuc ON ( uuc.`user_id` = tc.`user_id` )
 			INNER JOIN `".BIT_DB_PREFIX."tiki_structures` ts ON ( ts.`structure_id` = bp.`structure_id` )
-			WHERE  ts.`structure_id`=ts.`root_structure_id`";
-		$pListHash['cant'] = $this->mDb->getOne( $query );
-		LibertyContent::postGetList( $pListHash );
+			$where";
+		$pListHash['cant'] = $this->mDb->getOne( $query, $bindVars );
 
+		LibertyContent::postGetList( $pListHash );
 		return $ret;
 	}
 

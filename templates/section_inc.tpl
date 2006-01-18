@@ -75,22 +75,22 @@
 					{foreach from=$pigeonItem.members item=pigeonMember}
 						{if $gBitSystem->isFeatureActive( 'custom_member_sorting' )}
 							<li>
-								{if $edit && $gBitSystem->isFeatureActive( 'custom_member_sorting' )}
+								{if $gBitSystem->isFeatureActive( 'custom_member_sorting' )}
 									{if $pigeonMember.pos ne 1}
-										{smartlink ititle="Move item up" ibiticon="liberty/nav_up" expand_all=$smarty.request.expand_all ifile="edit_pigeonholes.php" action=move orientation=north structure_id=$pigeonItem.structure_id parent_id=$pigeonItem.content_id member_id=$pigeonMember.content_id}
+										{smartlink ititle="Move item up" ibiticon="liberty/move_up" expand_all=$smarty.request.expand_all action=move orientation=north structure_id=$pigeonItem.structure_id parent_id=$pigeonItem.content_id member_id=$pigeonMember.content_id}
 									{else}
-										{biticon ipackage="liberty" iname="spacer"}
+										{biticon ipackage="liberty" iname="spacer_small"}
 									{/if}
 
 									{if $pigeonMember.pos ne $pigeonItem.members_count}
-										{smartlink ititle="Move item down" ibiticon="liberty/nav_down" expand_all=$smarty.request.expand_all ifile="edit_pigeonholes.php" action=move orientation=south structure_id=$pigeonItem.structure_id parent_id=$pigeonItem.content_id member_id=$pigeonMember.content_id}
+										&nbsp;{smartlink ititle="Move item down" ibiticon="liberty/move_down" expand_all=$smarty.request.expand_all action=move orientation=south structure_id=$pigeonItem.structure_id parent_id=$pigeonItem.content_id member_id=$pigeonMember.content_id}
 									{else}
-										{biticon ipackage="liberty" iname="spacer"}
+										&nbsp;{biticon ipackage="liberty" iname="spacer_small"}
 									{/if}
 								{/if}
 								&nbsp; <a href="{$smarty.const.BIT_ROOT_URL}index.php?content_id={$pigeonMember.content_id}">{$pigeonMember.title|escape}</a> &nbsp;
-								{if $edit}
-									{smartlink ititle="Remove Item" ibiticon="liberty/delete_small" expand_all=$smarty.request.expand_all ifile="edit_pigeonholes.php" action=demember structure_id=$pigeonItem.structure_id parent_id=$pigeonMember.content_id content_id=$pigeonItem.content_id}
+								{if $gBitUser->hasPermission( 'edit_pigeonholes' )}
+									{smartlink ititle="Remove Item" ibiticon="liberty/delete_small" expand_all=$smarty.request.expand_all action=dismember structure_id=$pigeonItem.structure_id parent_id=$pigeonMember.content_id content_id=$pigeonItem.content_id}
 								{/if}
 							</li>
 						{else}
@@ -110,8 +110,8 @@
 
 							<li>
 								<a href="{$smarty.const.BIT_ROOT_URL}index.php?content_id={$pigeonMember.content_id}">{$pigeonMember.title|escape}</a>
-								{if $edit}
-									&nbsp; {smartlink ititle="Remove Item" ibiticon="liberty/delete_small" expand_all=$smarty.request.expand_all ifile="edit_pigeonholes.php" action=demember structure_id=$pigeonItem.structure_id parent_id=$pigeonMember.content_id content_id=$pigeonItem.content_id}
+								{if $gBitUser->hasPermission( 'edit_pigeonholes' )}
+									&nbsp; {smartlink ititle="Remove Item" ibiticon="liberty/delete_small" expand_all=$smarty.request.expand_all action=dismember structure_id=$pigeonItem.structure_id parent_id=$pigeonMember.content_id content_id=$pigeonItem.content_id}
 								{/if}
 							</li>
 
@@ -143,7 +143,7 @@
 	{if !$no_details}
 		{foreach from=$pigeonList item=pigeonItem}
 			{if $pigeonItem.structure_id eq $subtree[ix].structure_id}
-				{$pigeonItem.data|escape} <small> [ {tr}{$pigeonItem.members_count|default:0} Item(s){/tr} ] </small>
+				<br />{$pigeonItem.data|escape} <small> [ {tr}{$pigeonItem.members_count|default:0} Item(s){/tr} ] </small>
 			{/if}
 		{/foreach}
 	{/if}

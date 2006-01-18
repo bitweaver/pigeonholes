@@ -6,6 +6,7 @@
 	</div>
 
 	<div class="body">
+		{$feedback.success}
 		{formfeedback hash=$feedback}
 		{form legend="Create / Edit Category"}
 			{if $gPigeonholes->mStructureId}

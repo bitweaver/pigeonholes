@@ -1,6 +1,6 @@
 <?php
 /**
- * $Header: /cvsroot/bitweaver/_bit_pigeonholes/Attic/assign_non_members.php,v 1.5 2006/01/17 13:40:49 squareing Exp $
+ * $Header: /cvsroot/bitweaver/_bit_pigeonholes/Attic/assign_non_members.php,v 1.6 2006/01/18 11:14:51 squareing Exp $
  *
  * Copyright ( c ) 2004 bitweaver.org
  * Copyright ( c ) 2003 tikwiki.org
@@ -8,7 +8,7 @@
  * All Rights Reserved. See copyright.txt for details and a complete list of authors.
  * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details
  *
- * $Id: assign_non_members.php,v 1.5 2006/01/17 13:40:49 squareing Exp $
+ * $Id: assign_non_members.php,v 1.6 2006/01/18 11:14:51 squareing Exp $
  * @package pigeonholes
  * @subpackage functions
  */
@@ -73,7 +73,11 @@ if( !empty( $_REQUEST['insert_content'] ) && isset( $_REQUEST['pigeonhole'] ) ) 
 	$nonMembers = $gPigeonholes->getNonPigeonholeMembers( $listHash, $contentSelect, ( !empty( $_REQUEST['include'] ) && $_REQUEST['include'] == 'members' ) ? $_REQUEST['include'] : FALSE );
 }
 
-$pigeonRootData = $gPigeonholes->getList( array( 'only_get_root' => TRUE ) );
+$listHash = array(
+	'only_get_root' => TRUE,
+	'max_records' => -1,
+);
+$pigeonRootData = $gPigeonholes->getList( $listHash );
 $pigeonRoots[0] = 'All';
 foreach( $pigeonRootData as $root ) {
 	$pigeonRoots[$root['root_structure_id']] = $root['title'];
@@ -82,7 +86,8 @@ $gBitSmarty->assign( 'pigeonRoots', !empty( $pigeonRoots ) ? $pigeonRoots : NULL
 
 $listHash = array(
 	'root_structure_id' => ( !empty( $_REQUEST['root_structure_id'] ) ? $_REQUEST['root_structure_id'] : NULL ),
-	'force_extras' => TRUE
+	'force_extras' => TRUE,
+	'max_records' => -1,
 );
 $pigeonList = $gPigeonholes->getList( $listHash );
 $gBitSmarty->assign( 'pigeonList', $pigeonList );

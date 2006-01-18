@@ -1,6 +1,6 @@
 <?php
 /**
- * $Header: /cvsroot/bitweaver/_bit_pigeonholes/edit_pigeonholes.php,v 1.6 2006/01/17 13:40:49 squareing Exp $
+ * $Header: /cvsroot/bitweaver/_bit_pigeonholes/edit_pigeonholes.php,v 1.7 2006/01/18 11:14:51 squareing Exp $
  *
  * Copyright ( c ) 2004 bitweaver.org
  * Copyright ( c ) 2003 tikwiki.org
@@ -8,7 +8,7 @@
  * All Rights Reserved. See copyright.txt for details and a complete list of authors.
  * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details
  *
- * $Id: edit_pigeonholes.php,v 1.6 2006/01/17 13:40:49 squareing Exp $
+ * $Id: edit_pigeonholes.php,v 1.7 2006/01/18 11:14:51 squareing Exp $
  * @package pigeonholes
  * @subpackage functions
  */
@@ -53,7 +53,7 @@ if( !empty( $_REQUEST['pigeonhole_store'] ) ) {
 	$pigeonStore->mContentId = !empty( $_REQUEST['content_id'] ) ? $_REQUEST['content_id'] : NULL;
 	$pigeonStore->load();
 	if( $pigeonStore->store( $_REQUEST['pigeonhole'] ) ) {
-		header( "Location: ".$_SERVER['PHP_SELF'].'?structure_id='.$pigeonStore->mStructureId.( !empty( $_REQUEST['action'] ) ? '&action='.$_REQUEST['action'] : '' ) );
+		header( "Location: ".$_SERVER['PHP_SELF'].'?structure_id='.$pigeonStore->mStructureId.( !empty( $_REQUEST['action'] ) ? '&action='.$_REQUEST['action'] : '' )."&success=".urlencode( tra( "The category was successfully stored" ) ) );
 	} else {
 		vd( $gPigeonholes->mErrors );
 		$gBitSmarty->assign( 'msg', tra( "There was a problem trying to store the pigeonhole." ) );
@@ -108,13 +108,13 @@ if( !empty( $_REQUEST['search_objects'] ) ) {
 		$formHash['action'] = 'remove';
 		$msgHash = array(
 			'label' => 'Remove Pigeonhole',
-			'confirm_item' => $gPigeonholes->mInfo['title'].'<br />and any subitems',
+			'confirm_item' => $gPigeonholes->mInfo['title'].'<br />'.tra( 'and any subcategories' ),
 			'warning' => 'This will remove the pigeonhole but will <strong>not</strong> modify or remove the content itself.',
 		);
 		$gBitSystem->confirmDialog( $formHash, $msgHash );
 	}
 
-	if( $_REQUEST['action'] == 'demember' && !empty( $_REQUEST['content_id'] ) && !empty( $_REQUEST['parent_id'] ) ) {
+	if( $_REQUEST['action'] == 'dismember' && !empty( $_REQUEST['content_id'] ) && !empty( $_REQUEST['parent_id'] ) ) {
 		if( $gPigeonholes->expungePigeonholeMember( $_REQUEST['content_id'], $_REQUEST['parent_id'] ) ) {
 			$feedback['success'] = tra( 'The item was successfully removed' );
 		} else {
@@ -123,6 +123,10 @@ if( !empty( $_REQUEST['search_objects'] ) ) {
 		// used to avoid displaying edit form
 		unset( $_REQUEST['action'] );
 	}
+}
+
+if( !empty( $_REQUEST['success'] ) ) {
+	$feedback['success'] = $_REQUEST['success'];
 }
 
 // get content
