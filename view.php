@@ -1,6 +1,6 @@
 <?php
 /**
- * $Header: /cvsroot/bitweaver/_bit_pigeonholes/view.php,v 1.4 2006/01/18 11:14:51 squareing Exp $
+ * $Header: /cvsroot/bitweaver/_bit_pigeonholes/view.php,v 1.5 2006/01/18 14:29:34 squareing Exp $
  *
  * Copyright ( c ) 2004 bitweaver.org
  * Copyright ( c ) 2003 tikwiki.org
@@ -8,7 +8,7 @@
  * All Rights Reserved. See copyright.txt for details and a complete list of authors.
  * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details
  *
- * $Id: view.php,v 1.4 2006/01/18 11:14:51 squareing Exp $
+ * $Id: view.php,v 1.5 2006/01/18 14:29:34 squareing Exp $
  * @package pigeonholes
  * @subpackage functions
  */
@@ -35,10 +35,6 @@ if( !empty( $_REQUEST['action'] ) ) {
 		} else {
 			$feedback['error'] = tra( 'The item could not be removed' );
 		}
-	}
-
-	if( $_REQUEST['action'] == 'move' ) {
-		$gPigeonholes->moveMember( $_REQUEST['parent_id'], $_REQUEST['member_id'], $_REQUEST['orientation'] );
 	}
 }
 

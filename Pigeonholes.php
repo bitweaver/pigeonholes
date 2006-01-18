@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_pigeonholes/Pigeonholes.php,v 1.18 2006/01/18 11:14:51 squareing Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_pigeonholes/Pigeonholes.php,v 1.19 2006/01/18 14:29:34 squareing Exp $
  *
  * +----------------------------------------------------------------------+
  * | Copyright ( c ) 2004, bitweaver.org
@@ -17,7 +17,7 @@
  * Pigeonholes class
  *
  * @author   xing <xing@synapse.plus.com>
- * @version  $Revision: 1.18 $
+ * @version  $Revision: 1.19 $
  * @package  pigeonholes
  */
 
@@ -130,11 +130,7 @@ class Pigeonholes extends LibertyAttachable {
 			$bindVars[] = strtoupper( $pListHash['title'] );
 		}
 
-		if( $gBitSystem->isFeatureActive( 'custom_member_sorting' ) ) {
-			$order = "ORDER BY bpm.`pos` ASC";
-		} else {
-			$order = "ORDER BY tc.`content_type_guid`, tc.`title` ASC";
-		}
+		$order = "ORDER BY tc.`content_type_guid`, tc.`title` ASC";
 
 		$ret = array();
 		$query = "SELECT bpm.*, tc.`content_id`, tct.`content_description`, tc.`last_modified`, tc.`user_id`, tc.`title`, tc.`content_type_guid`, uu.`login`, uu.`real_name`
@@ -418,6 +414,9 @@ class Pigeonholes extends LibertyAttachable {
 			foreach( $pParamHash as $member ) {
 				$column = ( $i++ % $per_column == 0 ) ? $j++ : $j;
 				$index = strtoupper( substr( $member['title'], 0, 1 ) );
+				if( !empty( $ret[$column - 1][$index] ) ) {
+					$index = "&hellip;".$index;
+				}
 				$ret[$column][$index][] = $member;
 			}
 			$pParamHash = $ret;
@@ -583,43 +582,6 @@ class Pigeonholes extends LibertyAttachable {
 			$pParamHash['structure_store']['parent_id'] = NULL;
 		}
 
-		return( count( $this->mErrors ) == 0 );
-	}
-
-	/**
-	* Move content member either up or down when using custom sorting
-	* @param $pParentId pigeonhole id the member belongs to
-	* @param $pMemberId content id of the pigeonhole member
-	* @param $pOrientation requires either north or south as value
-	* @return bool TRUE on success, FALSE if store could not occur. If FALSE, $this->mErrors will have reason why
-	* @access public
-	**/
-	function moveMember( $pParentId, $pMemberId, $pOrientation ) {
-		if( $this->isValid() && @BitBase::verifyId( $pParentId ) && @BitBase::verifyId( $pMemberId ) ) {
-			if( !empty( $pOrientation ) && $pOrientation == 'north' ) {
-				$query = "SELECT `parent_id`, `content_id`, `pos` FROM `".BIT_DB_PREFIX."bit_pigeonhole_members` WHERE `pos`<? AND `parent_id`=? ORDER BY `pos` DESC";
-			} elseif ( !empty( $pOrientation ) && $pOrientation == 'south' ) {
-				$query = "SELECT `parent_id`, `content_id`, `pos` FROM `".BIT_DB_PREFIX."bit_pigeonhole_members` WHERE `pos`>? AND `parent_id`=? ORDER BY `pos` ASC";
-			} else {
-				$this->mErrors['orientation'] = tra( 'The member could not be moved since the orientation is not known.' );
-			}
-
-			// execute sql if everything is in order so far
-			if( !empty( $query ) ) {
-				$this->mDb->StartTrans();
-				$result = $this->mDb->query( $query, array( $this->mInfo['members'][$pMemberId]['pos'], $pParentId ) );
-				$res = $result->fetchRow();
-				if( $res ) {
-					//Swap positional values
-					$query = "UPDATE `".BIT_DB_PREFIX."bit_pigeonhole_members` SET `pos`=? WHERE `parent_id`=? AND `content_id`=?";
-					$this->mDb->query( $query, array( $res['pos'], $pParentId, $pMemberId ) );
-					$this->mDb->query( $query, array( $this->mInfo['members'][$pMemberId]['pos'], $res['parent_id'], $res['content_id'] ) );
-				}
-				$this->mDb->CompleteTrans();
-			}
-		} else {
-			$this->mErrors['move_member'] = tra( 'The category member could not be moved up, due to faulty data.' );
-		}
 		return( count( $this->mErrors ) == 0 );
 	}
 

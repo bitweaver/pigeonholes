@@ -73,56 +73,32 @@
 			{if $pigeonItem.members}
 				<ul id="sid{$subtree[ix].structure_id}" style="display:{if $gPigeonholes->mStructureId eq $subtree[ix].structure_id or $smarty.request.expand_all}block{else}none{/if};" class="data">
 					{foreach from=$pigeonItem.members item=pigeonMember}
-						{if $gBitSystem->isFeatureActive( 'custom_member_sorting' )}
-							<li>
-								{if $gBitSystem->isFeatureActive( 'custom_member_sorting' )}
-									{if $pigeonMember.pos ne 1}
-										{smartlink ititle="Move item up" ibiticon="liberty/move_up" expand_all=$smarty.request.expand_all action=move orientation=north structure_id=$pigeonItem.structure_id parent_id=$pigeonItem.content_id member_id=$pigeonMember.content_id}
-									{else}
-										{biticon ipackage="liberty" iname="spacer_small"}
-									{/if}
+						{assign var=ctg1 value=$pigeonMember.content_type_guid}
 
-									{if $pigeonMember.pos ne $pigeonItem.members_count}
-										&nbsp;{smartlink ititle="Move item down" ibiticon="liberty/move_down" expand_all=$smarty.request.expand_all action=move orientation=south structure_id=$pigeonItem.structure_id parent_id=$pigeonItem.content_id member_id=$pigeonMember.content_id}
-									{else}
-										&nbsp;{biticon ipackage="liberty" iname="spacer_small"}
-									{/if}
-								{/if}
-								&nbsp; <a href="{$smarty.const.BIT_ROOT_URL}index.php?content_id={$pigeonMember.content_id}">{$pigeonMember.title|escape}</a> &nbsp;
-								{if $gBitUser->hasPermission( 'edit_pigeonholes' )}
-									{smartlink ititle="Remove Item" ibiticon="liberty/delete_small" expand_all=$smarty.request.expand_all action=dismember structure_id=$pigeonItem.structure_id parent_id=$pigeonMember.content_id content_id=$pigeonItem.content_id}
-								{/if}
+						{* close off the content type <ul> *}
+						{if $ctg1 ne $ctg2 and $ctg2}
+								</ul>
 							</li>
-						{else}
-							{assign var=ctg1 value=$pigeonMember.content_type_guid}
-
-							{* close off the content type <ul> *}
-							{if $ctg1 ne $ctg2 and $ctg2}
-									</ul>
-								</li>
-							{/if}
-
-							{* open the content type <ul> *}
-							{if $ctg1 ne $ctg2}
-								<li>{$gLibertySystem->mContentTypes.$ctg1.content_description}
-									<ul>
-							{/if}
-
-							<li>
-								<a href="{$smarty.const.BIT_ROOT_URL}index.php?content_id={$pigeonMember.content_id}">{$pigeonMember.title|escape}</a>
-								{if $gBitUser->hasPermission( 'edit_pigeonholes' )}
-									&nbsp; {smartlink ititle="Remove Item" ibiticon="liberty/delete_small" expand_all=$smarty.request.expand_all action=dismember structure_id=$pigeonItem.structure_id parent_id=$pigeonMember.content_id content_id=$pigeonItem.content_id}
-								{/if}
-							</li>
-
-							{assign var=ctg2 value=$pigeonMember.content_type_guid}
 						{/if}
+
+						{* open the content type <ul> *}
+						{if $ctg1 ne $ctg2}
+							<li>{$gLibertySystem->mContentTypes.$ctg1.content_description}
+								<ul>
+						{/if}
+
+						<li>
+							<a href="{$smarty.const.BIT_ROOT_URL}index.php?content_id={$pigeonMember.content_id}">{$pigeonMember.title|escape}</a>
+							{if $gBitUser->hasPermission( 'edit_pigeonholes' )}
+								&nbsp; {smartlink ititle="Remove Item" ibiticon="liberty/delete_small" expand_all=$smarty.request.expand_all action=dismember structure_id=$pigeonItem.structure_id parent_id=$pigeonMember.content_id content_id=$pigeonItem.content_id}
+							{/if}
+						</li>
+
+						{assign var=ctg2 value=$pigeonMember.content_type_guid}
 					{/foreach}
 
-					{if !$gBitSystem->isFeatureActive( 'custom_member_sorting' )}
-							</ul>
-						</li>
-					{/if}
+						</ul>
+					</li>
 				</ul>
 			{/if}
 		{/if}

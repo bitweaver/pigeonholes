@@ -1,5 +1,5 @@
 <?php
-// $Header: /cvsroot/bitweaver/_bit_pigeonholes/admin/admin_pigeonholes_inc.php,v 1.2 2006/01/14 19:55:19 squareing Exp $
+// $Header: /cvsroot/bitweaver/_bit_pigeonholes/admin/admin_pigeonholes_inc.php,v 1.3 2006/01/18 14:29:34 squareing Exp $
 
 $pigeonholeSettings = array(
 	'display_pigeonhole_path' => array(
@@ -13,10 +13,6 @@ $pigeonholeSettings = array(
 	'display_pigeonhole_description' => array(
 		'label' => 'Display Description',
 		'note' => 'When showing the category members, you can display the category description as well.',
-	),
-	'custom_member_sorting' => array(
-		'label' => 'Custom Sorting',
-		'note' => 'This will change the way category members are displayed. It allows you to sort the members manually.',
 	),
 );
 $gBitSmarty->assign( 'pigeonholeSettings', $pigeonholeSettings );
