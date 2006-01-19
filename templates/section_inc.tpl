@@ -1,36 +1,5 @@
 {strip}
-{if $list_style == "table"}
-
-	{* ======= this display method requires "alphabetisation" ======= *}
-	<h3><a href="{$smarty.const.PIGEONHOLES_PKG_URL}view.php?structure_id={$subtree[ix].structure_id}">{$subtree[ix].title|escape}</a></h3>
-
-	{foreach from=$pigeonList item=pigeonItem}
-		{if $pigeonItem.structure_id eq $subtree[ix].structure_id && $pigeonItem.members}
-			{$pigeonItem.data|escape}
-			<table class="data"><tr>
-				{*use a fixed number here for now, we can change this eventually with a preference*}
-				{math equation="100 / x" x=3 assign=width format="%u"}
-				{foreach from=$pigeonItem.members item=pigeonColumn}
-					<td style="vertical-align:top; width:{$width}%;">
-						{foreach from=$pigeonColumn item=members key=index}
-							<h2>{$index}</h2>
-							<ul>
-								{foreach from=$members item=member}
-									<li>
-										<a href="{$smarty.const.BIT_ROOT_URL}index.php?content_id={$member.content_id}">{$member.title|escape}</a>
-										<br />
-										<small>{$member.content_type_description}</small>
-									</li>
-								{/foreach}
-							</ul>
-						{/foreach}
-					</td>
-				{/foreach}
-			</tr></table>
-		{/if}
-	{/foreach}
-
-{elseif $list_style == "dynamic"}
+{if $list_style == "dynamic"}
 
 	{* ======= crazy display for only few category memebers - only display method that allows custom sorting ======= *}
 	{if $gPigeonholes->mStructureId eq $subtree[ix].structure_id or $smarty.request.expand_all}
@@ -47,19 +16,20 @@
 			</div>
 		{/if}
 
-		<a href="javascript:icntoggle('sid{$subtree[ix].structure_id}');">
-			{biticon ipackage=liberty iname=$iname id=sid`$subtree[ix].structure_id`img"} {$subtree[ix].title|escape}
-		</a> &nbsp;
+		<h3>
+			<a href="javascript:icntoggle('sid{$subtree[ix].structure_id}');">
+				{biticon ipackage=liberty iname=$iname id=sid`$subtree[ix].structure_id`img"} {$subtree[ix].title|escape}
+				{foreach from=$pigeonList item=pigeonItem}
+					{if $pigeonItem.structure_id eq $subtree[ix].structure_id}
+						<small> &nbsp; &nbsp; [ {$pigeonItem.members_count} ]</small>
+					{/if}
+				{/foreach}
+			</a> &nbsp;
+		</h3>
 
 		<script type="text/javascript">
 			setfoldericonstate('sid{$subtree[ix].structure_id}');
 		</script>
-
-		{foreach from=$pigeonList item=pigeonItem}
-			{if $pigeonItem.structure_id eq $subtree[ix].structure_id}
-				<small> {tr}{$pigeonItem.members_count} Item(s){/tr} </small>
-			{/if}
-		{/foreach}
 
 		<noscript>
 			<div style="padding-left:18px;" class="small"><a href="{$smarty.const.PIGEONHOLES_PKG_URL}{if $edit}edit_pigeonholes{else}index{/if}.php?structure_id={$subtree[ix].structure_id}">{tr}Expand{/tr}</a></div>
@@ -68,10 +38,10 @@
 
 	{foreach from=$pigeonList item=pigeonItem}
 		{if $pigeonItem.structure_id eq $subtree[ix].structure_id}
-			<small>{$pigeonItem.data|escape}</small>
+			{$pigeonItem.data|escape}
 
 			{if $pigeonItem.members}
-				<ul id="sid{$subtree[ix].structure_id}" style="display:{if $gPigeonholes->mStructureId eq $subtree[ix].structure_id or $smarty.request.expand_all}block{else}none{/if};" class="data">
+				<ul id="sid{$subtree[ix].structure_id}" style="display:{if $gPigeonholes->mStructureId eq $subtree[ix].structure_id or $smarty.request.expand_all}block{else}none{/if}; padding:2em;" class="data">
 					{foreach from=$pigeonItem.members item=pigeonMember}
 						{assign var=ctg1 value=$pigeonMember.content_type_guid}
 
@@ -113,8 +83,16 @@
 			{smartlink ititle="Remove Category" ibiticon="liberty/delete" ifile="edit_pigeonholes.php" structure_id=$subtree[ix].structure_id action=remove}
 		</div>
 	{/if}
+	
+	{if $subtree[ix].content_id == $smarty.request.content_id || $subtree[ix].structure_id == $smarty.request.structure_id}
+		{assign var=current value=1}
+	{else}
+		{assign var=current value=0}
+	{/if}
 
-	<a href="{$smarty.const.PIGEONHOLES_PKG_URL}view.php?structure_id={$subtree[ix].structure_id}">{$subtree[ix].title|escape}</a>
+	{if $current}<div class="highlight">{/if}
+		<a href="{$smarty.const.PIGEONHOLES_PKG_URL}view.php?structure_id={$subtree[ix].structure_id}">{$subtree[ix].title|escape}</a>
+	{if $current}</div>{/if}
 
 	{if !$no_details}
 		{foreach from=$pigeonList item=pigeonItem}

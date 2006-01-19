@@ -12,8 +12,7 @@ $tables = array(
 	",
 	'bit_pigeonhole_members' => "
 		parent_id I4 NOTNULL PRIMARY,
-		content_id I4 NOTNULL PRIMARY,
-		pos I4 NOTNULL
+		content_id I4 NOTNULL PRIMARY
 	"
 );
 

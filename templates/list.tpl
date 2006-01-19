@@ -18,8 +18,8 @@
 		<div class="navbar">
 			<ul>
 				<li>{biticon ipackage=liberty iname=sort iexplain=sort}</li>
-				<li>{smartlink ititle="Title" find=$find isort=title idefault=1 icontrol=$listInfo}</li>
-				<li>{smartlink ititle="Description" find=$find isort=data icontrol=$listInfo}</li>
+				<li>{smartlink ititle="Title" isort=title idefault=1 icontrol=$listInfo}</li>
+				<li>{smartlink ititle="Description" isort=data icontrol=$listInfo}</li>
 			</ul>
 		</div>
 		<div class="clear"></div>

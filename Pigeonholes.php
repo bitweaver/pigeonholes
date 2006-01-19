@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_pigeonholes/Pigeonholes.php,v 1.19 2006/01/18 14:29:34 squareing Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_pigeonholes/Pigeonholes.php,v 1.20 2006/01/19 20:39:16 squareing Exp $
  *
  * +----------------------------------------------------------------------+
  * | Copyright ( c ) 2004, bitweaver.org
@@ -17,7 +17,7 @@
  * Pigeonholes class
  *
  * @author   xing <xing@synapse.plus.com>
- * @version  $Revision: 1.19 $
+ * @version  $Revision: 1.20 $
  * @package  pigeonholes
  */
 
@@ -547,20 +547,7 @@ class Pigeonholes extends LibertyAttachable {
 			unset( $pParamHash['members'] );
 		} else {
 			$i = 1;
-			$pos = 1;
-
-			// if this is not the first save, we need to get positional data from members and insert them
-			if( @BitBase::verifyId( $this->mContentId ) ) {
-				$members = $this->getMemberList( array( 'content_id' => $this->mContentId ) );
-				$pos = count( $members ) + 1;
-			}
-
 			foreach( $pParamHash['members'] as $c_id ) {
-				if( @BitBase::verifyId( $members[$c_id]['pos'] ) ) {
-					$pParamHash['pigeonhole_members_store'][$i]['pos'] = $members[$c_id]['pos'];
-				} else {
-					$pParamHash['pigeonhole_members_store'][$i]['pos'] = $pos++;
-				}
 				$pParamHash['pigeonhole_members_store'][$i]['content_id'] = $c_id;
 				$i++;
 			}
@@ -706,16 +693,6 @@ class Pigeonholes extends LibertyAttachable {
 			} else {
 				$this->mErrors['store_members'] = 'The content id is not valid.';
 			}
-
-			// if no positional info is given, we just append the items.
-			if( @BitBase::verifyId( $item['pos'] ) ) {
-				$tmp['member_store'][$key]['pos'] = $item['pos'];
-			} elseif( @BitBase::verifyId( $tmp['member_store'][$key-1]['pos'] ) ) {
-				$tmp['member_store'][$key]['pos'] = $tmp['member_store'][$key-1]['pos'] + 1;
-			} else {
-				$query = "SELECT COUNT(*) FROM `".BIT_DB_PREFIX."bit_pigeonhole_members` WHERE `parent_id`=?";
-				$tmp['member_store'][$key]['pos'] = $this->mDb->getOne( $query, array( $tmp['member_store'][$key]['parent_id'] ) ) + 1;
-			}
 		}
 
 		$this->mDb->CompleteTrans();
@@ -758,22 +735,9 @@ class Pigeonholes extends LibertyAttachable {
 				$bindVars[] = $pMemberId;
 			}
 
-			$this->mDb->StartTrans();
-			// depending on what data we've been given, we need to shift several items up to keep pos continuous
-			if( @BitBase::verifyId( $pMemberId ) ) {
-				$query = "SELECT * FROM `".BIT_DB_PREFIX."bit_pigeonhole_members` $where";
-				$result = $this->mDb->query( $query, $bindVars );
-				$members = $result->getRows();
-				foreach( $members as $member ) {
-					$query = "UPDATE `".BIT_DB_PREFIX."bit_pigeonhole_members` SET `pos`=`pos`-1 WHERE `pos`>? AND `parent_id`=?";
-					$this->mDb->query( $query, array( $member['pos'], $member['parent_id'] ) );
-				}
-			}
-
-			// now we're ready to remove the actual members
+			// now remove the actual members
 			$query = "DELETE FROM `".BIT_DB_PREFIX."bit_pigeonhole_members` $where";
 			$result = $this->mDb->query( $query, $bindVars );
-			$this->mDb->CompleteTrans();
 		} else {
 			$this->mErrors['members_store'] = 'The category member(s) could not be removed.';
 		}
