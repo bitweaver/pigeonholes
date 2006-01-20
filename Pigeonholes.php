@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_pigeonholes/Pigeonholes.php,v 1.21 2006/01/20 11:09:46 squareing Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_pigeonholes/Pigeonholes.php,v 1.22 2006/01/20 11:23:58 squareing Exp $
  *
  * +----------------------------------------------------------------------+
  * | Copyright ( c ) 2004, bitweaver.org
@@ -17,7 +17,7 @@
  * Pigeonholes class
  *
  * @author   xing <xing@synapse.plus.com>
- * @version  $Revision: 1.21 $
+ * @version  $Revision: 1.22 $
  * @package  pigeonholes
  */
 
@@ -408,6 +408,7 @@ class Pigeonholes extends LibertyAttachable {
 	function alphabetiseMembers( &$pParamHash ) {
 		if( !empty( $pParamHash ) ) {
 			usort( $pParamHash, "pigeonholes_alphabetiser" );
+			// we can change the column count at any time - use 3 for now
 			$per_column = ceil( count( $pParamHash ) / 3 );
 			$i = 1;
 			$j = 1;

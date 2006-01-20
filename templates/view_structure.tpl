@@ -1,7 +1,7 @@
 {strip}
 <div class="display pigeonholes">
 	<div class="header">
-		<h1>{tr}Categories Listing{/tr}</h1>
+		<h1>{tr}Category Listing{/tr}</h1>
 	</div>
 
 	<div class="body">
