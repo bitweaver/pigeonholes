@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_pigeonholes/Pigeonholes.php,v 1.20 2006/01/19 20:39:16 squareing Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_pigeonholes/Pigeonholes.php,v 1.21 2006/01/20 11:09:46 squareing Exp $
  *
  * +----------------------------------------------------------------------+
  * | Copyright ( c ) 2004, bitweaver.org
@@ -17,7 +17,7 @@
  * Pigeonholes class
  *
  * @author   xing <xing@synapse.plus.com>
- * @version  $Revision: 1.20 $
+ * @version  $Revision: 1.21 $
  * @package  pigeonholes
  */
 
@@ -310,7 +310,7 @@ class Pigeonholes extends LibertyAttachable {
 		$ret = '';
 		if( !empty( $pPath ) && is_array( $pPath ) ) {
 			foreach( $pPath as $node ) {
-				$ret .= ( @BitBase::verifyId( $node['parent_id'] ) ? ' &raquo; ' : '' ).'<a title="'.$node['title'].'" href="'.PIGEONHOLES_PKG_URL.'view.php?structure_id='.$node['structure_id'].'">'.htmlspecialchars( $node['title'] ).'</a>';
+				$ret .= ( @BitBase::verifyId( $node['parent_id'] ) ? ' &raquo; ' : '' ).'<a title="'.htmlspecialchars( $node['title'] ).'" href="'.PIGEONHOLES_PKG_URL.'view.php?structure_id='.$node['structure_id'].'">'.htmlspecialchars( $node['title'] ).'</a>';
 			}
 		}
 		return $ret;
@@ -847,7 +847,7 @@ class Pigeonholes extends LibertyAttachable {
 		$ret = $pTitle;
 		if( !empty( $pTitle ) && !empty( $pMixed ) ) {
 			if( $gBitSystem->isPackageActive( 'pigeonholes' ) ) {
-				$ret = '<a title="'.$pTitle.'" href="'.Pigeonholes::getDisplayUrl( $pMixed['content_id'] ).'">'.htmlspecialchars( $pTitle ).'</a>';
+				$ret = '<a title="'.htmlspecialchars( $pTitle ).'" href="'.Pigeonholes::getDisplayUrl( $pMixed['content_id'] ).'">'.htmlspecialchars( $pTitle ).'</a>';
 			}
 		}
 
