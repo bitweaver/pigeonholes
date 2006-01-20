@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_pigeonholes/Pigeonholes.php,v 1.22 2006/01/20 11:23:58 squareing Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_pigeonholes/Pigeonholes.php,v 1.23 2006/01/20 17:17:26 squareing Exp $
  *
  * +----------------------------------------------------------------------+
  * | Copyright ( c ) 2004, bitweaver.org
@@ -17,7 +17,7 @@
  * Pigeonholes class
  *
  * @author   xing <xing@synapse.plus.com>
- * @version  $Revision: 1.22 $
+ * @version  $Revision: 1.23 $
  * @package  pigeonholes
  */
 
@@ -199,7 +199,7 @@ class Pigeonholes extends LibertyAttachable {
 			LEFT JOIN `".BIT_DB_PREFIX."bit_pigeonhole_members` bpm ON ( bpm.`content_id` = tc.`content_id` )
 			LEFT JOIN `".BIT_DB_PREFIX."users_users` uu ON ( uu.`user_id` = tc.`user_id` )
 			$where";
-		$result = $this->mDb->query( $query, $bindVars, @BitBase::verifyId( $pListHash['max_rows'] ) ? $pListHash['max_rows'] : NULL );
+		$result = $this->mDb->query( $query, $bindVars, @BitBase::verifyId( $pListHash['max_records'] ) ? $pListHash['max_records'] : NULL );
 
 		$contentTypes = $gLibertySystem->mContentTypes;
 		while( !$result->EOF ) {
