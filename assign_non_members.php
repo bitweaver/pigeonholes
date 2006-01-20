@@ -1,6 +1,6 @@
 <?php
 /**
- * $Header: /cvsroot/bitweaver/_bit_pigeonholes/Attic/assign_non_members.php,v 1.3.2.1 2006/01/13 23:18:43 squareing Exp $
+ * $Header: /cvsroot/bitweaver/_bit_pigeonholes/Attic/assign_non_members.php,v 1.3.2.2 2006/01/20 16:46:34 squareing Exp $
  *
  * Copyright ( c ) 2004 bitweaver.org
  * Copyright ( c ) 2003 tikwiki.org
@@ -8,7 +8,7 @@
  * All Rights Reserved. See copyright.txt for details and a complete list of authors.
  * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details
  *
- * $Id: assign_non_members.php,v 1.3.2.1 2006/01/13 23:18:43 squareing Exp $
+ * $Id: assign_non_members.php,v 1.3.2.2 2006/01/20 16:46:34 squareing Exp $
  * @package pigeonholes
  * @subpackage functions
  */
@@ -36,7 +36,7 @@ $gBitSmarty->assign( 'contentSelect', $contentSelect = !isset( $_REQUEST['conten
 $listHash = array(
 	'find' => empty( $_REQUEST['find_objects'] ) ? NULL : $_REQUEST['find_objects'],
 	'sort_mode' => empty( $_REQUEST['sort_mode'] ) ? NULL : $_REQUEST['sort_mode'],
-	'max_rows' => ( !empty( $_REQUEST['max_rows'] ) && is_numeric( $_REQUEST['max_rows'] ) ) ? $_REQUEST['max_rows'] : 10,
+	'max_records' => ( @BitBase::verifyId( $_REQUEST['max_records'] ) ) ? $_REQUEST['max_records'] : 10,
 );
 $nonMembers = $gPigeonholes->getNonPigeonholeMembers( $listHash, $contentSelect, ( !empty( $_REQUEST['include'] ) && $_REQUEST['include'] == 'members' ) ? $_REQUEST['include'] : FALSE );
 
@@ -73,7 +73,7 @@ if( !empty( $_REQUEST['insert_content'] ) && isset( $_REQUEST['pigeonhole'] ) ) 
 	$nonMembers = $gPigeonholes->getNonPigeonholeMembers( $listHash, $contentSelect, ( !empty( $_REQUEST['include'] ) && $_REQUEST['include'] == 'members' ) ? $_REQUEST['include'] : FALSE );
 }
 
-$pigeonRootData = $gPigeonholes->getList( array( 'only_get_root' => TRUE ) );
+$pigeonRootData = $gPigeonholes->getList( array( 'only_get_root' => TRUE, 'max_records' => -1 ) );
 $pigeonRoots[0] = 'All';
 foreach( $pigeonRootData['data'] as $root ) {
 	$pigeonRoots[$root['root_structure_id']] = $root['title'];

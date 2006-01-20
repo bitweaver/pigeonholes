@@ -14,12 +14,12 @@
 					{formlabel label="Restrict listing" for="content_type"}
 
 					{forminput}
-						<select name="max_rows">
-							<option value="10"  {if $smarty.request.max_rows eq 10 or !$smarty.request.max_rows}selected="selected"{/if}>{tr}10{/tr}</option>
-							<option value="50"  {if $smarty.request.max_rows eq 50}selected="selected"{/if}>{tr}50{/tr}</option>
-							<option value="100" {if $smarty.request.max_rows eq 100}selected="selected"{/if}>{tr}100{/tr}</option>
-							<option value="200" {if $smarty.request.max_rows eq 200}selected="selected"{/if}>{tr}200{/tr}</option>
-							<option value="500" {if $smarty.request.max_rows eq 500}selected="selected"{/if}>{tr}500{/tr}</option>
+						<select name="max_records">
+							<option value="10"  {if $smarty.request.max_records eq 10 or !$smarty.request.max_rows}selected="selected"{/if}>{tr}10{/tr}</option>
+							<option value="50"  {if $smarty.request.max_records eq 50}selected="selected"{/if}>{tr}50{/tr}</option>
+							<option value="100" {if $smarty.request.max_records eq 100}selected="selected"{/if}>{tr}100{/tr}</option>
+							<option value="200" {if $smarty.request.max_records eq 200}selected="selected"{/if}>{tr}200{/tr}</option>
+							<option value="500" {if $smarty.request.max_records eq 500}selected="selected"{/if}>{tr}500{/tr}</option>
 						</select> {tr}Records{/tr}
 					{/forminput}
 
@@ -59,6 +59,7 @@
 				<input type="hidden" name="sort_mode" value="{$smarty.request.sort_mode}" />
 				<input type="hidden" name="include" value="{$smarty.request.include}" />
 				<input type="hidden" name="find_objects" value="{$smarty.request.find_objects}" />
+				<input type="hidden" name="max_records" value="{$smarty.request.max_records}" />
 				<input type="hidden" name="content_type" value="{$contentSelect}" />
 
 				{if $gBitSystem->isFeatureActive( 'custom_member_sorting' ) && $smarty.request.include eq 'members'}
