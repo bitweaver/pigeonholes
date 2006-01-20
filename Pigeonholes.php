@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_pigeonholes/Pigeonholes.php,v 1.11.2.13 2006/01/20 11:13:47 squareing Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_pigeonholes/Pigeonholes.php,v 1.11.2.14 2006/01/20 16:21:00 squareing Exp $
  *
  * +----------------------------------------------------------------------+
  * | Copyright ( c ) 2004, bitweaver.org
@@ -17,7 +17,7 @@
  * Pigeonholes class
  *
  * @author   xing <xing@synapse.plus.com>
- * @version  $Revision: 1.11.2.13 $
+ * @version  $Revision: 1.11.2.14 $
  * @package  pigeonholes
  */
 
@@ -334,7 +334,7 @@ class Pigeonholes extends LibertyAttachable {
 		global $gBitSystem;
 		LibertyContent::prepGetList( $pListHash );
 
-		$bindVars = array();
+		$bindVars = $ret['data'] = array();
 		$where = '';
 
 		if( !empty( $pListHash['find'] ) ) {
