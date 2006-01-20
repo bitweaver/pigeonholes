@@ -54,13 +54,9 @@
 				{formlabel label="Content" for="pigeonhole-content"}
 				{forminput}
 					{html_options values=$contentTypes options=$contentTypes name=content_type_guid selected=$contentSelect}
-				{/forminput}
-
-				{forminput}
+					<br />
 					{html_options multiple="multiple" size="12" name="pigeonhole[members][]" id="pigeonhole-content" values=$contentList options=$contentList selected=$pigeonInfo.selected_members}
-				{/forminput}
-
-				{forminput}
+					<br />
 					<input type="text" size="30" name="find_objects" value="{$smarty.request.find_objects}" /> 
 					<input type="submit" value="{tr}Apply filter{/tr}" name="search_objects" />
 				{/forminput}
