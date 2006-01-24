@@ -1,6 +1,6 @@
 <?php
 /**
- * $Header: /cvsroot/bitweaver/_bit_pigeonholes/Attic/assign_non_members.php,v 1.3.2.3 2006/01/20 17:00:43 squareing Exp $
+ * $Header: /cvsroot/bitweaver/_bit_pigeonholes/Attic/assign_non_members.php,v 1.3.2.4 2006/01/24 20:07:15 squareing Exp $
  *
  * Copyright ( c ) 2004 bitweaver.org
  * Copyright ( c ) 2003 tikwiki.org
@@ -8,7 +8,7 @@
  * All Rights Reserved. See copyright.txt for details and a complete list of authors.
  * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details
  *
- * $Id: assign_non_members.php,v 1.3.2.3 2006/01/20 17:00:43 squareing Exp $
+ * $Id: assign_non_members.php,v 1.3.2.4 2006/01/24 20:07:15 squareing Exp $
  * @package pigeonholes
  * @subpackage functions
  */
@@ -41,6 +41,15 @@ $listHash = array(
 $nonMembers = $gPigeonholes->getNonPigeonholeMembers( $listHash, $contentSelect, ( !empty( $_REQUEST['include'] ) && $_REQUEST['include'] == 'members' ) ? $_REQUEST['include'] : FALSE );
 
 if( !empty( $_REQUEST['insert_content'] ) && isset( $_REQUEST['pigeonhole'] ) ) {
+	// here we need to limit all killing to the selected structure
+	if( empty( $gStructure ) && @BitBase::verifyId( $_REQUEST['root_structure_id'] ) ) {
+		$gStructure = new LibertyStructure();
+		$struct = $gStructure->getStructure( $_REQUEST['root_structure_id'] );
+		foreach( $struct as $node ) {
+			$deletableParentIds[] = $node['content_id'];
+		}
+	}
+
 	// make an array that can be stored
 	foreach( $nonMembers as $item ) {
 		if( !empty( $_REQUEST['pigeonhole'][$item['content_id']] ) ) {
@@ -53,8 +62,10 @@ if( !empty( $_REQUEST['insert_content'] ) && isset( $_REQUEST['pigeonhole'] ) ) 
 		}
 
 		if( !empty( $_REQUEST['include'] ) && $_REQUEST['include'] == 'members' ) {
-			if( !empty( $item['content_id'] ) && !$gPigeonholes->expungePigeonholeMember( NULL, $item['content_id'] ) ) {
-				$feedback['error'] = 'The content could not be deleted before insertion.';
+			if( ( !empty( $deletableParentIds ) && in_array( $item['parent_id'], $deletableParentIds ) ) || empty( $deletableParentIds ) ) {
+				if( !empty( $item['content_id'] ) && !$gPigeonholes->expungePigeonholeMember( NULL, $item['content_id'] ) ) {
+					$feedback['error'] = 'The content could not be deleted before insertion.';
+				}
 			}
 		}
 	}

@@ -61,6 +61,7 @@
 				<input type="hidden" name="find_objects" value="{$smarty.request.find_objects}" />
 				<input type="hidden" name="max_records" value="{$smarty.request.max_records}" />
 				<input type="hidden" name="content_type" value="{$contentSelect}" />
+				<input type="hidden" name="root_structure_id" value="{$smarty.request.root_structure_id}" />
 
 				{if $gBitSystem->isFeatureActive( 'custom_member_sorting' ) && $smarty.request.include eq 'members'}
 					{formfeedback warning="Using this insertion method will reset any custom sorting you have done so far."}
