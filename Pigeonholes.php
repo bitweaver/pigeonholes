@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_pigeonholes/Pigeonholes.php,v 1.11.2.16 2006/01/24 20:15:20 squareing Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_pigeonholes/Pigeonholes.php,v 1.11.2.17 2006/01/24 21:19:49 squareing Exp $
  *
  * +----------------------------------------------------------------------+
  * | Copyright ( c ) 2004, bitweaver.org
@@ -17,7 +17,7 @@
  * Pigeonholes class
  *
  * @author   xing <xing@synapse.plus.com>
- * @version  $Revision: 1.11.2.16 $
+ * @version  $Revision: 1.11.2.17 $
  * @package  pigeonholes
  */
 
@@ -198,7 +198,7 @@ class Pigeonholes extends LibertyAttachable {
 			$where .= " ORDER BY tc.`content_type_guid`, tc.`title` ASC";
 		}
 
-		$query = "SELECT bpm.`parent_id`, tc.`content_id`, tc.`user_id`, tc.`title`, tc.`content_type_guid`, uu.`login`, uu.`real_name`
+		$query = "SELECT bpm.`parent_id`, tc.`content_id`, tc.`user_id`, tc.`title`, tc.`created`, tc.`content_type_guid`, uu.`login`, uu.`real_name`
 			FROM `".BIT_DB_PREFIX."tiki_content` tc
 			LEFT JOIN `".BIT_DB_PREFIX."bit_pigeonhole_members` bpm ON ( bpm.`content_id` = tc.`content_id` )
 			LEFT JOIN `".BIT_DB_PREFIX."users_users` uu ON ( uu.`user_id` = tc.`user_id` )
@@ -780,17 +780,26 @@ class Pigeonholes extends LibertyAttachable {
 	* @return bool TRUE on success, FALSE if store could not occur. If FALSE, $this->mErrors will have reason why
 	* @access public
 	**/
-	function expungePigeonholeMember( $pParentId=NULL, $pMemberId=NULL ) {
+	function expungePigeonholeMember( $pParentId=NULL, $pMemberId=NULL, $pDeletables=NULL ) {
 		if( @BitBase::verifyId( $pParentId ) || @BitBase::verifyId( $pMemberId ) ) {
 			$where = '';
 			if( @BitBase::verifyId( $pParentId ) ) {
-				$where .= "WHERE `parent_id`=?";
+				$where .= " WHERE `parent_id`=? ";
 				$bindVars[] = $pParentId;
 			}
 
 			if( @BitBase::verifyId( $pMemberId ) ) {
-				$where .= ( empty( $where ) ? "WHERE" : "AND" )." `content_id`=?";
+				$where .= ( empty( $where ) ? " WHERE " : " AND " )." `content_id`=? ";
 				$bindVars[] = $pMemberId;
+			}
+
+			if( !empty( $pDeletables ) && is_array( $pDeletables ) ) {
+				$in = "";
+				foreach( $pDeletables as $pid ) {
+					$bindVars[] = $pid;
+					$in .= !empty( $in ) ? ", ?" : "?";
+				}
+				$where .= ( empty( $where ) ? " WHERE " : " AND " )." `parent_id` IN( $in ) ";
 			}
 
 			$this->mDb->StartTrans();
