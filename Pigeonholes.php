@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_pigeonholes/Pigeonholes.php,v 1.23 2006/01/20 17:17:26 squareing Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_pigeonholes/Pigeonholes.php,v 1.24 2006/01/24 10:21:23 squareing Exp $
  *
  * +----------------------------------------------------------------------+
  * | Copyright ( c ) 2004, bitweaver.org
@@ -17,7 +17,7 @@
  * Pigeonholes class
  *
  * @author   xing <xing@synapse.plus.com>
- * @version  $Revision: 1.23 $
+ * @version  $Revision: 1.24 $
  * @package  pigeonholes
  */
 
@@ -68,7 +68,7 @@ class Pigeonholes extends LibertyAttachable {
 			global $gBitSystem;
 			$lookupColumn = ( @BitBase::verifyId( $this->mContentId ) ? 'tc.`content_id`' : 'ts.`structure_id`' );
 			$lookupId = ( @BitBase::verifyId( $this->mContentId ) ? $this->mContentId : $this->mStructureId );
-			$query = "SELECT bp.*, ts.`root_structure_id`, ts.`parent_id`, tc.`title`, tc.`data`, tc.`content_type_guid`,
+			$query = "SELECT bp.*, ts.`root_structure_id`, ts.`parent_id`, tc.`title`, tc.`data`, tc.`user_id`, tc.`content_type_guid`,
 				uue.`login` AS modifier_user, uue.`real_name` AS modifier_real_name,
 				uuc.`login` AS creator_user, uuc.`real_name` AS creator_real_name
 				FROM `".BIT_DB_PREFIX."bit_pigeonholes` bp
@@ -357,7 +357,7 @@ class Pigeonholes extends LibertyAttachable {
 			$order .= " ORDER BY ts.`root_structure_id`, ts.`structure_id` ASC";
 		}
 
-		$query = "SELECT bp.*, ts.`root_structure_id`, ts.`parent_id`, tc.`title`, tc.`data`, tc.`content_type_guid`,
+		$query = "SELECT bp.*, ts.`root_structure_id`, ts.`parent_id`, tc.`title`, tc.`data`, tc.`user_id`, tc.`content_type_guid`,
 			uue.`login` AS modifier_user, uue.`real_name` AS modifier_real_name,
 			uuc.`login` AS creator_user, uuc.`real_name` AS creator_real_name
 			FROM `".BIT_DB_PREFIX."bit_pigeonholes` bp

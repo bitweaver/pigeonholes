@@ -1,5 +1,5 @@
 <?php
-// $Header: /cvsroot/bitweaver/_bit_pigeonholes/admin/admin_pigeonholes_inc.php,v 1.3 2006/01/18 14:29:34 squareing Exp $
+// $Header: /cvsroot/bitweaver/_bit_pigeonholes/admin/admin_pigeonholes_inc.php,v 1.4 2006/01/24 10:21:23 squareing Exp $
 
 $pigeonholeSettings = array(
 	'display_pigeonhole_path' => array(
@@ -24,12 +24,13 @@ $listStyles = array(
 $gBitSmarty->assign( 'listStyles', $listStyles );
 
 $memberLimit = array(
-	'9999' => tra( 'Unlimited' ),
+	'0' => tra( 'None' ),
 	'10' => 10,
 	'20' => 20,
 	'30' => 30,
 	'50' => 50,
 	'100' => 100,
+	'9999' => tra( 'Unlimited' ),
 );
 $gBitSmarty->assign( 'memberLimit', $memberLimit );
 

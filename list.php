@@ -3,7 +3,7 @@
  * $Header
  *
  * @author   xing <xing@synapse.plus.com>
- * @version  $Revision: 1.5 $
+ * @version  $Revision: 1.6 $
  * @package  pigeonholes
  * @subpackage functions
  */
@@ -21,7 +21,7 @@ include_once( PIGEONHOLES_PKG_PATH.'lookup_pigeonholes_inc.php' );
 $listHash = &$_REQUEST;
 $listHash['load_only_root'] = TRUE;
 $listHash['sort_mode'] = !empty( $listHash['sort_mode'] ) ? $listHash['sort_mode'] : 'title_asc';
-$pigeonList = $gPigeonholes->getList( $listHash );
+$pigeonList = $gContent->getList( $listHash );
 
 // set up structure related stuff
 if( !empty( $pigeonList ) ) {

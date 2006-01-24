@@ -5,12 +5,12 @@
 	</div>
 
 	<div class="body">
-		{if $list_style == "table"}
+		{if $gBitSystemPrefs.pigeonholes_list_style == "table"}
 			{include file="bitpackage:pigeonholes/view_structure_inc.tpl" no_details=true no_edit=true}
 			{include file="bitpackage:pigeonholes/view_table_inc.tpl" no_details=true no_edit=true}
 		{else}
 			{if !$smarty.request.expand_all and !( $smarty.request.action eq 'edit' or $smarty.request.action eq 'create' )}
-				{smartlink ititle="Expand All" expand_all=1 structure_id=$gPigeonholes->mStructureId}
+				{smartlink ititle="Expand All" expand_all=1 structure_id=$gContent->mStructureId}
 			{/if}
 
 			{include file="bitpackage:pigeonholes/view_structure_inc.tpl"}

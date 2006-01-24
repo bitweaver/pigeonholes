@@ -1,8 +1,8 @@
 {strip}
-{if $list_style == "dynamic"}
+{if $gBitSystemPrefs.pigeonholes_list_style == "dynamic"}
 
 	{* ======= crazy display for only few category memebers - only display method that allows custom sorting ======= *}
-	{if $gPigeonholes->mStructureId eq $subtree[ix].structure_id or $smarty.request.expand_all}
+	{if $gContent->mStructureId eq $subtree[ix].structure_id or $smarty.request.expand_all}
 		{assign var=iname value=Expanded}
 	{else}
 		{assign var=iname value=Collapsed}
@@ -41,7 +41,7 @@
 			{$pigeonItem.data|escape}
 
 			{if $pigeonItem.members}
-				<ul id="sid{$subtree[ix].structure_id}" style="display:{if $gPigeonholes->mStructureId eq $subtree[ix].structure_id or $smarty.request.expand_all}block{else}none{/if}; padding:2em;" class="data">
+				<ul id="sid{$subtree[ix].structure_id}" style="display:{if $gContent->mStructureId eq $subtree[ix].structure_id or $smarty.request.expand_all}block{else}none{/if}; padding:2em;" class="data">
 					{foreach from=$pigeonItem.members item=pigeonMember}
 						{assign var=ctg1 value=$pigeonMember.content_type_guid}
 
@@ -70,6 +70,8 @@
 						</ul>
 					</li>
 				</ul>
+			{else}
+				<div id="sid{$subtree[ix].structure_id}" class="norecords">{tr}No Records Found{/tr}</div>
 			{/if}
 		{/if}
 	{/foreach}
@@ -90,9 +92,9 @@
 		{assign var=current value=0}
 	{/if}
 
-	{if $current}<div class="highlight">{/if}
+	{if $current}<strong>{/if}
 		<a href="{$smarty.const.PIGEONHOLES_PKG_URL}view.php?structure_id={$subtree[ix].structure_id}">{$subtree[ix].title|escape}</a>
-	{if $current}</div>{/if}
+	{if $current}</strong>{/if}
 
 	{if !$no_details}
 		{foreach from=$pigeonList item=pigeonItem}

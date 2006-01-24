@@ -1,6 +1,6 @@
 <?php
 /**
- * $Header: /cvsroot/bitweaver/_bit_pigeonholes/edit_pigeonholes.php,v 1.8 2006/01/19 20:39:16 squareing Exp $
+ * $Header: /cvsroot/bitweaver/_bit_pigeonholes/edit_pigeonholes.php,v 1.9 2006/01/24 10:21:23 squareing Exp $
  *
  * Copyright ( c ) 2004 bitweaver.org
  * Copyright ( c ) 2003 tikwiki.org
@@ -8,7 +8,7 @@
  * All Rights Reserved. See copyright.txt for details and a complete list of authors.
  * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details
  *
- * $Id: edit_pigeonholes.php,v 1.8 2006/01/19 20:39:16 squareing Exp $
+ * $Id: edit_pigeonholes.php,v 1.9 2006/01/24 10:21:23 squareing Exp $
  * @package pigeonholes
  * @subpackage functions
  */
@@ -55,7 +55,7 @@ if( !empty( $_REQUEST['pigeonhole_store'] ) ) {
 	if( $pigeonStore->store( $_REQUEST['pigeonhole'] ) ) {
 		header( "Location: ".$_SERVER['PHP_SELF'].'?structure_id='.$pigeonStore->mStructureId.( !empty( $_REQUEST['action'] ) ? '&action='.$_REQUEST['action'] : '' )."&success=".urlencode( tra( "The category was successfully stored" ) ) );
 	} else {
-		vd( $gPigeonholes->mErrors );
+		vd( $gContent->mErrors );
 		$gBitSmarty->assign( 'msg', tra( "There was a problem trying to store the pigeonhole." ) );
 		$gBitSystem->display( 'error.tpl' );
 		die;
@@ -72,8 +72,8 @@ if( !empty( $_REQUEST['search_objects'] ) ) {
 } elseif( !empty( $_REQUEST['action'] ) || isset( $_REQUEST["confirm"] ) ) {
 	// if we need to edit, show the information
 	if( $_REQUEST['action'] == 'edit' ) {
-		$pigeonInfo = $gPigeonholes->mInfo;
-		$pigeonInfo['settings'] = $gPigeonholes->getPigeonholeSettings( $gPigeonholes->mContentId );
+		$pigeonInfo = $gContent->mInfo;
+		$pigeonInfo['settings'] = $gContent->getPigeonholeSettings( $gContent->mContentId );
 
 		// create usable array for selected items in content listing
 		if( !empty( $pigeonInfo['members'] ) ) {
@@ -91,27 +91,27 @@ if( !empty( $_REQUEST['search_objects'] ) ) {
 
 	if( $_REQUEST["action"] == 'remove' || isset( $_REQUEST["confirm"] ) ) {
 		if( isset( $_REQUEST["confirm"] ) ) {
-			if( $gPigeonholes->expunge( $_REQUEST["structure_id"] ) ) {
-				header( "Location: ".$_SERVER['PHP_SELF'].'?structure_id='.$gPigeonholes->mInfo["parent_id"] );
+			if( $gContent->expunge( $_REQUEST["structure_id"] ) ) {
+				header( "Location: ".$_SERVER['PHP_SELF'].'?structure_id='.$gContent->mInfo["parent_id"] );
 				die;
 			} else {
-				vd( $gPigeonholes->mErrors );
+				vd( $gContent->mErrors );
 			}
 		}
-		$gBitSystem->setBrowserTitle( 'Confirm removal of '.$gPigeonholes->mInfo['title'] );
+		$gBitSystem->setBrowserTitle( 'Confirm removal of '.$gContent->mInfo['title'] );
 		$formHash['remove'] = TRUE;
 		$formHash['structure_id'] = $_REQUEST['structure_id'];
 		$formHash['action'] = 'remove';
 		$msgHash = array(
 			'label' => 'Remove Pigeonhole',
-			'confirm_item' => $gPigeonholes->mInfo['title'].'<br />'.tra( 'and any subcategories' ),
+			'confirm_item' => $gContent->mInfo['title'].'<br />'.tra( 'and any subcategories' ),
 			'warning' => 'This will remove the pigeonhole but will <strong>not</strong> modify or remove the content itself.',
 		);
 		$gBitSystem->confirmDialog( $formHash, $msgHash );
 	}
 
 	if( $_REQUEST['action'] == 'dismember' && !empty( $_REQUEST['content_id'] ) && !empty( $_REQUEST['parent_id'] ) ) {
-		if( $gPigeonholes->expungePigeonholeMember( $_REQUEST['content_id'], $_REQUEST['parent_id'] ) ) {
+		if( $gContent->expungePigeonholeMember( $_REQUEST['content_id'], $_REQUEST['parent_id'] ) ) {
 			$feedback['success'] = tra( 'The item was successfully removed' );
 		} else {
 			$feedback['error'] = tra( 'The item could not be removed' );
@@ -134,9 +134,9 @@ $gBitSmarty->assign( 'contentList', $cList );
 $gBitSmarty->assign( 'contentSelect', $contentSelect );
 $gBitSmarty->assign( 'contentTypes', $contentTypes );
 
-$listHash['root_structure_id'] = $gPigeonholes->mInfo['root_structure_id'];
+$listHash['root_structure_id'] = $gContent->mInfo['root_structure_id'];
 $listHash['force_extras'] = TRUE;
-$pigeonList = $gPigeonholes->getList( $listHash );
+$pigeonList = $gContent->getList( $listHash );
 $gBitSmarty->assign( 'pigeonList', $pigeonList );
 $gBitSmarty->assign( 'feedback', !empty( $feedback ) ? $feedback : NULL );
 

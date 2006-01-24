@@ -1,6 +1,6 @@
 <?php
 /**
- * $Header: /cvsroot/bitweaver/_bit_pigeonholes/Attic/assign_non_members.php,v 1.7 2006/01/20 17:17:26 squareing Exp $
+ * $Header: /cvsroot/bitweaver/_bit_pigeonholes/Attic/assign_non_members.php,v 1.8 2006/01/24 10:21:23 squareing Exp $
  *
  * Copyright ( c ) 2004 bitweaver.org
  * Copyright ( c ) 2003 tikwiki.org
@@ -8,7 +8,7 @@
  * All Rights Reserved. See copyright.txt for details and a complete list of authors.
  * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details
  *
- * $Id: assign_non_members.php,v 1.7 2006/01/20 17:17:26 squareing Exp $
+ * $Id: assign_non_members.php,v 1.8 2006/01/24 10:21:23 squareing Exp $
  * @package pigeonholes
  * @subpackage functions
  */
@@ -38,7 +38,7 @@ $listHash = array(
 	'sort_mode' => empty( $_REQUEST['sort_mode'] ) ? NULL : $_REQUEST['sort_mode'],
 	'max_records' => ( @BitBase::verifyId( $_REQUEST['max_records'] ) ) ? $_REQUEST['max_records'] : 10,
 );
-$nonMembers = $gPigeonholes->getNonPigeonholeMembers( $listHash, $contentSelect, ( !empty( $_REQUEST['include'] ) && $_REQUEST['include'] == 'members' ) ? $_REQUEST['include'] : FALSE );
+$nonMembers = $gContent->getNonPigeonholeMembers( $listHash, $contentSelect, ( !empty( $_REQUEST['include'] ) && $_REQUEST['include'] == 'members' ) ? $_REQUEST['include'] : FALSE );
 
 if( !empty( $_REQUEST['insert_content'] ) && isset( $_REQUEST['pigeonhole'] ) ) {
 	// make an array that can be stored
@@ -53,7 +53,7 @@ if( !empty( $_REQUEST['insert_content'] ) && isset( $_REQUEST['pigeonhole'] ) ) 
 		}
 
 		if( !empty( $_REQUEST['include'] ) && $_REQUEST['include'] == 'members' ) {
-			if( !empty( $item['content_id'] ) && !$gPigeonholes->expungePigeonholeMember( NULL, $item['content_id'] ) ) {
+			if( !empty( $item['content_id'] ) && !$gContent->expungePigeonholeMember( NULL, $item['content_id'] ) ) {
 				$feedback['error'] = 'The content could not be deleted before insertion.';
 			}
 		}
@@ -61,7 +61,7 @@ if( !empty( $_REQUEST['insert_content'] ) && isset( $_REQUEST['pigeonhole'] ) ) 
 
 	if( empty( $feedback['error'] ) ) {
 		foreach( $memberHash as $memberStore ) {
-			if( $gPigeonholes->insertPigeonholeMember( $memberStore ) ) {
+			if( $gContent->insertPigeonholeMember( $memberStore ) ) {
 				$feedback['success'] = 'The content was successfully inserted into the respective categories.';
 			} else {
 				$feedback['error'] = 'The content could not be inserted into the categories.';
@@ -70,14 +70,14 @@ if( !empty( $_REQUEST['insert_content'] ) && isset( $_REQUEST['pigeonhole'] ) ) 
 	}
 
 	// we need to reload the nonMembers, since settings have changed
-	$nonMembers = $gPigeonholes->getNonPigeonholeMembers( $listHash, $contentSelect, ( !empty( $_REQUEST['include'] ) && $_REQUEST['include'] == 'members' ) ? $_REQUEST['include'] : FALSE );
+	$nonMembers = $gContent->getNonPigeonholeMembers( $listHash, $contentSelect, ( !empty( $_REQUEST['include'] ) && $_REQUEST['include'] == 'members' ) ? $_REQUEST['include'] : FALSE );
 }
 
 $listHash = array(
 	'only_get_root' => TRUE,
 	'max_records' => -1,
 );
-$pigeonRootData = $gPigeonholes->getList( $listHash );
+$pigeonRootData = $gContent->getList( $listHash );
 $pigeonRoots[0] = 'All';
 foreach( $pigeonRootData as $root ) {
 	$pigeonRoots[$root['root_structure_id']] = $root['title'];
@@ -89,7 +89,7 @@ $listHash = array(
 	'force_extras' => TRUE,
 	'max_records' => -1,
 );
-$pigeonList = $gPigeonholes->getList( $listHash );
+$pigeonList = $gContent->getList( $listHash );
 $gBitSmarty->assign( 'pigeonList', $pigeonList );
 $gBitSmarty->assign( 'nonMembers', $nonMembers );
 $gBitSmarty->assign( 'contentCount', count( $nonMembers ) );

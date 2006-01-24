@@ -46,6 +46,8 @@ $gBitInstaller->registerSchemaSequences( PIGEONHOLES_PKG_NAME, $sequences );
 // ### Default Preferences
 $gBitInstaller->registerPreferences( PIGEONHOLES_PKG_NAME, array(
 	array( PIGEONHOLES_PKG_NAME, 'display_pigeonhole_members','y' ),
+	array( PIGEONHOLES_PKG_NAME, 'limit_member_number','100' ),
+	array( PIGEONHOLES_PKG_NAME, 'pigeonholes_list_style','table' ),
 ) );
 
 // ### Default UserPermissions

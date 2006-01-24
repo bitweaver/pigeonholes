@@ -1,7 +1,7 @@
 {foreach from=$pigeonList item=pigeonItem}
 	{if $pigeonItem.members}
 		<hr />
-		<h2>{$gPigeonholes->getTitle()}</h2>
+		<h2>{$gContent->getTitle()}</h2>
 		<p>
 			{$pigeonItem.data|escape}
 			<br />

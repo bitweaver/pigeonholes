@@ -1,7 +1,7 @@
 {strip}
 <div class="listing pigeonholes">
 	<div class="header">
-		<h1>{tr}Categories Listing{/tr} <span class="total">[ {$listInfo.cant} ]</span></h1>
+		<h1>{tr}Categories Listing{/tr}</h1>
 	</div>
 
 	{* user sort related assigning *}
@@ -24,7 +24,8 @@
 		</div>
 		<div class="clear"></div>
 
-		<hr />
+		<h1>{tr}Categories{/tr} <span class="total">[ {$listInfo.total_records|default:0} ]</span></h1>
+
 		{foreach from=$pigeonList item=item}
 			{if $gBitUser->hasPermission( 'bit_p_edit_pigeonholes' )}
 				<div class="floaticon">
@@ -45,7 +46,6 @@
 		{/foreach}
 
 		{pagination}
-		{libertypagination numPages=$numPages page=$curPage sort_mode=$sort_mode content_type=$contentSelect user_id=$user_id}
 	</div><!-- end .body -->
 </div><!-- end .liberty -->
 {/strip}
