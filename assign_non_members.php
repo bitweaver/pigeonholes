@@ -1,6 +1,6 @@
 <?php
 /**
- * $Header: /cvsroot/bitweaver/_bit_pigeonholes/Attic/assign_non_members.php,v 1.8 2006/01/24 10:21:23 squareing Exp $
+ * $Header: /cvsroot/bitweaver/_bit_pigeonholes/Attic/assign_non_members.php,v 1.9 2006/01/24 10:53:45 squareing Exp $
  *
  * Copyright ( c ) 2004 bitweaver.org
  * Copyright ( c ) 2003 tikwiki.org
@@ -8,7 +8,7 @@
  * All Rights Reserved. See copyright.txt for details and a complete list of authors.
  * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details
  *
- * $Id: assign_non_members.php,v 1.8 2006/01/24 10:21:23 squareing Exp $
+ * $Id: assign_non_members.php,v 1.9 2006/01/24 10:53:45 squareing Exp $
  * @package pigeonholes
  * @subpackage functions
  */
@@ -34,11 +34,13 @@ $gBitSmarty->assign( 'contentTypes', $contentTypes );
 $gBitSmarty->assign( 'contentSelect', $contentSelect = !isset( $_REQUEST['content_type'] ) ? NULL : $_REQUEST['content_type'] );
 
 $listHash = array(
-	'find' => empty( $_REQUEST['find_objects'] ) ? NULL : $_REQUEST['find_objects'],
-	'sort_mode' => empty( $_REQUEST['sort_mode'] ) ? NULL : $_REQUEST['sort_mode'],
+	'find' => ( empty( $_REQUEST['find_objects'] ) ? NULL : $_REQUEST['find_objects'] ),
+	'sort_mode' => ( empty( $_REQUEST['sort_mode'] ) ? NULL : $_REQUEST['sort_mode'] ),
 	'max_records' => ( @BitBase::verifyId( $_REQUEST['max_records'] ) ) ? $_REQUEST['max_records'] : 10,
+	'include_members' => ( ( !empty( $_REQUEST['include'] ) && $_REQUEST['include'] == 'members' ) ? TRUE : FALSE ),
+	'content_type' => $contentSelect,
 );
-$nonMembers = $gContent->getNonPigeonholeMembers( $listHash, $contentSelect, ( !empty( $_REQUEST['include'] ) && $_REQUEST['include'] == 'members' ) ? $_REQUEST['include'] : FALSE );
+$nonMembers = $gContent->getAssignableContent( $listHash );
 
 if( !empty( $_REQUEST['insert_content'] ) && isset( $_REQUEST['pigeonhole'] ) ) {
 	// make an array that can be stored
@@ -70,7 +72,8 @@ if( !empty( $_REQUEST['insert_content'] ) && isset( $_REQUEST['pigeonhole'] ) ) 
 	}
 
 	// we need to reload the nonMembers, since settings have changed
-	$nonMembers = $gContent->getNonPigeonholeMembers( $listHash, $contentSelect, ( !empty( $_REQUEST['include'] ) && $_REQUEST['include'] == 'members' ) ? $_REQUEST['include'] : FALSE );
+	// reuse previous listhash since display settings aren't changed
+	$nonMembers = $gContent->getAssignableContent( $listHash );
 }
 
 $listHash = array(

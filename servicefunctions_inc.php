@@ -1,6 +1,6 @@
 <?php
 /**
- * $Header: /cvsroot/bitweaver/_bit_pigeonholes/Attic/servicefunctions_inc.php,v 1.5 2006/01/14 19:55:18 squareing Exp $
+ * $Header: /cvsroot/bitweaver/_bit_pigeonholes/Attic/servicefunctions_inc.php,v 1.6 2006/01/24 10:53:45 squareing Exp $
  *
  * Copyright ( c ) 2004 bitweaver.org
  * All Rights Reserved. See copyright.txt for details and a complete list of authors.
@@ -14,23 +14,25 @@
  * Pigeonhole display service
  */
 function display_pigeonholes( &$pObject ) {
-	global $gBitSmarty, $gBitUser, $gPreviewStyle;
-	require_once( PIGEONHOLES_PKG_PATH.'Pigeonholes.php' );
-	$pigeonholes = new Pigeonholes();
+	global $gBitSystem, $gBitSmarty, $gBitUser, $gPreviewStyle;
+	if( $gBitSystem->isFeatureActive( 'display_pigeonhole_members' ) || $gBitSystem->isFeatureActive( 'display_pigeonhole_path' ) ) {
+		require_once( PIGEONHOLES_PKG_PATH.'Pigeonholes.php' );
+		$pigeonholes = new Pigeonholes();
 
-	$settings = $pigeonholes->getPigeonholeSettings( NULL, $pObject->mContentId );
-	if( !empty( $settings['style'] ) ) {
-		$gPreviewStyle = $settings["style"];
-	}
+		$settings = $pigeonholes->getPigeonholeSettings( NULL, $pObject->mContentId );
+		if( !empty( $settings['style'] ) ) {
+			$gPreviewStyle = $settings["style"];
+		}
 
-	if( $gBitUser->hasPermission( 'bit_p_view_pigeonholes' ) ) {
-		if( $pigeons = $pigeonholes->getPigeonholesFromContentId( $pObject->mContentId ) ) {
-			foreach( $pigeons as $pigeon ) {
-				$pigeonholes->mContentId = $pigeon['content_id'];
-				$pigeonholes->load( TRUE );
-				$pigeonData[] = $pigeonholes->mInfo;
+		if( $gBitUser->hasPermission( 'bit_p_view_pigeonholes' ) ) {
+			if( $pigeons = $pigeonholes->getPigeonholesFromContentId( $pObject->mContentId ) ) {
+				foreach( $pigeons as $pigeon ) {
+					$pigeonholes->mContentId = $pigeon['content_id'];
+					$pigeonholes->load( TRUE );
+					$pigeonData[] = $pigeonholes->mInfo;
+				}
+				$gBitSmarty->assign( 'pigeonData', !empty( $pigeonData ) ? $pigeonData : FALSE );
 			}
-			$gBitSmarty->assign( 'pigeonData', !empty( $pigeonData ) ? $pigeonData : FALSE );
 		}
 	}
 }

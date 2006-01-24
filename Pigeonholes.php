@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_pigeonholes/Pigeonholes.php,v 1.24 2006/01/24 10:21:23 squareing Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_pigeonholes/Pigeonholes.php,v 1.25 2006/01/24 10:53:45 squareing Exp $
  *
  * +----------------------------------------------------------------------+
  * | Copyright ( c ) 2004, bitweaver.org
@@ -17,7 +17,7 @@
  * Pigeonholes class
  *
  * @author   xing <xing@synapse.plus.com>
- * @version  $Revision: 1.24 $
+ * @version  $Revision: 1.25 $
  * @package  pigeonholes
  */
 
@@ -162,17 +162,15 @@ class Pigeonholes extends LibertyAttachable {
 
 	/**
 	* get all items that are not part of a pigeonhole yet
-	* @param $pContentType content type guid of items to be collected. if empty, all content is collected
-	* @param $pIncludeMembers if set to TRUE (boolean), it will return members as well, where the pigeonholes they are assigned to, are in the sub array 'assigned'
 	* @return array of content not in any pigeonhole yet
 	* @access public
 	**/
-	function getNonPigeonholeMembers( $pListHash=NULL, $pContentType=NULL, $pIncludeMembers=FALSE ) {
+	function getAssignableContent( $pListHash ) {
 		global $gBitUser, $gLibertySystem, $gBitSystem;
 		$where = '';
 		$bindVars = array();
 
-		if( !$pIncludeMembers ) {
+		if( empty( $pListHash['include_members'] ) ) {
 			$where .= "WHERE bpm.`content_id` IS NULL";
 		}
 
@@ -182,10 +180,10 @@ class Pigeonholes extends LibertyAttachable {
 			$bindVars[] = ( '%'.strtoupper( $pListHash['find'] ).'%');
 		}
 
-		if( $pContentType ) {
+		if( !empty( $pListHash['content_type'] ) ) {
 			$where .= empty( $where ) ? ' WHERE ' : ' AND ';
 			$where .= " tc.`content_type_guid`=?";
-			$bindVars[] = $pContentType;
+			$bindVars[] = !empty( $pListHash['content_type'] );
 		}
 
 		if( !empty( $pListHash['sort_mode'] ) ) {
@@ -217,7 +215,7 @@ class Pigeonholes extends LibertyAttachable {
 			}
 
 			// generate a map of what items are assigned to what pigeonholes
-			if( $pIncludeMembers && @BitBase::verifyId( $result->fields['parent_id'] ) ) {
+			if( !empty( $pListHash['include_members'] ) && @BitBase::verifyId( $result->fields['parent_id'] ) ) {
 				$map[$i][] = $result->fields['parent_id'];
 			}
 
@@ -225,7 +223,7 @@ class Pigeonholes extends LibertyAttachable {
 		}
 
 		// complete the output
-		if( $pIncludeMembers && !empty( $ret ) ) {
+		if( !empty( $pListHash['include_members'] ) && !empty( $ret ) ) {
 			foreach( $ret as $i => $r ) {
 				$ret[$i]['assigned'] = !empty( $map[$i] ) ? $map[$i] : NULL;
 			}
