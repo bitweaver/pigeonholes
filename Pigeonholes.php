@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_pigeonholes/Pigeonholes.php,v 1.25 2006/01/24 10:53:45 squareing Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_pigeonholes/Pigeonholes.php,v 1.26 2006/01/24 22:41:47 squareing Exp $
  *
  * +----------------------------------------------------------------------+
  * | Copyright ( c ) 2004, bitweaver.org
@@ -17,7 +17,7 @@
  * Pigeonholes class
  *
  * @author   xing <xing@synapse.plus.com>
- * @version  $Revision: 1.25 $
+ * @version  $Revision: 1.26 $
  * @package  pigeonholes
  */
 
@@ -478,7 +478,7 @@ class Pigeonholes extends LibertyAttachable {
 			// store content items
 			if( !empty( $pParamHash['pigeonhole_members_store'] ) ) {
 				// remove items first
-				$this->expungePigeonholeMember( $this->mContentId );
+				$this->expungePigeonholeMember( array( 'parent_id' => $this->mContentId ) );
 				if( !$this->insertPigeonholeMember( $pParamHash['pigeonhole_members_store'] ) ) {
 					$this->mErrors['store'] = 'The content could not be inserted into the respective categories.';
 				}
@@ -716,25 +716,36 @@ class Pigeonholes extends LibertyAttachable {
 
 	/**
 	* Expunge pigeonhole member
-	* @param $pMemberId content_id of content to be deleted
+	* @param $pParamHash['parent_id'] parent_id of content to be deleted
+	* @param $pParamHash['member_id'] content_id of content to be deleted
+	* @param $pParamHash['deletables'] array of content_ids to check against when deleting. makes sure that only members of a given structure are removed
 	*	Note if only one of the 2 ids is given, all items with that id will be removed. if both are given, only that one particular entry is removed
 	* @return bool TRUE on success, FALSE if store could not occur. If FALSE, $this->mErrors will have reason why
 	* @access public
 	**/
-	function expungePigeonholeMember( $pParentId=NULL, $pMemberId=NULL ) {
-		if( @BitBase::verifyId( $pParentId ) || @BitBase::verifyId( $pMemberId ) ) {
+	function expungePigeonholeMember( $pParamHash ) {
+		if( @BitBase::verifyId( $pParamHash['parent_id'] ) || @BitBase::verifyId( $pParamHash['member_id'] ) ) {
 			$where = '';
-			if( @BitBase::verifyId( $pParentId ) ) {
-				$where .= "WHERE `parent_id`=?";
-				$bindVars[] = $pParentId;
+			if( @BitBase::verifyId( $pParamHash['parent_id'] ) ) {
+				$where .= " WHERE `parent_id`=? ";
+				$bindVars[] = $pParamHash['parent_id'];
 			}
 
-			if( @BitBase::verifyId( $pMemberId ) ) {
-				$where .= ( empty( $where ) ? "WHERE" : "AND" )." `content_id`=?";
-				$bindVars[] = $pMemberId;
+			if( @BitBase::verifyId( $pParamHash['member_id'] ) ) {
+				$where .= ( empty( $where ) ? " WHERE " : " AND " )." `content_id`=? ";
+				$bindVars[] = $pParamHash['member_id'];
 			}
 
-			// now remove the actual members
+			if( !empty( $pParamHash['deletables'] ) && is_array( $pParamHash['deletables'] ) ) {
+				$in = "";
+				foreach( $pParamHash['deletables'] as $pid ) {
+					$bindVars[] = $pid;
+					$in .= !empty( $in ) ? ", ?" : "?";
+				}
+				$where .= ( empty( $where ) ? " WHERE " : " AND " )." `parent_id` IN( $in ) ";
+			}
+
+			// now we're ready to remove the actual members
 			$query = "DELETE FROM `".BIT_DB_PREFIX."bit_pigeonhole_members` $where";
 			$result = $this->mDb->query( $query, $bindVars );
 		} else {

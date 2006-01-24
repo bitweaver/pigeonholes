@@ -1,6 +1,6 @@
 <?php
 /**
- * $Header: /cvsroot/bitweaver/_bit_pigeonholes/Attic/assign_non_members.php,v 1.9 2006/01/24 10:53:45 squareing Exp $
+ * $Header: /cvsroot/bitweaver/_bit_pigeonholes/Attic/assign_non_members.php,v 1.10 2006/01/24 22:41:47 squareing Exp $
  *
  * Copyright ( c ) 2004 bitweaver.org
  * Copyright ( c ) 2003 tikwiki.org
@@ -8,7 +8,7 @@
  * All Rights Reserved. See copyright.txt for details and a complete list of authors.
  * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details
  *
- * $Id: assign_non_members.php,v 1.9 2006/01/24 10:53:45 squareing Exp $
+ * $Id: assign_non_members.php,v 1.10 2006/01/24 22:41:47 squareing Exp $
  * @package pigeonholes
  * @subpackage functions
  */
@@ -40,11 +40,21 @@ $listHash = array(
 	'include_members' => ( ( !empty( $_REQUEST['include'] ) && $_REQUEST['include'] == 'members' ) ? TRUE : FALSE ),
 	'content_type' => $contentSelect,
 );
-$nonMembers = $gContent->getAssignableContent( $listHash );
+$assignableContent = $gContent->getAssignableContent( $listHash );
 
 if( !empty( $_REQUEST['insert_content'] ) && isset( $_REQUEST['pigeonhole'] ) ) {
+	// here we need to limit all killing to the selected structure
+	$deletableParentIds = array();
+	if( empty( $gStructure ) && @BitBase::verifyId( $_REQUEST['root_structure_id'] ) ) {
+		$gStructure = new LibertyStructure();
+		$struct = $gStructure->getStructure( $_REQUEST['root_structure_id'] );
+		foreach( $struct as $node ) {
+			$deletableParentIds[] = $node['content_id'];
+		}
+	}
+
 	// make an array that can be stored
-	foreach( $nonMembers as $item ) {
+	foreach( $assignableContent as $item ) {
 		if( !empty( $_REQUEST['pigeonhole'][$item['content_id']] ) ) {
 			foreach( $_REQUEST['pigeonhole'][$item['content_id']] as $parent_id ) {
 				$memberHash[$parent_id][] = array(
@@ -55,7 +65,7 @@ if( !empty( $_REQUEST['insert_content'] ) && isset( $_REQUEST['pigeonhole'] ) ) 
 		}
 
 		if( !empty( $_REQUEST['include'] ) && $_REQUEST['include'] == 'members' ) {
-			if( !empty( $item['content_id'] ) && !$gContent->expungePigeonholeMember( NULL, $item['content_id'] ) ) {
+			if( !empty( $item['content_id'] ) && !$gContent->expungePigeonholeMember( array( 'member_id' => $item['content_id'], 'deletables' => $deletableParentIds ) ) ) {
 				$feedback['error'] = 'The content could not be deleted before insertion.';
 			}
 		}
@@ -71,9 +81,9 @@ if( !empty( $_REQUEST['insert_content'] ) && isset( $_REQUEST['pigeonhole'] ) ) 
 		}
 	}
 
-	// we need to reload the nonMembers, since settings have changed
+	// we need to reload the assignableContent, since settings have changed
 	// reuse previous listhash since display settings aren't changed
-	$nonMembers = $gContent->getAssignableContent( $listHash );
+	$assignableContent = $gContent->getAssignableContent( $listHash );
 }
 
 $listHash = array(
@@ -94,8 +104,8 @@ $listHash = array(
 );
 $pigeonList = $gContent->getList( $listHash );
 $gBitSmarty->assign( 'pigeonList', $pigeonList );
-$gBitSmarty->assign( 'nonMembers', $nonMembers );
-$gBitSmarty->assign( 'contentCount', count( $nonMembers ) );
+$gBitSmarty->assign( 'assignableContent', $assignableContent );
+$gBitSmarty->assign( 'contentCount', count( $assignableContent ) );
 
 // Display the template
 $gBitSystem->display( 'bitpackage:pigeonholes/assign_non_members.tpl', tra( 'Assign Content to Categories' ) );

@@ -1,6 +1,6 @@
 <?php
 /**
- * $Header: /cvsroot/bitweaver/_bit_pigeonholes/Attic/servicefunctions_inc.php,v 1.6 2006/01/24 10:53:45 squareing Exp $
+ * $Header: /cvsroot/bitweaver/_bit_pigeonholes/Attic/servicefunctions_inc.php,v 1.7 2006/01/24 22:41:47 squareing Exp $
  *
  * Copyright ( c ) 2004 bitweaver.org
  * All Rights Reserved. See copyright.txt for details and a complete list of authors.
@@ -61,7 +61,7 @@ function pigeonholes_input_content( $pObject=NULL ) {
 function pigeonholes_expunge_member( $pObject=NULL ) {
 	require_once( PIGEONHOLES_PKG_PATH.'Pigeonholes.php' );
 	$pigeonholes = new Pigeonholes();
-	$pigeonholes->expungePigeonholeMember( NULL, $pObject->mContentId );
+	$pigeonholes->expungePigeonholeMember( array( 'member_id' => $pObject->mContentId ) );
 }
 
 /**
@@ -133,7 +133,7 @@ function pigeonholes_store_member( $pObject, $pParamHash ) {
 
 			if( !empty( $modified ) ) {
 				// first remove all entries with this content_id
-				if( $pigeonholes->expungePigeonholeMember( NULL, $pParamHash['content_id'] ) && !empty( $_REQUEST['pigeonholes'] ) ) {
+				if( $pigeonholes->expungePigeonholeMember( array( 'member_id' => $pParamHash['content_id'] ) ) && !empty( $_REQUEST['pigeonholes'] ) ) {
 					// insert the content into the desired pigeonholes
 					foreach( $_REQUEST['pigeonholes']['pigeonhole'] as $p_id ) {
 						$memberHash[] = array(

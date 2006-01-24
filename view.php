@@ -1,6 +1,6 @@
 <?php
 /**
- * $Header: /cvsroot/bitweaver/_bit_pigeonholes/view.php,v 1.6 2006/01/24 10:21:23 squareing Exp $
+ * $Header: /cvsroot/bitweaver/_bit_pigeonholes/view.php,v 1.7 2006/01/24 22:41:47 squareing Exp $
  *
  * Copyright ( c ) 2004 bitweaver.org
  * Copyright ( c ) 2003 tikwiki.org
@@ -8,7 +8,7 @@
  * All Rights Reserved. See copyright.txt for details and a complete list of authors.
  * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details
  *
- * $Id: view.php,v 1.6 2006/01/24 10:21:23 squareing Exp $
+ * $Id: view.php,v 1.7 2006/01/24 22:41:47 squareing Exp $
  * @package pigeonholes
  * @subpackage functions
  */
@@ -30,7 +30,7 @@ $gStructure->load();
 
 if( !empty( $_REQUEST['action'] ) ) {
 	if( $_REQUEST['action'] == 'dismember' && !empty( $_REQUEST['content_id'] ) && !empty( $_REQUEST['parent_id'] ) && $gBitUser->hasPermission( 'bit_p_edit_pigeonholes' ) ) {
-		if( $gContent->expungePigeonholeMember( $_REQUEST['content_id'], $_REQUEST['parent_id'] ) ) {
+		if( $gContent->expungePigeonholeMember( array( 'parent_id' => $_REQUEST['content_id'], 'member_id' => $_REQUEST['parent_id'] ) ) ) {
 			$feedback['success'] = tra( 'The item was successfully removed' );
 		} else {
 			$feedback['error'] = tra( 'The item could not be removed' );

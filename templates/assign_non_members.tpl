@@ -61,6 +61,7 @@
 				<input type="hidden" name="find_objects" value="{$smarty.request.find_objects}" />
 				<input type="hidden" name="max_records" value="{$smarty.request.max_records}" />
 				<input type="hidden" name="content_type" value="{$contentSelect}" />
+				<input type="hidden" name="root_structure_id" value="{$smarty.request.root_structure_id}" />
 
 				{if $gBitSystem->isFeatureActive( 'custom_member_sorting' ) && $smarty.request.include eq 'members'}
 					{formfeedback warning="Using this insertion method will reset any custom sorting you have done so far."}
@@ -71,14 +72,14 @@
 					<tr>
 						<th>{smartlink ititle="Title" isort=title idefault=1 max_rows=$smarty.request.max_rows content_type=$contentSelect find_objects=$find_objects include=$smarty.request.include page=$page}</th>
 						<th>{smartlink ititle="Content Type" isort=content_type_guid max_rows=$smarty.request.max_rows content_type=$contentSelect find_objects=$find_objects include=$smarty.request.include page=$page}</th>
-						{if $nonMembers}
+						{if $assignableContent}
 							{foreach from=$pigeonList item=pigeon}
 								<th><abbr title="{$pigeon.title}">{counter}</abbr></th>
 							{/foreach}
 						{/if}
 					</tr>
 
-					{foreach from=$nonMembers item=item}
+					{foreach from=$assignableContent item=item}
 						<tr class="{cycle values='odd,even'}">
 							<td><a href="{$smarty.const.BIT_ROOT_URL}index.php?content_id={$item.content_id}">{$item.title}</a></td>
 							<td>{assign var=content_type_guid value=`$item.content_type_guid`}{$contentTypes.$content_type_guid}</td>
@@ -99,14 +100,14 @@
 					{/foreach}
 				</table>
 
-				{if $nonMembers}
+				{if $assignableContent}
 					<div class="row submit">
 						<input type="submit" name="insert_content" value="Insert Content into Categories" />
 					</div>
 				{/if}
 			{/form}
 
-			{if $nonMembers}
+			{if $assignableContent}
 				{foreach from=$pigeonList item=pigeon}
 					<dl>
 						<dt>{counter name=dogEatsPigeon}</dt>
