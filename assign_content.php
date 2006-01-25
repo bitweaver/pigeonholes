@@ -1,6 +1,6 @@
 <?php
 /**
- * $Header: /cvsroot/bitweaver/_bit_pigeonholes/Attic/assign_non_members.php,v 1.11 2006/01/25 17:56:10 squareing Exp $
+ * $Header: /cvsroot/bitweaver/_bit_pigeonholes/assign_content.php,v 1.1 2006/01/25 19:19:35 squareing Exp $
  *
  * Copyright ( c ) 2004 bitweaver.org
  * Copyright ( c ) 2003 tikwiki.org
@@ -8,7 +8,7 @@
  * All Rights Reserved. See copyright.txt for details and a complete list of authors.
  * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details
  *
- * $Id: assign_non_members.php,v 1.11 2006/01/25 17:56:10 squareing Exp $
+ * $Id: assign_content.php,v 1.1 2006/01/25 19:19:35 squareing Exp $
  * @package pigeonholes
  * @subpackage functions
  */
@@ -108,5 +108,5 @@ $gBitSmarty->assign( 'assignableContent', $assignableContent );
 $gBitSmarty->assign( 'contentCount', count( $assignableContent ) );
 
 // Display the template
-$gBitSystem->display( 'bitpackage:pigeonholes/assign_non_members.tpl', tra( 'Assign Content to Categories' ) );
+$gBitSystem->display( 'bitpackage:pigeonholes/assign_content.tpl', tra( 'Assign Content to Categories' ) );
 ?>

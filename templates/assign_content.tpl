@@ -15,11 +15,12 @@
 
 					{forminput}
 						<select name="max_records">
-							<option value="10"  {if $smarty.request.max_records eq 10 or !$smarty.request.max_rows}selected="selected"{/if}>{tr}10{/tr}</option>
-							<option value="50"  {if $smarty.request.max_records eq 50}selected="selected"{/if}>{tr}50{/tr}</option>
-							<option value="100" {if $smarty.request.max_records eq 100}selected="selected"{/if}>{tr}100{/tr}</option>
-							<option value="200" {if $smarty.request.max_records eq 200}selected="selected"{/if}>{tr}200{/tr}</option>
-							<option value="500" {if $smarty.request.max_records eq 500}selected="selected"{/if}>{tr}500{/tr}</option>
+							<option value="10"  {if $smarty.request.max_records eq 10 or !$smarty.request.max_rows}selected="selected"{/if}>10</option>
+							<option value="50"  {if $smarty.request.max_records eq 50}selected="selected"{/if}>50</option>
+							<option value="100" {if $smarty.request.max_records eq 100}selected="selected"{/if}>100</option>
+							<option value="200" {if $smarty.request.max_records eq 200}selected="selected"{/if}>200</option>
+							<option value="500" {if $smarty.request.max_records eq 500}selected="selected"{/if}>500</option>
+							<option value="-1" {if $smarty.request.max_records eq -1}selected="selected"{/if}>{tr}All{/tr}</option>
 						</select> {tr}Records{/tr}
 					{/forminput}
 
