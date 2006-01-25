@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_pigeonholes/Pigeonholes.php,v 1.28 2006/01/25 18:56:19 spiderr Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_pigeonholes/Pigeonholes.php,v 1.29 2006/01/25 19:19:00 squareing Exp $
  *
  * +----------------------------------------------------------------------+
  * | Copyright ( c ) 2004, bitweaver.org
@@ -17,7 +17,7 @@
  * Pigeonholes class
  *
  * @author   xing <xing@synapse.plus.com>
- * @version  $Revision: 1.28 $
+ * @version  $Revision: 1.29 $
  * @package  pigeonholes
  */
 
@@ -201,23 +201,21 @@ class Pigeonholes extends LibertyAttachable {
 		while( $row = $result->fetchRow() ) {
 			$i = $row['content_id'];
 			$ret[$i] = $row;
-			if( !empty( $contentTypes[$ret[$i]['content_type_guid']] ) ) {
-				$type = &$contentTypes[$ret[$i]['content_type_guid']];
+			if( !empty( $contentTypes[$row['content_type_guid']] ) ) {
+				$type = &$contentTypes[$row['content_type_guid']];
 				if( empty( $type['content_object'] ) ) {
 					// create *one* object for each object *type* to  call virtual methods.
 					include_once( $gBitSystem->mPackages[$type['handler_package']]['path'].$type['handler_file'] );
 					$type['content_object'] = new $type['handler_class']();
 				}
-				$ret[$i]['display_link'] = $type['content_object']->getDisplayLink( $ret[$i]['title'], $ret[$i] );
-				$ret[$i]['title'] = $type['content_object']->getTitle( $ret[$i] );
+				$ret[$i]['display_link'] = $type['content_object']->getDisplayLink( $row['title'], $row );
+				$ret[$i]['title'] = $type['content_object']->getTitle( $row );
 			}
 
 			// generate a map of what items are assigned to what pigeonholes
 			if( !empty( $pListHash['include_members'] ) && @BitBase::verifyId( $row['parent_id'] ) ) {
 				$map[$i][] = $row['parent_id'];
 			}
-
-			$result->MoveNext();
 		}
 
 		// complete the output
@@ -727,6 +725,7 @@ class Pigeonholes extends LibertyAttachable {
 			}
 
 			if( !empty( $pParamHash['deletables'] ) && is_array( $pParamHash['deletables'] ) ) {
+				// only delete member data when it's part of the deletable structure
 				$in = "";
 				foreach( $pParamHash['deletables'] as $pid ) {
 					$bindVars[] = $pid;
