@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_pigeonholes/Pigeonholes.php,v 1.26 2006/01/24 22:41:47 squareing Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_pigeonholes/Pigeonholes.php,v 1.27 2006/01/25 15:40:26 spiderr Exp $
  *
  * +----------------------------------------------------------------------+
  * | Copyright ( c ) 2004, bitweaver.org
@@ -17,7 +17,7 @@
  * Pigeonholes class
  *
  * @author   xing <xing@synapse.plus.com>
- * @version  $Revision: 1.26 $
+ * @version  $Revision: 1.27 $
  * @package  pigeonholes
  */
 
@@ -79,12 +79,12 @@ class Pigeonholes extends LibertyAttachable {
 				WHERE $lookupColumn=?";
 			$result = $this->mDb->query( $query, array( $lookupId ) );
 
-			if( $result && $result->numRows() ) {
-				$this->mInfo = $result->fields;
-				$this->mContentId = $result->fields['content_id'];
-				$this->mStructureId = $result->fields['structure_id'];
-				$this->mInfo['creator'] = ( isset( $result->fields['creator_real_name'] ) ? $result->fields['creator_real_name'] : $result->fields['creator_user'] );
-				$this->mInfo['editor'] = ( isset( $result->fields['modifier_real_name'] ) ? $result->fields['modifier_real_name'] : $result->fields['modifier_user'] );
+			if( $result && $row = $result->fetchRow() ) {
+				$this->mInfo = $row;
+				$this->mContentId = $this->mInfo['content_id'];
+				$this->mStructureId = $this->mInfo['structure_id'];
+				$this->mInfo['creator'] = ( isset( $this->mInfo['creator_real_name'] ) ? $this->mInfo['creator_real_name'] : $this->mInfo['creator_user'] );
+				$this->mInfo['editor'] = ( isset( $this->mInfo['modifier_real_name'] ) ? $this->mInfo['modifier_real_name'] : $this->mInfo['modifier_user'] );
 				$this->mInfo['display_link'] = $this->getDisplayLink();
 			}
 
@@ -142,8 +142,7 @@ class Pigeonholes extends LibertyAttachable {
 			$join $where $order";
 		$result = $this->mDb->query( $query, $bindVars, @BitBase::verifyId( $pListHash['max_records'] ) ? $pListHash['max_records'] : NULL );
 		$contentTypes = $gLibertySystem->mContentTypes;
-		while( !$result->EOF ) {
-			$aux = $result->fields;
+		while( $aux = $result->fetchRow() ) {
 			if( !empty( $contentTypes[$aux['content_type_guid']] ) ) {
 				$type = &$contentTypes[$aux['content_type_guid']];
 				if( empty( $type['content_object'] ) ) {
@@ -155,7 +154,6 @@ class Pigeonholes extends LibertyAttachable {
 				$aux['title'] = $type['content_object']->getTitle( $aux );
 				$ret[] = $aux;
 			}
-			$result->MoveNext();
 		}
 		return( !empty( $this->mErrors ) ? $this->mErrors : $ret );
 	}
@@ -200,9 +198,9 @@ class Pigeonholes extends LibertyAttachable {
 		$result = $this->mDb->query( $query, $bindVars, @BitBase::verifyId( $pListHash['max_records'] ) ? $pListHash['max_records'] : NULL );
 
 		$contentTypes = $gLibertySystem->mContentTypes;
-		while( !$result->EOF ) {
-			$i = $result->fields['content_id'];
-			$ret[$i] = $result->fields;
+		while( $row = $result->fetchRow() ) {
+			$i = $row['content_id'];
+			$ret[$i] = $row;
 			if( !empty( $contentTypes[$ret[$i]['content_type_guid']] ) ) {
 				$type = &$contentTypes[$ret[$i]['content_type_guid']];
 				if( empty( $type['content_object'] ) ) {
@@ -216,7 +214,7 @@ class Pigeonholes extends LibertyAttachable {
 
 			// generate a map of what items are assigned to what pigeonholes
 			if( !empty( $pListHash['include_members'] ) && @BitBase::verifyId( $result->fields['parent_id'] ) ) {
-				$map[$i][] = $result->fields['parent_id'];
+				$map[$i][] = $row['parent_id'];
 			}
 
 			$result->MoveNext();
@@ -270,8 +268,7 @@ class Pigeonholes extends LibertyAttachable {
 				FROM `".BIT_DB_PREFIX."bit_pigeonhole_members` bpm
 				INNER JOIN `".BIT_DB_PREFIX."bit_pigeonholes` bp ON ( bp.`content_id` = bpm.`parent_id` )
 				WHERE bpm.`content_id`=?";
-			$result = $this->mDb->query( $query, array( $pContentId ) );
-			$ret = $result->getRows();
+			$ret = $this->mDb->getAll( $query, array( $pContentId ) );
 		}
 		return( !empty( $ret ) ? $ret : FALSE );
 	}
@@ -367,10 +364,9 @@ class Pigeonholes extends LibertyAttachable {
 
 		$result = $this->mDb->query( $query, $bindVars, $pListHash['max_records'], $pListHash['offset'] );
 
-		while( !$result->EOF ) {
-			$aux = $result->fields;
-			$aux['creator'] = ( isset( $result->fields['creator_real_name'] ) ? $result->fields['creator_real_name'] : $result->fields['creator_user'] );
-			$aux['editor'] = ( isset( $result->fields['modifier_real_name'] ) ? $result->fields['modifier_real_name'] : $result->fields['modifier_user'] );
+		while( $aux = $result->fetchRow() ) {
+			$aux['creator'] = ( isset( $aux['creator_real_name'] ) ? $aux['creator_real_name'] : $aux['creator_user'] );
+			$aux['editor'] = ( isset( $aux['modifier_real_name'] ) ? $aux['modifier_real_name'] : $aux['modifier_user'] );
 			$aux['display_link'] = Pigeonholes::getDisplayLink( $aux['title'], $aux );
 
 			if( !empty( $pListHash['force_extras'] ) ||
@@ -387,7 +383,6 @@ class Pigeonholes extends LibertyAttachable {
 			}
 
 			$ret[] = $aux;
-			$result->MoveNext();
 		}
 
 		$query = "SELECT COUNT( tc.`title` )
@@ -587,17 +582,12 @@ class Pigeonholes extends LibertyAttachable {
 				$where = "WHERE bps.`content_id`=?";
 				$bindVars[] = @BitBase::verifyId( $pContentId ) ? $pContentId : $this->mContentId;
 			}
-			$query = "SELECT bps.*
+			$query = "SELECT bps.`name`, bps.`value`
 				FROM `".BIT_DB_PREFIX."bit_pigeonhole_settings` bps
 				INNER JOIN `".BIT_DB_PREFIX."bit_pigeonhole_members` bpm ON ( bps.`content_id` = bpm.`parent_id` )
 				$where";
 
-			$ret = array();
-			$result = $this->mDb->query( $query, $bindVars );
-			while( !$result->EOF ) {
-				$ret[$result->fields['name']] = $result->fields['value'];
-				$result->MoveNext();
-			}
+			$ret = $this->mDb->getAssoc( $query, $bindVars );
 		} else {
 			$this->mErrors['get_members'] = tra( 'No valid content / member id was given.' );
 		}
