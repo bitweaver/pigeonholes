@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_pigeonholes/Pigeonholes.php,v 1.27 2006/01/25 15:40:26 spiderr Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_pigeonholes/Pigeonholes.php,v 1.28 2006/01/25 18:56:19 spiderr Exp $
  *
  * +----------------------------------------------------------------------+
  * | Copyright ( c ) 2004, bitweaver.org
@@ -17,7 +17,7 @@
  * Pigeonholes class
  *
  * @author   xing <xing@synapse.plus.com>
- * @version  $Revision: 1.27 $
+ * @version  $Revision: 1.28 $
  * @package  pigeonholes
  */
 
@@ -213,7 +213,7 @@ class Pigeonholes extends LibertyAttachable {
 			}
 
 			// generate a map of what items are assigned to what pigeonholes
-			if( !empty( $pListHash['include_members'] ) && @BitBase::verifyId( $result->fields['parent_id'] ) ) {
+			if( !empty( $pListHash['include_members'] ) && @BitBase::verifyId( $row['parent_id'] ) ) {
 				$map[$i][] = $row['parent_id'];
 			}
 
