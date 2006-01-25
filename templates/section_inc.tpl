@@ -1,5 +1,5 @@
 {strip}
-{if $gBitSystemPrefs.pigeonholes_list_style == "dynamic"}
+{if $gBitSystemPrefs.pigeonholes_list_style == "dynamic" && !$no_details}
 
 	{* ======= crazy display for only few category memebers - only display method that allows custom sorting ======= *}
 	{if $gContent->mStructureId eq $subtree[ix].structure_id or $smarty.request.expand_all}
@@ -103,5 +103,6 @@
 			{/if}
 		{/foreach}
 	{/if}
+
 {/if}
 {/strip}
