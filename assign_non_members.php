@@ -1,6 +1,6 @@
 <?php
 /**
- * $Header: /cvsroot/bitweaver/_bit_pigeonholes/Attic/assign_non_members.php,v 1.3.2.5 2006/01/24 21:19:49 squareing Exp $
+ * $Header: /cvsroot/bitweaver/_bit_pigeonholes/Attic/assign_non_members.php,v 1.3.2.6 2006/01/25 19:12:34 squareing Exp $
  *
  * Copyright ( c ) 2004 bitweaver.org
  * Copyright ( c ) 2003 tikwiki.org
@@ -8,7 +8,7 @@
  * All Rights Reserved. See copyright.txt for details and a complete list of authors.
  * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details
  *
- * $Id: assign_non_members.php,v 1.3.2.5 2006/01/24 21:19:49 squareing Exp $
+ * $Id: assign_non_members.php,v 1.3.2.6 2006/01/25 19:12:34 squareing Exp $
  * @package pigeonholes
  * @subpackage functions
  */
@@ -71,7 +71,7 @@ if( !empty( $_REQUEST['insert_content'] ) && isset( $_REQUEST['pigeonhole'] ) ) 
 
 	if( empty( $feedback['error'] ) ) {
 		foreach( $memberHash as $memberStore ) {
-			if( $gPigeonholes->insertPigeonholeMember( $memberStore, $deletableParentIds ) ) {
+			if( $gPigeonholes->insertPigeonholeMember( $memberStore ) ) {
 				$feedback['success'] = 'The content was successfully inserted into the respective categories.';
 			} else {
 				$feedback['error'] = 'The content could not be inserted into the categories.';
@@ -83,7 +83,7 @@ if( !empty( $_REQUEST['insert_content'] ) && isset( $_REQUEST['pigeonhole'] ) ) 
 	$nonMembers = $gPigeonholes->getNonPigeonholeMembers( $listHash, $contentSelect, ( !empty( $_REQUEST['include'] ) && $_REQUEST['include'] == 'members' ) ? $_REQUEST['include'] : FALSE );
 }
 
-$pigeonRootData = $gPigeonholes->getList( array( 'only_get_root' => TRUE, 'max_records' => -1 ) );
+$pigeonRootData = $gPigeonholes->getList( array( 'load_only_root' => TRUE, 'max_records' => -1 ) );
 $pigeonRoots[0] = 'All';
 foreach( $pigeonRootData['data'] as $root ) {
 	$pigeonRoots[$root['root_structure_id']] = $root['title'];
