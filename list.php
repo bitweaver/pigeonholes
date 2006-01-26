@@ -3,7 +3,7 @@
  * $Header
  *
  * @author   xing <xing@synapse.plus.com>
- * @version  $Revision: 1.6 $
+ * @version  $Revision: 1.7 $
  * @package  pigeonholes
  * @subpackage functions
  */
@@ -26,13 +26,14 @@ $pigeonList = $gContent->getList( $listHash );
 // set up structure related stuff
 if( !empty( $pigeonList ) ) {
 	foreach( $pigeonList as $key => $pigeonhole ) {
-		$gStructure = new LibertyStructure( $pigeonhole['root_structure_id'] );
-		$gStructure->load();
-		$pigeonList[$key]['subtree'] = $gStructure->getSubTree( $gStructure->mStructureId );
+		if( empty( $gStructure ) ) {
+			$gStructure = new LibertyStructure();
+		}
+		$pigeonList[$key]['subtree'] = $gStructure->getSubTree( $pigeonhole['root_structure_id'] );
 	}
 	$gBitSmarty->assign( 'pigeonList', $pigeonList );
 }
 $gBitSmarty->assign( 'listInfo', $listHash['control'] );
 
-$gBitSystem->display( 'bitpackage:pigeonholes/list.tpl', tra( 'List Pigeonholes' ) );
+$gBitSystem->display( 'bitpackage:pigeonholes/list.tpl', tra( 'List Categories' ) );
 ?>

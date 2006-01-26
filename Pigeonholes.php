@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_pigeonholes/Pigeonholes.php,v 1.29 2006/01/25 19:19:00 squareing Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_pigeonholes/Pigeonholes.php,v 1.30 2006/01/26 10:12:45 squareing Exp $
  *
  * +----------------------------------------------------------------------+
  * | Copyright ( c ) 2004, bitweaver.org
@@ -17,7 +17,7 @@
  * Pigeonholes class
  *
  * @author   xing <xing@synapse.plus.com>
- * @version  $Revision: 1.29 $
+ * @version  $Revision: 1.30 $
  * @package  pigeonholes
  */
 
@@ -37,8 +37,6 @@ class Pigeonholes extends LibertyAttachable {
 	* initiate class
 	* @param $pContentId content id of the pigeonhole - use either one of the ids.
 	* @param $pStructureId structure id of the pigeonhole - use either one of the ids.
-	* @param $pAutoLoad boolean - if set to FALSE, no pigeonhole data is loaded
-	* @param $pExtras boolean - if set to TRUE, pigeonhole content is added as well - 1 additional db access
 	* @return none
 	* @access public
 	**/
@@ -81,10 +79,12 @@ class Pigeonholes extends LibertyAttachable {
 
 			if( $result && $row = $result->fetchRow() ) {
 				$this->mInfo = $row;
-				$this->mContentId = $this->mInfo['content_id'];
-				$this->mStructureId = $this->mInfo['structure_id'];
-				$this->mInfo['creator'] = ( isset( $this->mInfo['creator_real_name'] ) ? $this->mInfo['creator_real_name'] : $this->mInfo['creator_user'] );
-				$this->mInfo['editor'] = ( isset( $this->mInfo['modifier_real_name'] ) ? $this->mInfo['modifier_real_name'] : $this->mInfo['modifier_user'] );
+				$this->mContentId = $row['content_id'];
+				$this->mStructureId = $row['structure_id'];
+				$this->mInfo['user'] = $row['creator_user'];
+				$this->mInfo['real_name'] = ( isset( $row['creator_real_name'] ) ? $row['creator_real_name'] : $row['creator_user'] );
+				$this->mInfo['display_name'] = BitUser::getTitle( $this->mInfo );
+				$this->mInfo['editor'] = ( isset( $row['modifier_real_name'] ) ? $row['modifier_real_name'] : $row['modifier_user'] );
 				$this->mInfo['display_link'] = $this->getDisplayLink();
 			}
 
@@ -363,7 +363,9 @@ class Pigeonholes extends LibertyAttachable {
 		$result = $this->mDb->query( $query, $bindVars, $pListHash['max_records'], $pListHash['offset'] );
 
 		while( $aux = $result->fetchRow() ) {
-			$aux['creator'] = ( isset( $aux['creator_real_name'] ) ? $aux['creator_real_name'] : $aux['creator_user'] );
+			$aux['user'] = $aux['creator_user'];
+			$aux['real_name'] = ( isset( $aux['creator_real_name'] ) ? $aux['creator_real_name'] : $aux['creator_user'] );
+			$aux['display_name'] = BitUser::getTitle( $aux );
 			$aux['editor'] = ( isset( $aux['modifier_real_name'] ) ? $aux['modifier_real_name'] : $aux['modifier_user'] );
 			$aux['display_link'] = Pigeonholes::getDisplayLink( $aux['title'], $aux );
 
@@ -855,7 +857,7 @@ class Pigeonholes extends LibertyAttachable {
 }
 
 function pigeonholes_alphabetiser($a, $b) {
-   return strcasecmp( $a["title"], $b["title"] );
+	return strcasecmp( $a["title"], $b["title"] );
 }
 
 ?>
