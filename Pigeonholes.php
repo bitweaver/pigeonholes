@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_pigeonholes/Pigeonholes.php,v 1.31 2006/01/30 16:41:46 squareing Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_pigeonholes/Pigeonholes.php,v 1.32 2006/01/30 17:59:10 bitweaver Exp $
  *
  * +----------------------------------------------------------------------+
  * | Copyright ( c ) 2004, bitweaver.org
@@ -17,7 +17,7 @@
  * Pigeonholes class
  *
  * @author   xing <xing@synapse.plus.com>
- * @version  $Revision: 1.31 $
+ * @version  $Revision: 1.32 $
  * @package  pigeonholes
  */
 
@@ -399,16 +399,17 @@ class Pigeonholes extends LibertyAttachable {
 	}
 
 	function alphabetiseMembers( &$pParamHash ) {
+		global $gBitSystem;
 		if( !empty( $pParamHash ) ) {
 			usort( $pParamHash, "pigeonholes_alphabetiser" );
-			// we can change the column count at any time - use 3 for now
-			$per_column = ceil( count( $pParamHash ) / 3 );
+			$per_column = ceil( count( $pParamHash ) / $gBitSystem->getPreference( 'pigeonhole_display_columns', 3 ) );
 			$i = 1;
 			$j = 1;
 			foreach( $pParamHash as $member ) {
 				$column = ( $i++ % $per_column == 0 ) ? $j++ : $j;
 				$index = strtoupper( substr( $member['title'], 0, 1 ) );
-				if( !empty( $ret[$column - 1][$index] ) ) {
+				// check if the previous column was using the same letter as we want to use in the new column
+				if(  !empty( $ret[$column - 1][$index] ) || !empty( $ret[$column - 1]["&hellip;".$index] ) ) {
 					$index = "&hellip;".$index;
 				}
 				$ret[$column][$index][] = $member;
