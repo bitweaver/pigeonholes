@@ -1,6 +1,6 @@
 <?php
 /**
- * $Header: /cvsroot/bitweaver/_bit_pigeonholes/Attic/servicefunctions_inc.php,v 1.7 2006/01/24 22:41:47 squareing Exp $
+ * $Header: /cvsroot/bitweaver/_bit_pigeonholes/Attic/servicefunctions_inc.php,v 1.8 2006/01/30 16:41:46 squareing Exp $
  *
  * Copyright ( c ) 2004 bitweaver.org
  * All Rights Reserved. See copyright.txt for details and a complete list of authors.
@@ -19,17 +19,15 @@ function display_pigeonholes( &$pObject ) {
 		require_once( PIGEONHOLES_PKG_PATH.'Pigeonholes.php' );
 		$pigeonholes = new Pigeonholes();
 
-		$settings = $pigeonholes->getPigeonholeSettings( NULL, $pObject->mContentId );
-		if( !empty( $settings['style'] ) ) {
-			$gPreviewStyle = $settings["style"];
-		}
-
 		if( $gBitUser->hasPermission( 'bit_p_view_pigeonholes' ) ) {
 			if( $pigeons = $pigeonholes->getPigeonholesFromContentId( $pObject->mContentId ) ) {
 				foreach( $pigeons as $pigeon ) {
 					$pigeonholes->mContentId = $pigeon['content_id'];
 					$pigeonholes->load( TRUE );
 					$pigeonData[] = $pigeonholes->mInfo;
+					// set the theme chosen for this page - virtually random if page is part of multiple themes
+					$pigeonholes->loadPreferences();
+					$gPreviewStyle = $pigeonholes->getPreference( 'style' );
 				}
 				$gBitSmarty->assign( 'pigeonData', !empty( $pigeonData ) ? $pigeonData : FALSE );
 			}

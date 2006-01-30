@@ -1,18 +1,19 @@
 <?php
 
 $tables = array(
-	'bit_pigeonholes' => "
+	'pigeonholes' => "
 		content_id I4 NOTNULL PRIMARY,
 		structure_id I4 NOTNULL PRIMARY
+		CONSTRAINTS ',
+			CONSTRAINT `bit_pigeonholes_ref` FOREIGN KEY (`content_id`) REFERENCES `".BIT_DB_PREFIX."tiki_content`( `content_id` ),
+			CONSTRAINT `bit_pigeonholes_ref` FOREIGN KEY (`structure_id`) REFERENCES `".BIT_DB_PREFIX."tiki_structures`( `structure_id` )'
 	",
-	'bit_pigeonhole_settings' => "
-		content_id I4 NOTNULL PRIMARY,
-		name C(40) NOTNULL,
-		value C(40) NULL
-	",
-	'bit_pigeonhole_members' => "
+	'pigeonhole_members' => "
 		parent_id I4 NOTNULL PRIMARY,
 		content_id I4 NOTNULL PRIMARY
+		CONSTRAINTS ',
+			CONSTRAINT `bit_pigeonhole_members_ref` FOREIGN KEY (`parent_id`) REFERENCES `".BIT_DB_PREFIX."bit_pigeonholes`( `content_id` ),
+			CONSTRAINT `bit_pigeonhole_members_ref` FOREIGN KEY (`content_id`) REFERENCES `".BIT_DB_PREFIX."tiki_content`( `content_id` )'
 	"
 );
 

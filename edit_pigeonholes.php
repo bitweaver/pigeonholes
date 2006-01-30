@@ -1,6 +1,6 @@
 <?php
 /**
- * $Header: /cvsroot/bitweaver/_bit_pigeonholes/edit_pigeonholes.php,v 1.10 2006/01/24 22:41:47 squareing Exp $
+ * $Header: /cvsroot/bitweaver/_bit_pigeonholes/edit_pigeonholes.php,v 1.11 2006/01/30 16:41:46 squareing Exp $
  *
  * Copyright ( c ) 2004 bitweaver.org
  * Copyright ( c ) 2003 tikwiki.org
@@ -8,7 +8,7 @@
  * All Rights Reserved. See copyright.txt for details and a complete list of authors.
  * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details
  *
- * $Id: edit_pigeonholes.php,v 1.10 2006/01/24 22:41:47 squareing Exp $
+ * $Id: edit_pigeonholes.php,v 1.11 2006/01/30 16:41:46 squareing Exp $
  * @package pigeonholes
  * @subpackage functions
  */
@@ -73,7 +73,7 @@ if( !empty( $_REQUEST['search_objects'] ) ) {
 	// if we need to edit, show the information
 	if( $_REQUEST['action'] == 'edit' ) {
 		$pigeonInfo = $gContent->mInfo;
-		$pigeonInfo['settings'] = $gContent->getPigeonholeSettings( $gContent->mContentId );
+		$gContent->loadPreferences();
 
 		// create usable array for selected items in content listing
 		if( !empty( $pigeonInfo['members'] ) ) {

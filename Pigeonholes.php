@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_pigeonholes/Pigeonholes.php,v 1.30 2006/01/26 10:12:45 squareing Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_pigeonholes/Pigeonholes.php,v 1.31 2006/01/30 16:41:46 squareing Exp $
  *
  * +----------------------------------------------------------------------+
  * | Copyright ( c ) 2004, bitweaver.org
@@ -17,7 +17,7 @@
  * Pigeonholes class
  *
  * @author   xing <xing@synapse.plus.com>
- * @version  $Revision: 1.30 $
+ * @version  $Revision: 1.31 $
  * @package  pigeonholes
  */
 
@@ -461,12 +461,10 @@ class Pigeonholes extends LibertyAttachable {
 				$result = $this->mDb->associateInsert( $table, $pParamHash['pigeonhole_store'] );
 			}
 
-			// store pigeonhole settings
+			// store individual pigeonhole preferences
 			if( !empty( $pParamHash['pigeonhole_settings_store'] ) ) {
-				// remove previous settings first
-				$this->expungePigeonholeSettings( $this->mContentId );
-				if( !$this->insertPigeonholeSettings( $pParamHash['pigeonhole_settings_store'] ) ) {
-					$this->mErrors['store'] = 'The individual pigeonhole settings could not be stored.';
+				foreach( $pParamHash['pigeonhole_settings_store'] as $name => $value ) {
+					$this->storePreference( $name, $value );
 				}
 			}
 
@@ -567,80 +565,6 @@ class Pigeonholes extends LibertyAttachable {
 	}
 
 	/**
-	* get all content inserted in a given pigeonhole. if no id is given, it gets all content for all pigeonholes
-	* @param $pContentId content id of the pigeonhole
-	* @return array of pigeonhole members with according title and content type guid
-	* @access public
-	**/
-	function getPigeonholeSettings( $pContentId=NULL, $pMemberId=NULL ) {
-		global $gBitUser, $gLibertySystem, $gBitSystem;
-		if( @BitBase::verifyId( $this->mContentId ) || @BitBase::verifyId( $pContentId ) || @BitBase::verifyId( $pMemberId ) ) {
-			if( @BitBase::verifyId( $pMemberId ) ) {
-				$where = "WHERE bpm.`content_id`=?";
-				$bindVars[] = $pMemberId;
-			} else {
-				$where = "WHERE bps.`content_id`=?";
-				$bindVars[] = @BitBase::verifyId( $pContentId ) ? $pContentId : $this->mContentId;
-			}
-			$query = "SELECT bps.`name`, bps.`value`
-				FROM `".BIT_DB_PREFIX."bit_pigeonhole_settings` bps
-				INNER JOIN `".BIT_DB_PREFIX."bit_pigeonhole_members` bpm ON ( bps.`content_id` = bpm.`parent_id` )
-				$where";
-
-			$ret = $this->mDb->getAssoc( $query, $bindVars );
-		} else {
-			$this->mErrors['get_members'] = tra( 'No valid content / member id was given.' );
-		}
-		return( !empty( $ret ) ? $ret : NULL );
-	}
-
-	/**
-	* Store pigeonhole settings
-	* @param $pParamHash an array of content to be stored.
-	* @param $pParamHash[parent_id] id of pigeonhole it belongs to, default is $this->mContentId
-	* @param $pParamHash[content_id] content_id of the item to be stored
-	* @return bool TRUE on success, FALSE if store could not occur. If FALSE, $this->mErrors will have reason why
-	* @access public
-	**/
-	function insertPigeonholeSettings( &$pParamHash, $pContentId=NULL ) {
-		if( $this->verifyPigeonholeSettings( $pParamHash ) ) {
-			foreach( $pParamHash['settings_store'] as $setting ) {
-				$setting['content_id'] = @BitBase::verifyId( $pContentId ) ? $pContentId : $this->mContentId;
-				$result = $this->mDb->associateInsert( BIT_DB_PREFIX."bit_pigeonhole_settings", $setting );
-			}
-		} else {
-			vd( $this->mErrors );
-		}
-		return( count( $this->mErrors ) == 0 );
-	}
-
-	/**
-	* verify, clean up and prepare data to be stored
-	* @param $pParamHash all information that is being stored. will update $pParamHash by reference with fixed array of itmes
-	* @return bool TRUE on success, FALSE if store could not occur. If FALSE, $this->mErrors will have reason why
-	* @access private
-	**/
-	function verifyPigeonholeSettings( &$pParamHash ) {
-		if( !empty( $pParamHash ) )  {
-			$availableSettings = array( 'style' );
-			$i = 0;
-			foreach( $pParamHash as $name => $value ) {
-				if( in_array( $name, $availableSettings ) ) {
-					$pParamHash['settings_store'][$i]['name'] = $name;
-					$pParamHash['settings_store'][$i]['value'] = !empty( $value ) ? $value : NULL;
-					$i++;
-				}
-			}
-		}
-
-		if( empty( $pParamHash['settings_store'] ) ) {
-			$pParamHash['settings_store'] = array();
-		}
-
-		return( count( $this->mErrors ) == 0 );
-	}
-
-	/**
 	* Store pigeonhole member
 	* @param $pParamHash an array of content to be stored.
 	* @param $pParamHash[parent_id] id of pigeonhole it belongs to, default is $this->mContentId
@@ -686,21 +610,6 @@ class Pigeonholes extends LibertyAttachable {
 
 		$this->mDb->CompleteTrans();
 		$pParamHash = $tmp;
-		return( count( $this->mErrors ) == 0 );
-	}
-
-	/**
-	* Expunge pigeonhole settings
-	* @param $pContentId content id for which all settings are to be removed
-	* @access public
-	**/
-	function expungePigeonholeSettings( $pContentId=NULL ) {
-		if( @BitBase::verifyId( $pContentId ) ) {
-			$query = "DELETE FROM `".BIT_DB_PREFIX."bit_pigeonhole_settings` WHERE `content_id` = ?";
-			$result = $this->mDb->query( $query, array( $pContentId ) );
-		} else {
-			$this->mErrors['settings_expunge'] = 'The settings could not be removed.';
-		}
 		return( count( $this->mErrors ) == 0 );
 	}
 
@@ -785,7 +694,6 @@ class Pigeonholes extends LibertyAttachable {
 				$result = $this->mDb->query( $query, array( $id['content_id'] ) );
 				$query = "DELETE FROM `".BIT_DB_PREFIX."bit_pigeonhole_members` WHERE `parent_id` = ?";
 				$result = $this->mDb->query( $query, array( $id['content_id'] ) );
-				$this->expungePigeonholeSettings( $id['content_id'] );
 
 				// remove all entries from content tables
 				$this->mContentId = $id['content_id'];

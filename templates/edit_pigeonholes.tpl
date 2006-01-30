@@ -45,7 +45,7 @@
 			<div class="row">
 				{formlabel label="Theme" for="pigeonhole-style"}
 				{forminput}
-					{html_options id="pigeonhole-style" name="pigeonhole[settings][style]" output=$styles values=$styles selected=$pigeonInfo.settings.style}
+					{html_options id="pigeonhole-style" name="pigeonhole[settings][style]" output=$styles values=$styles selected=$gContent->mPrefs.style}
 					{formhelp note="This theme will be applied when viewing any page belonging to this category."}
 				{/forminput}
 			</div>
