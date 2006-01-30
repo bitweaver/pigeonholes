@@ -1,14 +1,14 @@
 <?php
 
 $tables = array(
-	'pigeonholes' => "
+	'bit_pigeonholes' => "
 		content_id I4 NOTNULL PRIMARY,
 		structure_id I4 NOTNULL PRIMARY
 		CONSTRAINTS ',
 			CONSTRAINT `bit_pigeonholes_ref` FOREIGN KEY (`content_id`) REFERENCES `".BIT_DB_PREFIX."tiki_content`( `content_id` ),
 			CONSTRAINT `bit_pigeonholes_ref` FOREIGN KEY (`structure_id`) REFERENCES `".BIT_DB_PREFIX."tiki_structures`( `structure_id` )'
 	",
-	'pigeonhole_members' => "
+	'bit_pigeonhole_members' => "
 		parent_id I4 NOTNULL PRIMARY,
 		content_id I4 NOTNULL PRIMARY
 		CONSTRAINTS ',
