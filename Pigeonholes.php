@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_pigeonholes/Pigeonholes.php,v 1.32 2006/01/30 17:59:10 bitweaver Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_pigeonholes/Pigeonholes.php,v 1.33 2006/01/31 20:19:25 bitweaver Exp $
  *
  * +----------------------------------------------------------------------+
  * | Copyright ( c ) 2004, bitweaver.org
@@ -17,7 +17,7 @@
  * Pigeonholes class
  *
  * @author   xing <xing@synapse.plus.com>
- * @version  $Revision: 1.32 $
+ * @version  $Revision: 1.33 $
  * @package  pigeonholes
  */
 
@@ -66,12 +66,12 @@ class Pigeonholes extends LibertyAttachable {
 			global $gBitSystem;
 			$lookupColumn = ( @BitBase::verifyId( $this->mContentId ) ? 'tc.`content_id`' : 'ts.`structure_id`' );
 			$lookupId = ( @BitBase::verifyId( $this->mContentId ) ? $this->mContentId : $this->mStructureId );
-			$query = "SELECT bp.*, ts.`root_structure_id`, ts.`parent_id`, tc.`title`, tc.`data`, tc.`user_id`, tc.`content_type_guid`,
+			$query = "SELECT pig.*, ts.`root_structure_id`, ts.`parent_id`, tc.`title`, tc.`data`, tc.`user_id`, tc.`content_type_guid`,
 				uue.`login` AS modifier_user, uue.`real_name` AS modifier_real_name,
 				uuc.`login` AS creator_user, uuc.`real_name` AS creator_real_name
-				FROM `".BIT_DB_PREFIX."bit_pigeonholes` bp
-				INNER JOIN `".BIT_DB_PREFIX."tiki_content` tc ON ( tc.`content_id` = bp.`content_id` )
-				LEFT JOIN `".BIT_DB_PREFIX."tiki_structures` ts ON ( ts.`structure_id` = bp.`structure_id` )
+				FROM `".BIT_DB_PREFIX."pigeonholes` pig
+				INNER JOIN `".BIT_DB_PREFIX."tiki_content` tc ON ( tc.`content_id` = pig.`content_id` )
+				LEFT JOIN `".BIT_DB_PREFIX."tiki_structures` ts ON ( ts.`structure_id` = pig.`structure_id` )
 				LEFT JOIN `".BIT_DB_PREFIX."users_users` uue ON ( uue.`user_id` = tc.`modifier_user_id` )
 				LEFT JOIN `".BIT_DB_PREFIX."users_users` uuc ON ( uuc.`user_id` = tc.`user_id` )
 				WHERE $lookupColumn=?";
@@ -113,7 +113,7 @@ class Pigeonholes extends LibertyAttachable {
 		$join = '';
 		$bindVars = array();
 		if( @BitBase::verifyId( $this->mContentId ) || @BitBase::verifyId( $pListHash['content_id'] ) ) {
-			$where = " WHERE bp.`content_id` = ? ";
+			$where = " WHERE pig.`content_id` = ? ";
 			$bindVars[] = @BitBase::verifyId( $pListHash['content_id'] ) ? $pListHash['content_id'] : $this->mContentId;
 		}
 
@@ -125,7 +125,7 @@ class Pigeonholes extends LibertyAttachable {
 
 		if( !empty( $pListHash['title'] ) && is_string( $pListHash['title'] ) ) {
 			$where .= empty( $where ) ? ' WHERE ' : ' AND ';
-			$where .= " bp.`content_id` = tc2.`content_id` AND UPPER( tc2.`title` ) = ?";
+			$where .= " pig.`content_id` = tc2.`content_id` AND UPPER( tc2.`title` ) = ?";
 			$join = ", `".BIT_DB_PREFIX."tiki_content` tc2";
 			$bindVars[] = strtoupper( $pListHash['title'] );
 		}
@@ -133,10 +133,10 @@ class Pigeonholes extends LibertyAttachable {
 		$order = "ORDER BY tc.`content_type_guid`, tc.`title` ASC";
 
 		$ret = array();
-		$query = "SELECT bpm.*, tc.`content_id`, tct.`content_description`, tc.`last_modified`, tc.`user_id`, tc.`title`, tc.`content_type_guid`, uu.`login`, uu.`real_name`
-			FROM `".BIT_DB_PREFIX."bit_pigeonhole_members` bpm
-				INNER JOIN `".BIT_DB_PREFIX."bit_pigeonholes` bp ON ( bp.`content_id` = bpm.`parent_id` )
-				INNER JOIN `".BIT_DB_PREFIX."tiki_content` tc ON ( tc.`content_id` = bpm.`content_id` )
+		$query = "SELECT pigm.*, tc.`content_id`, tct.`content_description`, tc.`last_modified`, tc.`user_id`, tc.`title`, tc.`content_type_guid`, uu.`login`, uu.`real_name`
+			FROM `".BIT_DB_PREFIX."pigeonhole_members` pigm
+				INNER JOIN `".BIT_DB_PREFIX."pigeonholes` pig ON ( pig.`content_id` = pigm.`parent_id` )
+				INNER JOIN `".BIT_DB_PREFIX."tiki_content` tc ON ( tc.`content_id` = pigm.`content_id` )
 				INNER JOIN `".BIT_DB_PREFIX."tiki_content_types` tct ON ( tc.`content_type_guid` = tct.`content_type_guid` )
 				INNER JOIN `".BIT_DB_PREFIX."users_users` uu ON ( uu.`user_id` = tc.`user_id` )
 			$join $where $order";
@@ -169,7 +169,7 @@ class Pigeonholes extends LibertyAttachable {
 		$bindVars = array();
 
 		if( empty( $pListHash['include_members'] ) ) {
-			$where .= "WHERE bpm.`content_id` IS NULL";
+			$where .= "WHERE pigm.`content_id` IS NULL";
 		}
 
 		if( !empty( $pListHash['find'] ) && is_string( $pListHash['find'] ) ) {
@@ -190,9 +190,9 @@ class Pigeonholes extends LibertyAttachable {
 			$where .= " ORDER BY tc.`content_type_guid`, tc.`title` ASC";
 		}
 
-		$query = "SELECT bpm.`parent_id`, tc.`content_id`, tc.`user_id`, tc.`title`, tc.`content_type_guid`, uu.`login`, uu.`real_name`
+		$query = "SELECT pigm.`parent_id`, tc.`content_id`, tc.`user_id`, tc.`title`, tc.`content_type_guid`, uu.`login`, uu.`real_name`
 			FROM `".BIT_DB_PREFIX."tiki_content` tc
-			LEFT JOIN `".BIT_DB_PREFIX."bit_pigeonhole_members` bpm ON ( bpm.`content_id` = tc.`content_id` )
+			LEFT JOIN `".BIT_DB_PREFIX."pigeonhole_members` pigm ON ( pigm.`content_id` = tc.`content_id` )
 			LEFT JOIN `".BIT_DB_PREFIX."users_users` uu ON ( uu.`user_id` = tc.`user_id` )
 			$where";
 		$result = $this->mDb->query( $query, $bindVars, @BitBase::verifyId( $pListHash['max_records'] ) ? $pListHash['max_records'] : NULL );
@@ -235,9 +235,9 @@ class Pigeonholes extends LibertyAttachable {
 	* @access public
 	**/
 	function getPigeonholesPathList( $pContentId=NULL ) {
-		$query = "SELECT bp.`content_id`, bp.`structure_id`
-			FROM `".BIT_DB_PREFIX."bit_pigeonholes` bp
-			INNER JOIN `".BIT_DB_PREFIX."tiki_structures` ts ON ( ts.`structure_id` = bp.`structure_id` )
+		$query = "SELECT pig.`content_id`, pig.`structure_id`
+			FROM `".BIT_DB_PREFIX."pigeonholes` pig
+			INNER JOIN `".BIT_DB_PREFIX."tiki_structures` ts ON ( ts.`structure_id` = pig.`structure_id` )
 			ORDER BY ts.`root_structure_id`, ts.`structure_id` ASC";
 		$result = $this->mDb->query( $query );
 		$pigeonholes = $result->getRows();
@@ -262,10 +262,10 @@ class Pigeonholes extends LibertyAttachable {
 	**/
 	function getPigeonholesFromContentId( $pContentId ) {
 		if( @BitBase::verifyId( $pContentId ) ) {
-			$query = "SELECT bp.*
-				FROM `".BIT_DB_PREFIX."bit_pigeonhole_members` bpm
-				INNER JOIN `".BIT_DB_PREFIX."bit_pigeonholes` bp ON ( bp.`content_id` = bpm.`parent_id` )
-				WHERE bpm.`content_id`=?";
+			$query = "SELECT pig.*
+				FROM `".BIT_DB_PREFIX."pigeonhole_members` pigm
+				INNER JOIN `".BIT_DB_PREFIX."pigeonholes` pig ON ( pig.`content_id` = pigm.`parent_id` )
+				WHERE pigm.`content_id`=?";
 			$ret = $this->mDb->getAll( $query, array( $pContentId ) );
 		}
 		return( !empty( $ret ) ? $ret : FALSE );
@@ -350,14 +350,14 @@ class Pigeonholes extends LibertyAttachable {
 			$order .= " ORDER BY ts.`root_structure_id`, ts.`structure_id` ASC";
 		}
 
-		$query = "SELECT bp.*, ts.`root_structure_id`, ts.`parent_id`, tc.`title`, tc.`data`, tc.`user_id`, tc.`content_type_guid`,
+		$query = "SELECT pig.*, ts.`root_structure_id`, ts.`parent_id`, tc.`title`, tc.`data`, tc.`user_id`, tc.`content_type_guid`,
 			uue.`login` AS modifier_user, uue.`real_name` AS modifier_real_name,
 			uuc.`login` AS creator_user, uuc.`real_name` AS creator_real_name
-			FROM `".BIT_DB_PREFIX."bit_pigeonholes` bp
-			INNER JOIN `".BIT_DB_PREFIX."tiki_content` tc ON ( tc.`content_id` = bp.`content_id` )
+			FROM `".BIT_DB_PREFIX."pigeonholes` pig
+			INNER JOIN `".BIT_DB_PREFIX."tiki_content` tc ON ( tc.`content_id` = pig.`content_id` )
 			LEFT JOIN `".BIT_DB_PREFIX."users_users` uue ON ( uue.`user_id` = tc.`modifier_user_id` )
 			LEFT JOIN `".BIT_DB_PREFIX."users_users` uuc ON ( uuc.`user_id` = tc.`user_id` )
-			INNER JOIN `".BIT_DB_PREFIX."tiki_structures` ts ON ( ts.`structure_id` = bp.`structure_id` )
+			INNER JOIN `".BIT_DB_PREFIX."tiki_structures` ts ON ( ts.`structure_id` = pig.`structure_id` )
 			$where $order";
 
 		$result = $this->mDb->query( $query, $bindVars, $pListHash['max_records'], $pListHash['offset'] );
@@ -386,11 +386,11 @@ class Pigeonholes extends LibertyAttachable {
 		}
 
 		$query = "SELECT COUNT( tc.`title` )
-			FROM `".BIT_DB_PREFIX."bit_pigeonholes` bp
-			INNER JOIN `".BIT_DB_PREFIX."tiki_content` tc ON ( tc.`content_id` = bp.`content_id` )
+			FROM `".BIT_DB_PREFIX."pigeonholes` pig
+			INNER JOIN `".BIT_DB_PREFIX."tiki_content` tc ON ( tc.`content_id` = pig.`content_id` )
 			LEFT JOIN `".BIT_DB_PREFIX."users_users` uue ON ( uue.`user_id` = tc.`modifier_user_id` )
 			LEFT JOIN `".BIT_DB_PREFIX."users_users` uuc ON ( uuc.`user_id` = tc.`user_id` )
-			INNER JOIN `".BIT_DB_PREFIX."tiki_structures` ts ON ( ts.`structure_id` = bp.`structure_id` )
+			INNER JOIN `".BIT_DB_PREFIX."tiki_structures` ts ON ( ts.`structure_id` = pig.`structure_id` )
 			$where";
 		$pListHash['cant'] = $this->mDb->getOne( $query, $bindVars );
 
@@ -432,7 +432,7 @@ class Pigeonholes extends LibertyAttachable {
 	**/
 	function store( &$pParamHash ) {
 		if( $this->verify( $pParamHash ) && LibertyAttachable::store( $pParamHash ) ) {
-			$table = BIT_DB_PREFIX."bit_pigeonholes";
+			$table = BIT_DB_PREFIX."pigeonholes";
 			$this->mDb->StartTrans();
 
 			// this really confusing, strange order way of saving items is due to strange behaviour of GenID
@@ -576,7 +576,7 @@ class Pigeonholes extends LibertyAttachable {
 	function insertPigeonholeMember( &$pParamHash ) {
 		if( $this->verifyPigeonholeMember( $pParamHash ) ) {
 			foreach( $pParamHash['member_store'] as $item ) {
-				$result = $this->mDb->associateInsert( BIT_DB_PREFIX."bit_pigeonhole_members", $item );
+				$result = $this->mDb->associateInsert( BIT_DB_PREFIX."pigeonhole_members", $item );
 			}
 		} else {
 			vd( $this->mErrors );
@@ -647,7 +647,7 @@ class Pigeonholes extends LibertyAttachable {
 			}
 
 			// now we're ready to remove the actual members
-			$query = "DELETE FROM `".BIT_DB_PREFIX."bit_pigeonhole_members` $where";
+			$query = "DELETE FROM `".BIT_DB_PREFIX."pigeonhole_members` $where";
 			$result = $this->mDb->query( $query, $bindVars );
 		} else {
 			$this->mErrors['members_store'] = 'The category member(s) could not be removed.';
@@ -691,9 +691,9 @@ class Pigeonholes extends LibertyAttachable {
 
 			foreach( $contentIds as $id ) {
 				// now we have the content ids - let the nuking begin
-				$query = "DELETE FROM `".BIT_DB_PREFIX."bit_pigeonholes` WHERE `content_id` = ?";
+				$query = "DELETE FROM `".BIT_DB_PREFIX."pigeonholes` WHERE `content_id` = ?";
 				$result = $this->mDb->query( $query, array( $id['content_id'] ) );
-				$query = "DELETE FROM `".BIT_DB_PREFIX."bit_pigeonhole_members` WHERE `parent_id` = ?";
+				$query = "DELETE FROM `".BIT_DB_PREFIX."pigeonhole_members` WHERE `parent_id` = ?";
 				$result = $this->mDb->query( $query, array( $id['content_id'] ) );
 
 				// remove all entries from content tables

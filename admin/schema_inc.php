@@ -1,19 +1,19 @@
 <?php
 
 $tables = array(
-	'bit_pigeonholes' => "
+	'pigeonholes' => "
 		content_id I4 NOTNULL PRIMARY,
 		structure_id I4 NOTNULL PRIMARY
 		CONSTRAINTS ',
-			CONSTRAINT `bit_pigeonholes_ref` FOREIGN KEY (`content_id`) REFERENCES `".BIT_DB_PREFIX."tiki_content`( `content_id` ),
-			CONSTRAINT `bit_pigeonholes_ref` FOREIGN KEY (`structure_id`) REFERENCES `".BIT_DB_PREFIX."tiki_structures`( `structure_id` )'
+			CONSTRAINT `pigeonholes_ref` FOREIGN KEY (`content_id`) REFERENCES `".BIT_DB_PREFIX."tiki_content`( `content_id` ),
+			CONSTRAINT `pigeonholes_ref` FOREIGN KEY (`structure_id`) REFERENCES `".BIT_DB_PREFIX."tiki_structures`( `structure_id` )'
 	",
-	'bit_pigeonhole_members' => "
+	'pigeonhole_members' => "
 		parent_id I4 NOTNULL PRIMARY,
 		content_id I4 NOTNULL PRIMARY
 		CONSTRAINTS ',
-			CONSTRAINT `bit_pigeonhole_members_ref` FOREIGN KEY (`parent_id`) REFERENCES `".BIT_DB_PREFIX."bit_pigeonholes`( `content_id` ),
-			CONSTRAINT `bit_pigeonhole_members_ref` FOREIGN KEY (`content_id`) REFERENCES `".BIT_DB_PREFIX."tiki_content`( `content_id` )'
+			CONSTRAINT `pigeonhole_members_ref` FOREIGN KEY (`parent_id`) REFERENCES `".BIT_DB_PREFIX."pigeonholes`( `content_id` ),
+			CONSTRAINT `pigeonhole_members_ref` FOREIGN KEY (`content_id`) REFERENCES `".BIT_DB_PREFIX."tiki_content`( `content_id` )'
 	"
 );
 
@@ -33,13 +33,13 @@ $gBitInstaller->registerPackageInfo( PIGEONHOLES_PKG_NAME, array(
 
 //// ### Indexes
 //$indices = array (
-//	'bit_pigeonholes_content_idx' => array( 'table' => 'bit_pigeonholes', 'cols' => 'content_id', 'opts' => 'UNIQUE' ),
+//	'pigeonholes_content_idx' => array( 'table' => 'pigeonholes', 'cols' => 'content_id', 'opts' => 'UNIQUE' ),
 //);
 //$gBitInstaller->registerSchemaIndexes( PIGEONHOLES_PKG_NAME, $indices );
 
 // ### Sequences
 $sequences = array (
-	'bit_pigeonholes_id_seq' => array( 'start' => 1 )
+	'pigeonholes_id_seq' => array( 'start' => 1 )
 );
 
 $gBitInstaller->registerSchemaSequences( PIGEONHOLES_PKG_NAME, $sequences );
