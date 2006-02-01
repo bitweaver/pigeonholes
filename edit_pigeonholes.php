@@ -1,6 +1,6 @@
 <?php
 /**
- * $Header: /cvsroot/bitweaver/_bit_pigeonholes/edit_pigeonholes.php,v 1.11 2006/01/30 16:41:46 squareing Exp $
+ * $Header: /cvsroot/bitweaver/_bit_pigeonholes/edit_pigeonholes.php,v 1.12 2006/02/01 20:38:41 squareing Exp $
  *
  * Copyright ( c ) 2004 bitweaver.org
  * Copyright ( c ) 2003 tikwiki.org
@@ -8,7 +8,7 @@
  * All Rights Reserved. See copyright.txt for details and a complete list of authors.
  * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details
  *
- * $Id: edit_pigeonholes.php,v 1.11 2006/01/30 16:41:46 squareing Exp $
+ * $Id: edit_pigeonholes.php,v 1.12 2006/02/01 20:38:41 squareing Exp $
  * @package pigeonholes
  * @subpackage functions
  */
@@ -22,7 +22,6 @@ $gBitSystem->verifyPackage( 'pigeonholes' );
 $gBitSystem->verifyPermission( 'bit_p_edit_pigeonholes' );
 
 include_once( LIBERTY_PKG_PATH.'LibertyStructure.php' );
-include_once( THEMES_PKG_PATH.'theme_control_lib.php' );
 include_once( PIGEONHOLES_PKG_PATH.'lookup_pigeonholes_inc.php' );
 
 // include edit structure file only when structure_id is known
@@ -141,7 +140,7 @@ $gBitSmarty->assign( 'pigeonList', $pigeonList );
 $gBitSmarty->assign( 'feedback', !empty( $feedback ) ? $feedback : NULL );
 
 // Get list of available styles
-$styles = $tcontrollib->getStyles();
+$styles = $gBitThemes->getStyles( NULL, TRUE );
 array_unshift( $styles, '' );
 $gBitSmarty->assign( 'styles', $styles );
 
