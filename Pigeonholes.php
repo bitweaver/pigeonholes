@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_pigeonholes/Pigeonholes.php,v 1.33 2006/01/31 20:19:25 bitweaver Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_pigeonholes/Pigeonholes.php,v 1.34 2006/02/01 18:42:44 squareing Exp $
  *
  * +----------------------------------------------------------------------+
  * | Copyright ( c ) 2004, bitweaver.org
@@ -17,7 +17,7 @@
  * Pigeonholes class
  *
  * @author   xing <xing@synapse.plus.com>
- * @version  $Revision: 1.33 $
+ * @version  $Revision: 1.34 $
  * @package  pigeonholes
  */
 
@@ -64,16 +64,16 @@ class Pigeonholes extends LibertyAttachable {
 	function load( $pExtras=FALSE ) {
 		if( @BitBase::verifyId( $this->mContentId ) || @BitBase::verifyId( $this->mStructureId ) ) {
 			global $gBitSystem;
-			$lookupColumn = ( @BitBase::verifyId( $this->mContentId ) ? 'tc.`content_id`' : 'ts.`structure_id`' );
+			$lookupColumn = ( @BitBase::verifyId( $this->mContentId ) ? 'lc.`content_id`' : 'ls.`structure_id`' );
 			$lookupId = ( @BitBase::verifyId( $this->mContentId ) ? $this->mContentId : $this->mStructureId );
-			$query = "SELECT pig.*, ts.`root_structure_id`, ts.`parent_id`, tc.`title`, tc.`data`, tc.`user_id`, tc.`content_type_guid`,
+			$query = "SELECT pig.*, ls.`root_structure_id`, ls.`parent_id`, lc.`title`, lc.`data`, lc.`user_id`, lc.`content_type_guid`,
 				uue.`login` AS modifier_user, uue.`real_name` AS modifier_real_name,
 				uuc.`login` AS creator_user, uuc.`real_name` AS creator_real_name
 				FROM `".BIT_DB_PREFIX."pigeonholes` pig
-				INNER JOIN `".BIT_DB_PREFIX."tiki_content` tc ON ( tc.`content_id` = pig.`content_id` )
-				LEFT JOIN `".BIT_DB_PREFIX."tiki_structures` ts ON ( ts.`structure_id` = pig.`structure_id` )
-				LEFT JOIN `".BIT_DB_PREFIX."users_users` uue ON ( uue.`user_id` = tc.`modifier_user_id` )
-				LEFT JOIN `".BIT_DB_PREFIX."users_users` uuc ON ( uuc.`user_id` = tc.`user_id` )
+				INNER JOIN `".BIT_DB_PREFIX."liberty_content` lc ON ( lc.`content_id` = pig.`content_id` )
+				LEFT JOIN `".BIT_DB_PREFIX."liberty_structures` ls ON ( ls.`structure_id` = pig.`structure_id` )
+				LEFT JOIN `".BIT_DB_PREFIX."users_users` uue ON ( uue.`user_id` = lc.`modifier_user_id` )
+				LEFT JOIN `".BIT_DB_PREFIX."users_users` uuc ON ( uuc.`user_id` = lc.`user_id` )
 				WHERE $lookupColumn=?";
 			$result = $this->mDb->query( $query, array( $lookupId ) );
 
@@ -119,26 +119,26 @@ class Pigeonholes extends LibertyAttachable {
 
 		if( !empty( $pListHash['content_type_guid'] ) ) {
 			$where .= empty( $where ) ? ' WHERE ' : ' AND ';
-			$where .= " tc.content_type_guid = ? ";
+			$where .= " lc.content_type_guid = ? ";
 			$bindVars[] = $pListHash['content_type_guid'];
 		}
 
 		if( !empty( $pListHash['title'] ) && is_string( $pListHash['title'] ) ) {
 			$where .= empty( $where ) ? ' WHERE ' : ' AND ';
 			$where .= " pig.`content_id` = tc2.`content_id` AND UPPER( tc2.`title` ) = ?";
-			$join = ", `".BIT_DB_PREFIX."tiki_content` tc2";
+			$join = ", `".BIT_DB_PREFIX."liberty_content` tc2";
 			$bindVars[] = strtoupper( $pListHash['title'] );
 		}
 
-		$order = "ORDER BY tc.`content_type_guid`, tc.`title` ASC";
+		$order = "ORDER BY lc.`content_type_guid`, lc.`title` ASC";
 
 		$ret = array();
-		$query = "SELECT pigm.*, tc.`content_id`, tct.`content_description`, tc.`last_modified`, tc.`user_id`, tc.`title`, tc.`content_type_guid`, uu.`login`, uu.`real_name`
+		$query = "SELECT pigm.*, lc.`content_id`, tct.`content_description`, lc.`last_modified`, lc.`user_id`, lc.`title`, lc.`content_type_guid`, uu.`login`, uu.`real_name`
 			FROM `".BIT_DB_PREFIX."pigeonhole_members` pigm
 				INNER JOIN `".BIT_DB_PREFIX."pigeonholes` pig ON ( pig.`content_id` = pigm.`parent_id` )
-				INNER JOIN `".BIT_DB_PREFIX."tiki_content` tc ON ( tc.`content_id` = pigm.`content_id` )
-				INNER JOIN `".BIT_DB_PREFIX."tiki_content_types` tct ON ( tc.`content_type_guid` = tct.`content_type_guid` )
-				INNER JOIN `".BIT_DB_PREFIX."users_users` uu ON ( uu.`user_id` = tc.`user_id` )
+				INNER JOIN `".BIT_DB_PREFIX."liberty_content` lc ON ( lc.`content_id` = pigm.`content_id` )
+				INNER JOIN `".BIT_DB_PREFIX."liberty_content_types` tct ON ( lc.`content_type_guid` = tct.`content_type_guid` )
+				INNER JOIN `".BIT_DB_PREFIX."users_users` uu ON ( uu.`user_id` = lc.`user_id` )
 			$join $where $order";
 		$result = $this->mDb->query( $query, $bindVars, @BitBase::verifyId( $pListHash['max_records'] ) ? $pListHash['max_records'] : NULL );
 		$contentTypes = $gLibertySystem->mContentTypes;
@@ -174,26 +174,26 @@ class Pigeonholes extends LibertyAttachable {
 
 		if( !empty( $pListHash['find'] ) && is_string( $pListHash['find'] ) ) {
 			$where .= empty( $where ) ? ' WHERE ' : ' AND ';
-			$where .= " UPPER( tc.`title` ) LIKE ?";
+			$where .= " UPPER( lc.`title` ) LIKE ?";
 			$bindVars[] = ( '%'.strtoupper( $pListHash['find'] ).'%');
 		}
 
 		if( !empty( $pListHash['content_type'] ) ) {
 			$where .= empty( $where ) ? ' WHERE ' : ' AND ';
-			$where .= " tc.`content_type_guid`=?";
+			$where .= " lc.`content_type_guid`=?";
 			$bindVars[] = !empty( $pListHash['content_type'] );
 		}
 
 		if( !empty( $pListHash['sort_mode'] ) ) {
 			$where .= " ORDER BY ".$this->mDb->convert_sortmode( $pListHash['sort_mode'] )." ";
 		} else {
-			$where .= " ORDER BY tc.`content_type_guid`, tc.`title` ASC";
+			$where .= " ORDER BY lc.`content_type_guid`, lc.`title` ASC";
 		}
 
-		$query = "SELECT pigm.`parent_id`, tc.`content_id`, tc.`user_id`, tc.`title`, tc.`content_type_guid`, uu.`login`, uu.`real_name`
-			FROM `".BIT_DB_PREFIX."tiki_content` tc
-			LEFT JOIN `".BIT_DB_PREFIX."pigeonhole_members` pigm ON ( pigm.`content_id` = tc.`content_id` )
-			LEFT JOIN `".BIT_DB_PREFIX."users_users` uu ON ( uu.`user_id` = tc.`user_id` )
+		$query = "SELECT pigm.`parent_id`, lc.`content_id`, lc.`user_id`, lc.`title`, lc.`content_type_guid`, uu.`login`, uu.`real_name`
+			FROM `".BIT_DB_PREFIX."liberty_content` lc
+			LEFT JOIN `".BIT_DB_PREFIX."pigeonhole_members` pigm ON ( pigm.`content_id` = lc.`content_id` )
+			LEFT JOIN `".BIT_DB_PREFIX."users_users` uu ON ( uu.`user_id` = lc.`user_id` )
 			$where";
 		$result = $this->mDb->query( $query, $bindVars, @BitBase::verifyId( $pListHash['max_records'] ) ? $pListHash['max_records'] : NULL );
 
@@ -237,8 +237,8 @@ class Pigeonholes extends LibertyAttachable {
 	function getPigeonholesPathList( $pContentId=NULL ) {
 		$query = "SELECT pig.`content_id`, pig.`structure_id`
 			FROM `".BIT_DB_PREFIX."pigeonholes` pig
-			INNER JOIN `".BIT_DB_PREFIX."tiki_structures` ts ON ( ts.`structure_id` = pig.`structure_id` )
-			ORDER BY ts.`root_structure_id`, ts.`structure_id` ASC";
+			INNER JOIN `".BIT_DB_PREFIX."liberty_structures` ls ON ( ls.`structure_id` = pig.`structure_id` )
+			ORDER BY ls.`root_structure_id`, ls.`structure_id` ASC";
 		$result = $this->mDb->query( $query );
 		$pigeonholes = $result->getRows();
 		foreach( $pigeonholes as $pigeonhole ) {
@@ -328,18 +328,18 @@ class Pigeonholes extends LibertyAttachable {
 
 		if( @BitBase::verifyId( $pListHash['root_structure_id'] ) ) {
 			$where .= empty( $where ) ? ' WHERE ' : ' AND ';
-			$where .= " ts.`root_structure_id`=? ";
+			$where .= " ls.`root_structure_id`=? ";
 			$bindVars[] = $pListHash['root_structure_id'];
 		}
 
 		if( !empty( $pListHash['load_only_root'] ) ) {
 			$where .= empty( $where ) ? ' WHERE ' : ' AND ';
-			$where .= " ts.`structure_id`=ts.`root_structure_id` ";
+			$where .= " ls.`structure_id`=ls.`root_structure_id` ";
 		}
 
 		if( !empty( $pListHash['find'] ) ) {
 			$where .= empty( $where ) ? ' WHERE ' : ' AND ';
-			$where .= " UPPER( tc.`title` ) LIKE ? ";
+			$where .= " UPPER( lc.`title` ) LIKE ? ";
 			$bindVars[] = '%'.strtoupper( $pListHash['find'] ).'%';
 		}
 
@@ -347,17 +347,17 @@ class Pigeonholes extends LibertyAttachable {
 			$order .= " ORDER BY ".$this->mDb->convert_sortmode( $pListHash['sort_mode'] )." ";
 		} else {
 			// default sort mode makes list look nice
-			$order .= " ORDER BY ts.`root_structure_id`, ts.`structure_id` ASC";
+			$order .= " ORDER BY ls.`root_structure_id`, ls.`structure_id` ASC";
 		}
 
-		$query = "SELECT pig.*, ts.`root_structure_id`, ts.`parent_id`, tc.`title`, tc.`data`, tc.`user_id`, tc.`content_type_guid`,
+		$query = "SELECT pig.*, ls.`root_structure_id`, ls.`parent_id`, lc.`title`, lc.`data`, lc.`user_id`, lc.`content_type_guid`,
 			uue.`login` AS modifier_user, uue.`real_name` AS modifier_real_name,
 			uuc.`login` AS creator_user, uuc.`real_name` AS creator_real_name
 			FROM `".BIT_DB_PREFIX."pigeonholes` pig
-			INNER JOIN `".BIT_DB_PREFIX."tiki_content` tc ON ( tc.`content_id` = pig.`content_id` )
-			LEFT JOIN `".BIT_DB_PREFIX."users_users` uue ON ( uue.`user_id` = tc.`modifier_user_id` )
-			LEFT JOIN `".BIT_DB_PREFIX."users_users` uuc ON ( uuc.`user_id` = tc.`user_id` )
-			INNER JOIN `".BIT_DB_PREFIX."tiki_structures` ts ON ( ts.`structure_id` = pig.`structure_id` )
+			INNER JOIN `".BIT_DB_PREFIX."liberty_content` lc ON ( lc.`content_id` = pig.`content_id` )
+			LEFT JOIN `".BIT_DB_PREFIX."users_users` uue ON ( uue.`user_id` = lc.`modifier_user_id` )
+			LEFT JOIN `".BIT_DB_PREFIX."users_users` uuc ON ( uuc.`user_id` = lc.`user_id` )
+			INNER JOIN `".BIT_DB_PREFIX."liberty_structures` ls ON ( ls.`structure_id` = pig.`structure_id` )
 			$where $order";
 
 		$result = $this->mDb->query( $query, $bindVars, $pListHash['max_records'], $pListHash['offset'] );
@@ -385,12 +385,12 @@ class Pigeonholes extends LibertyAttachable {
 			$ret[] = $aux;
 		}
 
-		$query = "SELECT COUNT( tc.`title` )
+		$query = "SELECT COUNT( lc.`title` )
 			FROM `".BIT_DB_PREFIX."pigeonholes` pig
-			INNER JOIN `".BIT_DB_PREFIX."tiki_content` tc ON ( tc.`content_id` = pig.`content_id` )
-			LEFT JOIN `".BIT_DB_PREFIX."users_users` uue ON ( uue.`user_id` = tc.`modifier_user_id` )
-			LEFT JOIN `".BIT_DB_PREFIX."users_users` uuc ON ( uuc.`user_id` = tc.`user_id` )
-			INNER JOIN `".BIT_DB_PREFIX."tiki_structures` ts ON ( ts.`structure_id` = pig.`structure_id` )
+			INNER JOIN `".BIT_DB_PREFIX."liberty_content` lc ON ( lc.`content_id` = pig.`content_id` )
+			LEFT JOIN `".BIT_DB_PREFIX."users_users` uue ON ( uue.`user_id` = lc.`modifier_user_id` )
+			LEFT JOIN `".BIT_DB_PREFIX."users_users` uuc ON ( uuc.`user_id` = lc.`user_id` )
+			INNER JOIN `".BIT_DB_PREFIX."liberty_structures` ls ON ( ls.`structure_id` = pig.`structure_id` )
 			$where";
 		$pListHash['cant'] = $this->mDb->getOne( $query, $bindVars );
 
@@ -458,7 +458,7 @@ class Pigeonholes extends LibertyAttachable {
 
 				// get the corrent structure_id
 				// structure_id has to be done like this since it's screwed up in the schema
-				$pParamHash['pigeonhole_store']['structure_id'] =  $this->mDb->getOne( "SELECT MAX( `structure_id` ) FROM `".BIT_DB_PREFIX."tiki_structures`" );
+				$pParamHash['pigeonhole_store']['structure_id'] =  $this->mDb->getOne( "SELECT MAX( `structure_id` ) FROM `".BIT_DB_PREFIX."liberty_structures`" );
 				$result = $this->mDb->associateInsert( $table, $pParamHash['pigeonhole_store'] );
 			}
 
@@ -686,7 +686,7 @@ class Pigeonholes extends LibertyAttachable {
 			foreach( $structureIds as $structureId ) {
 				$where .= ( empty( $where ) ? " WHERE " : " OR ")."`structure_id`=?";
 			}
-			$result = $this->mDb->query( "SELECT `content_id` FROM `".BIT_DB_PREFIX."tiki_structures` $where", $structureIds );
+			$result = $this->mDb->query( "SELECT `content_id` FROM `".BIT_DB_PREFIX."liberty_structures` $where", $structureIds );
 			$contentIds = $result->getRows();
 
 			foreach( $contentIds as $id ) {
@@ -706,7 +706,7 @@ class Pigeonholes extends LibertyAttachable {
 				}
 			}
 
-			// finally nuke the structure in tiki_structures
+			// finally nuke the structure in liberty_structures
 			$struct->s_remove_page( $this->mStructureId, FALSE );
 		}
 		return $ret;
