@@ -38,11 +38,11 @@ array( 'DATADICT' => array(
 	array( 'DROPTABLE' => array(
 		'bit_pigeonhole_settings',
 	)),
-//	// remove bit_ prefix
-//	array( 'RENAMETABLE' => array(
-//		'bit_pigeonholes' => 'pigeonholes',
-//		'bit_pigeonhole_members' => 'pigeonhole_members',
-//	)),
+	// remove bit_ prefix
+	array( 'RENAMETABLE' => array(
+		'bit_pigeonholes' => 'pigeonholes',
+		'bit_pigeonhole_members' => 'pigeonhole_members',
+	)),
 )),
 		)
 	)
