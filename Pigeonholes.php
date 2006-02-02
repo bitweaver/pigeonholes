@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_pigeonholes/Pigeonholes.php,v 1.36 2006/02/02 07:55:24 squareing Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_pigeonholes/Pigeonholes.php,v 1.37 2006/02/02 17:19:05 squareing Exp $
  *
  * +----------------------------------------------------------------------+
  * | Copyright ( c ) 2004, bitweaver.org
@@ -17,7 +17,7 @@
  * Pigeonholes class
  *
  * @author   xing <xing@synapse.plus.com>
- * @version  $Revision: 1.36 $
+ * @version  $Revision: 1.37 $
  * @package  pigeonholes
  */
 
@@ -181,7 +181,7 @@ class Pigeonholes extends LibertyAttachable {
 		if( !empty( $pListHash['content_type'] ) ) {
 			$where .= empty( $where ) ? ' WHERE ' : ' AND ';
 			$where .= " lc.`content_type_guid`=?";
-			$bindVars[] = !empty( $pListHash['content_type'] );
+			$bindVars[] = $pListHash['content_type'];
 		}
 
 		if( !empty( $pListHash['sort_mode'] ) ) {
