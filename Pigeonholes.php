@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_pigeonholes/Pigeonholes.php,v 1.35 2006/02/01 19:01:49 squareing Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_pigeonholes/Pigeonholes.php,v 1.36 2006/02/02 07:55:24 squareing Exp $
  *
  * +----------------------------------------------------------------------+
  * | Copyright ( c ) 2004, bitweaver.org
@@ -17,7 +17,7 @@
  * Pigeonholes class
  *
  * @author   xing <xing@synapse.plus.com>
- * @version  $Revision: 1.35 $
+ * @version  $Revision: 1.36 $
  * @package  pigeonholes
  */
 
@@ -436,7 +436,7 @@ class Pigeonholes extends LibertyAttachable {
 			$this->mDb->StartTrans();
 
 			// this really confusing, strange order way of saving items is due to strange behaviour of GenID
-			// probably has to do with not null default nextval('public.tiki_structures_structure_id_seq'::text)
+			// probably has to do with not null default nextval('public.liberty_structures_id_seq'::text)
 			if( !empty( $pParamHash['update'] ) ) {
 				if( !empty( $pParamHash['pigeonhole_store'] ) ) {
 					$locId = array ( "name" => "content_id", "value" => $this->mContentId );
