@@ -1,6 +1,6 @@
 <?php
 /**
- * $Header: /cvsroot/bitweaver/_bit_pigeonholes/modules/mod_whats_related.php,v 1.3 2006/01/14 19:55:19 squareing Exp $
+ * $Header: /cvsroot/bitweaver/_bit_pigeonholes/modules/mod_whats_related.php,v 1.4 2006/02/04 12:18:31 squareing Exp $
  *
  * Copyright (c) 2004 bitweaver.org
  * Copyright (c) 2003 tikwiki.org
@@ -8,17 +8,13 @@
  * All Rights Reserved. See copyright.txt for details and a complete list of authors.
  * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details
  *
- * $Id: mod_whats_related.php,v 1.3 2006/01/14 19:55:19 squareing Exp $
+ * $Id: mod_whats_related.php,v 1.4 2006/02/04 12:18:31 squareing Exp $
  * @package categories
  * @subpackage modules
  */
 
 global $gContent;
-
-/**
- * required setup
- */
-if( isset( $gContent ) ) {
+if( !empty( $gContent->mContentId ) ) {
 	if( $gBitUser->hasPermission( 'bit_p_view_pigeonholes' ) ) {
 		require_once( PIGEONHOLES_PKG_PATH.'Pigeonholes.php' );
 		$pigeonholes = new Pigeonholes();
@@ -27,9 +23,9 @@ if( isset( $gContent ) ) {
 			foreach( $pigeons as $pigeon ) {
 				$pigeonholes->mContentId = $pigeon['content_id'];
 				$pigeonholes->load( TRUE );
-				$relatedPigeon[] = $pigeonholes->mInfo;
+				$modRelatedPigeon[] = $pigeonholes->mInfo;
 			}
-			$gBitSmarty->assign( 'relatedPigeon', !empty( $relatedPigeon ) ? $relatedPigeon : FALSE );
+			$gBitSmarty->assign( 'modRelatedPigeon', !empty( $modRelatedPigeon ) ? $modRelatedPigeon : FALSE );
 		}
 	}
 }

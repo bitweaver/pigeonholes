@@ -1,6 +1,6 @@
 <?php
 /**
- * $Header: /cvsroot/bitweaver/_bit_pigeonholes/assign_content.php,v 1.1 2006/01/25 19:19:35 squareing Exp $
+ * $Header: /cvsroot/bitweaver/_bit_pigeonholes/assign_content.php,v 1.2 2006/02/04 12:18:31 squareing Exp $
  *
  * Copyright ( c ) 2004 bitweaver.org
  * Copyright ( c ) 2003 tikwiki.org
@@ -8,7 +8,7 @@
  * All Rights Reserved. See copyright.txt for details and a complete list of authors.
  * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details
  *
- * $Id: assign_content.php,v 1.1 2006/01/25 19:19:35 squareing Exp $
+ * $Id: assign_content.php,v 1.2 2006/02/04 12:18:31 squareing Exp $
  * @package pigeonholes
  * @subpackage functions
  */
@@ -47,7 +47,7 @@ if( !empty( $_REQUEST['insert_content'] ) && isset( $_REQUEST['pigeonhole'] ) ) 
 	$deletableParentIds = array();
 	if( empty( $gStructure ) && @BitBase::verifyId( $_REQUEST['root_structure_id'] ) ) {
 		$gStructure = new LibertyStructure();
-		$struct = $gStructure->getStructure( $_REQUEST['root_structure_id'] );
+		$struct = $gStructure->getStructure( $_REQUEST );
 		foreach( $struct as $node ) {
 			$deletableParentIds[] = $node['content_id'];
 		}
