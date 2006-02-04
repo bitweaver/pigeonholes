@@ -85,7 +85,7 @@
 			{smartlink ititle="Remove Category" ibiticon="liberty/delete" ifile="edit_pigeonholes.php" structure_id=$subtree[ix].structure_id action=remove}
 		</div>
 	{/if}
-	
+
 	{if $subtree[ix].content_id == $smarty.request.content_id || $subtree[ix].structure_id == $smarty.request.structure_id}
 		{assign var=current value=1}
 	{else}

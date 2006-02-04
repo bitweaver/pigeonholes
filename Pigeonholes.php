@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_pigeonholes/Pigeonholes.php,v 1.37 2006/02/02 17:19:05 squareing Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_pigeonholes/Pigeonholes.php,v 1.38 2006/02/04 17:47:24 squareing Exp $
  *
  * +----------------------------------------------------------------------+
  * | Copyright ( c ) 2004, bitweaver.org
@@ -17,7 +17,7 @@
  * Pigeonholes class
  *
  * @author   xing <xing@synapse.plus.com>
- * @version  $Revision: 1.37 $
+ * @version  $Revision: 1.38 $
  * @package  pigeonholes
  */
 
@@ -262,13 +262,19 @@ class Pigeonholes extends LibertyAttachable {
 	**/
 	function getPigeonholesFromContentId( $pContentId ) {
 		if( @BitBase::verifyId( $pContentId ) ) {
-			$query = "SELECT pig.*
+			$query = "SELECT ls.*
 				FROM `".BIT_DB_PREFIX."pigeonhole_members` pigm
 				INNER JOIN `".BIT_DB_PREFIX."pigeonholes` pig ON ( pig.`content_id` = pigm.`parent_id` )
+				INNER JOIN `".BIT_DB_PREFIX."liberty_structures` ls ON ( pig.`structure_id` = ls.`structure_id` )
 				WHERE pigm.`content_id`=?";
 			$ret = $this->mDb->getAll( $query, array( $pContentId ) );
 		}
 		return( !empty( $ret ) ? $ret : FALSE );
+	}
+
+	function getStructure( $pParamHash ) {
+		$struct = new LibertyStructure();
+		return $struct->getStructure( $pParamHash );
 	}
 
 	/**
