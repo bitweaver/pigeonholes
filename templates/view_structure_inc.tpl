@@ -2,7 +2,6 @@
 <ul>
 	<li>
 		{section name=ix loop=$subtree}
-			{assign var=structId value=$subtree[ix].structure_id}
 			{if $subtree[ix].pos eq ''}
 				{include file="bitpackage:pigeonholes/section_inc.tpl"}
 			{else}
