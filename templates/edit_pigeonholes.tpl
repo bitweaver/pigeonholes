@@ -45,8 +45,24 @@
 			<div class="row">
 				{formlabel label="Theme" for="pigeonhole-style"}
 				{forminput}
-					{html_options id="pigeonhole-style" name="pigeonhole[settings][style]" output=$styles values=$styles selected=$gContent->mPrefs.style}
-					{formhelp note="This theme will be applied when viewing any page belonging to this category."}
+					{html_options id="pigeonhole-style" name="pigeonhole[prefs][pigeonholes_style]" output=$styles values=$styles selected=$gContent->mPrefs.pigeonholes_style}
+					{formhelp note="This theme will be applied when viewing any page belonging to this category." warning="Setting is inherited from parent category."}
+				{/forminput}
+			</div>
+
+			<div class="row">
+				{formlabel label="Permission" for="perm"}
+				{forminput}
+					{html_options name="pigeonhole[prefs][pigeonholes_permission]" id="perm" options=$perms selected=`$gContent->mPrefs.pigeonholes_permission`}
+					{formhelp note="Permission required to view any page in this category." warning="Setting is inherited from parent category."}
+				{/forminput}
+			</div>
+
+			<div class="row">
+				{formlabel label="Group" for="group"}
+				{forminput}
+					{html_options name="pigeonhole[prefs][pigeonholes_group]" id="group" options=$groups selected=`$gContent->mPrefs.pigeonholes_group_id`}
+					{formhelp note="Users of only this group can view the content of this category." warning="Setting is inherited from parent category."}
 				{/forminput}
 			</div>
 

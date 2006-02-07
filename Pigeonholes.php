@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_pigeonholes/Pigeonholes.php,v 1.38 2006/02/04 17:47:24 squareing Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_pigeonholes/Pigeonholes.php,v 1.39 2006/02/07 13:33:33 squareing Exp $
  *
  * +----------------------------------------------------------------------+
  * | Copyright ( c ) 2004, bitweaver.org
@@ -17,7 +17,7 @@
  * Pigeonholes class
  *
  * @author   xing <xing@synapse.plus.com>
- * @version  $Revision: 1.38 $
+ * @version  $Revision: 1.39 $
  * @package  pigeonholes
  */
 
@@ -469,9 +469,10 @@ class Pigeonholes extends LibertyAttachable {
 			}
 
 			// store individual pigeonhole preferences
-			if( !empty( $pParamHash['pigeonhole_settings_store'] ) ) {
-				foreach( $pParamHash['pigeonhole_settings_store'] as $name => $value ) {
-					$this->storePreference( $name, $value );
+			if( !empty( $pParamHash['pigeonhole_prefs_store'] ) ) {
+				foreach( $pParamHash['pigeonhole_prefs_store'] as $name => $value ) {
+					// make sure null is used when value is empty. this makes sure the preference is removed from the table rather than filled with empty strings
+					$this->storePreference( $name, ( !empty( $value ) ? $value : NULL ) );
 				}
 			}
 
@@ -553,7 +554,7 @@ class Pigeonholes extends LibertyAttachable {
 		}
 
 		// pigeonhole settings store
-		$pParamHash['pigeonhole_settings_store'] = !empty( $pParamHash['settings'] ) ? $pParamHash['settings'] : NULL;
+		$pParamHash['pigeonhole_prefs_store'] = !empty( $pParamHash['prefs'] ) ? $pParamHash['prefs'] : NULL;
 
 		// structure store
 		if( @BitBase::verifyId( $pParamHash['root_structure_id'] ) ) {

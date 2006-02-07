@@ -26,20 +26,21 @@
 						{assign var=more value=0}
 
 						{foreach from=$pigeonItem.members item=member}
-							{if $gContent->mContentId != $member.content_id}
 								{assign var=ctg1 value=$member.content_type_guid}
 
-								{if $ctg1 ne $ctg2}{if $ctg2}<br />{/if}{$gLibertySystem->mContentTypes.$ctg1.content_description}: {/if}
+								{if $ctg1 ne $ctg2}{if $ctg2}<br />{/if}{$gLibertySystem->mContentTypes.$ctg1.content_description}:&nbsp;{/if}
 
 								{if !$gBitSystemPrefs.limit_member_number or $member_count lt $gBitSystemPrefs.limit_member_number}
-									<a href="{$smarty.const.BIT_ROOT_URL}index.php?content_id={$member.content_id}">{$member.title}</a>&nbsp; &bull; &nbsp;
+									{if $gContent->mContentId == $member.content_id}<strong>{/if}
+										{$member.display_link}
+									{if $gContent->mContentId == $member.content_id}</strong>{/if}
+									&nbsp; &bull; &nbsp;
 								{else}
 									{assign var=more value=1}
 								{/if}
 
 								{counter assign=member_count}
 								{assign var=ctg2 value=$member.content_type_guid}
-							{/if}
 						{/foreach}
 
 						{if $more eq 1}
