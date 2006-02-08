@@ -1,6 +1,6 @@
 <?php
 /**
- * $Header: /cvsroot/bitweaver/_bit_pigeonholes/view.php,v 1.7 2006/01/24 22:41:47 squareing Exp $
+ * $Header: /cvsroot/bitweaver/_bit_pigeonholes/view.php,v 1.8 2006/02/08 12:31:14 squareing Exp $
  *
  * Copyright ( c ) 2004 bitweaver.org
  * Copyright ( c ) 2003 tikwiki.org
@@ -8,7 +8,7 @@
  * All Rights Reserved. See copyright.txt for details and a complete list of authors.
  * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details
  *
- * $Id: view.php,v 1.7 2006/01/24 22:41:47 squareing Exp $
+ * $Id: view.php,v 1.8 2006/02/08 12:31:14 squareing Exp $
  * @package pigeonholes
  * @subpackage functions
  */
@@ -22,6 +22,8 @@ $gBitSystem->verifyPackage( 'pigeonholes' );
 $gBitSystem->verifyPermission( 'bit_p_view_pigeonholes' );
 
 include_once( PIGEONHOLES_PKG_PATH.'lookup_pigeonholes_inc.php' );
+
+$gBitSmarty->assign_by_ref( 'memberFeedback', $memberFeedback = array() );
 
 // set up structure related stuff
 global $gStructure;
@@ -45,15 +47,51 @@ if( empty( $gStructure ) || !$gStructure->isValid() ) {
 
 $gBitSmarty->assign_by_ref( 'gStructure', $gStructure );
 $gBitSmarty->assign( 'structureInfo', $gStructure->mInfo );
-$gBitSmarty->assign( 'subtree', $gStructure->getSubTree( $gStructure->mStructureId ) );
+/*
+$subtree = $gStructure->getSubTree( $gStructure->mStructureId );
+// get individual node preferences
+foreach( $subtree as $k => $node ) {
+	$subtree[$k]['preferences'] = $gContent->loadPreferences( $node['content_id'] );
+	if( !empty( $subtree[$k]['preferences']['permission'] ) ) {
+		$subtree[$k]['permissions'][] = $subtree[$k]['preferences']['permission'];
+	}
+	if( !empty( $subtree[$k]['preferences']['group_id'] ) ) {
+		$subtree[$k]['groups'][] = $subtree[$k]['preferences']['group_id'];
+	}
+}
 
+// this is a bit of a crazy setup to pass permissions on to child nodes, but i'm not sure how else to do this.
+for( $i = 0; $i <= count( $subtree ); $i++ ) {
+	foreach( $subtree as $key => $node ) {
+		if( $node['level'] == $i ) {
+			foreach( $subtree as $k => $n ) {
+				if( $n['level'] == $i-1 ) {
+					if( !empty( $n['preferences']['permission'] ) ) {
+						$subtree[$key]['permissions'][] = $n['preferences']['permission'];
+					}
+					if( !empty( $n['preferences']['group_id'] ) ) {
+						$subtree[$key]['groups'][] = $n['preferences']['group_id'];
+					}
+				}
+			}
+		}
+	}
+}
+$gBitSmarty->assign( 'subtree', $subtree );
+*/
+
+$gBitSmarty->assign( 'subtree', $gStructure->getSubTree( $gStructure->mStructureId ) );
 $listHash = array(
 	'root_structure_id' => $gContent->mInfo['root_structure_id'],
 	'structure_id' => $gContent->mInfo['structure_id'],
 	'load_extras' => TRUE
 );
-$pigeonList = $gContent->getList( $listHash );
-$gBitSmarty->assign( 'pigeonList', $pigeonList );
+if( $gContent->checkPathPermissions( $gContent->getField( 'path' ) ) ) {
+	$pigeonList = $gContent->getList( $listHash );
+	$gBitSmarty->assign( 'pigeonList', $pigeonList );
+} else {
+	$memberFeedback['warning'] = tra( "You do not have the required permissions to view the content of this category" );
+}
 
 $gContent->addHit();
 // Display the template

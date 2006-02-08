@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_pigeonholes/Pigeonholes.php,v 1.39 2006/02/07 13:33:33 squareing Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_pigeonholes/Pigeonholes.php,v 1.40 2006/02/08 12:31:13 squareing Exp $
  *
  * +----------------------------------------------------------------------+
  * | Copyright ( c ) 2004, bitweaver.org
@@ -17,7 +17,7 @@
  * Pigeonholes class
  *
  * @author   xing <xing@synapse.plus.com>
- * @version  $Revision: 1.39 $
+ * @version  $Revision: 1.40 $
  * @package  pigeonholes
  */
 
@@ -272,11 +272,6 @@ class Pigeonholes extends LibertyAttachable {
 		return( !empty( $ret ) ? $ret : FALSE );
 	}
 
-	function getStructure( $pParamHash ) {
-		$struct = new LibertyStructure();
-		return $struct->getStructure( $pParamHash );
-	}
-
 	/**
 	* get the path of a pigeonhole
 	* @param $pStructureId structure id of pigeonhole, if no id is given, it gets the id from $this->mStructureId
@@ -360,25 +355,23 @@ class Pigeonholes extends LibertyAttachable {
 			uue.`login` AS modifier_user, uue.`real_name` AS modifier_real_name,
 			uuc.`login` AS creator_user, uuc.`real_name` AS creator_real_name
 			FROM `".BIT_DB_PREFIX."pigeonholes` pig
-			INNER JOIN `".BIT_DB_PREFIX."liberty_content` lc ON ( lc.`content_id` = pig.`content_id` )
-			LEFT JOIN `".BIT_DB_PREFIX."users_users` uue ON ( uue.`user_id` = lc.`modifier_user_id` )
-			LEFT JOIN `".BIT_DB_PREFIX."users_users` uuc ON ( uuc.`user_id` = lc.`user_id` )
-			INNER JOIN `".BIT_DB_PREFIX."liberty_structures` ls ON ( ls.`structure_id` = pig.`structure_id` )
+				INNER JOIN `".BIT_DB_PREFIX."liberty_content` lc ON ( lc.`content_id` = pig.`content_id` )
+				LEFT JOIN `".BIT_DB_PREFIX."users_users` uue ON ( uue.`user_id` = lc.`modifier_user_id` )
+				LEFT JOIN `".BIT_DB_PREFIX."users_users` uuc ON ( uuc.`user_id` = lc.`user_id` )
+				INNER JOIN `".BIT_DB_PREFIX."liberty_structures` ls ON ( ls.`structure_id` = pig.`structure_id` )
 			$where $order";
 
 		$result = $this->mDb->query( $query, $bindVars, $pListHash['max_records'], $pListHash['offset'] );
 
 		while( $aux = $result->fetchRow() ) {
+			$content_ids[] = $aux['content_id'];
 			$aux['user'] = $aux['creator_user'];
 			$aux['real_name'] = ( isset( $aux['creator_real_name'] ) ? $aux['creator_real_name'] : $aux['creator_user'] );
 			$aux['display_name'] = BitUser::getTitle( $aux );
 			$aux['editor'] = ( isset( $aux['modifier_real_name'] ) ? $aux['modifier_real_name'] : $aux['modifier_user'] );
 			$aux['display_link'] = Pigeonholes::getDisplayLink( $aux['title'], $aux );
 
-			if( !empty( $pListHash['force_extras'] ) ||
-				( !empty( $pListHash['load_extras'] ) && $gBitSystem->getPreference( 'pigeonholes_list_style' ) != 'table' ) ||
-				( !empty( $pListHash['load_extras'] ) && $aux['structure_id'] == @$pListHash['structure_id'] && $gBitSystem->getPreference( 'pigeonholes_list_style' ) == 'table' )
-			) {
+			if( !empty( $pListHash['force_extras'] ) || ( !empty( $pListHash['load_extras'] ) && $aux['structure_id'] == @$pListHash['structure_id'] ) ) {
 				$aux['path'] = $this->getPigeonholePath( $aux['structure_id'] );
 				$aux['display_path'] = Pigeonholes::getDisplayPath( $aux['path'] );
 				$aux['members'] = $this->getMemberList( array( 'content_id' => $aux['content_id'] ) );
@@ -388,15 +381,15 @@ class Pigeonholes extends LibertyAttachable {
 				}
 			}
 
-			$ret[] = $aux;
+			$ret[$aux['structure_id']] = $aux;
 		}
 
 		$query = "SELECT COUNT( lc.`title` )
 			FROM `".BIT_DB_PREFIX."pigeonholes` pig
-			INNER JOIN `".BIT_DB_PREFIX."liberty_content` lc ON ( lc.`content_id` = pig.`content_id` )
-			LEFT JOIN `".BIT_DB_PREFIX."users_users` uue ON ( uue.`user_id` = lc.`modifier_user_id` )
-			LEFT JOIN `".BIT_DB_PREFIX."users_users` uuc ON ( uuc.`user_id` = lc.`user_id` )
-			INNER JOIN `".BIT_DB_PREFIX."liberty_structures` ls ON ( ls.`structure_id` = pig.`structure_id` )
+				INNER JOIN `".BIT_DB_PREFIX."liberty_content` lc ON ( lc.`content_id` = pig.`content_id` )
+				LEFT JOIN `".BIT_DB_PREFIX."users_users` uue ON ( uue.`user_id` = lc.`modifier_user_id` )
+				LEFT JOIN `".BIT_DB_PREFIX."users_users` uuc ON ( uuc.`user_id` = lc.`user_id` )
+				INNER JOIN `".BIT_DB_PREFIX."liberty_structures` ls ON ( ls.`structure_id` = pig.`structure_id` )
 			$where";
 		$pListHash['cant'] = $this->mDb->getOne( $query, $bindVars );
 
@@ -404,14 +397,40 @@ class Pigeonholes extends LibertyAttachable {
 		return $ret;
 	}
 
-	function alphabetiseMembers( &$pParamHash ) {
+	/**
+	* Check permissions of all nodes that lead to this
+	* @return a nicely grouped set of pigeonhole members in a set of columns and starting letters.
+	* @access public
+	**/
+	function checkPathPermissions( &$pPath ) {
+		global $gBitUser;
+		foreach( $pPath as $key => $path ) {
+			// load preferences for this node, if it's not loaded yet
+			if( empty( $path['preferences'] ) ) {
+				$pPath[$key]['preferences'] = $this->loadPreferences( $path['content_id'] );
+			}
+			$group_id   = !empty( $pPath[$key]['preferences']['group_id'] )   ? $pPath[$key]['preferences']['group_id']   : NULL;
+			$permission = !empty( $pPath[$key]['preferences']['permission'] ) ? $pPath[$key]['preferences']['permission'] : NULL;
+			if( ( !empty( $group_id ) && !$gBitUser->isInGroup( $group_id ) ) || ( !empty( $permission ) && !$gBitUser->hasPermission( $permission ) ) ) {
+				return FALSE;
+			}
+		}
+		return TRUE;
+	}
+
+	/**
+	* Alphabetise all member items
+	* @return a nicely grouped set of pigeonhole members in a set of columns and starting letters.
+	* @access public
+	**/
+	function alphabetiseMembers( &$pMememberHash ) {
 		global $gBitSystem;
-		if( !empty( $pParamHash ) ) {
-			usort( $pParamHash, "pigeonholes_alphabetiser" );
-			$per_column = ceil( count( $pParamHash ) / $gBitSystem->getPreference( 'pigeonhole_display_columns', 3 ) );
+		if( !empty( $pMememberHash ) ) {
+			usort( $pMememberHash, "pigeonholes_alphabetiser" );
+			$per_column = ceil( count( $pMememberHash ) / $gBitSystem->getPreference( 'pigeonhole_display_columns', 3 ) );
 			$i = 1;
 			$j = 1;
-			foreach( $pParamHash as $member ) {
+			foreach( $pMememberHash as $member ) {
 				$column = ( $i++ % $per_column == 0 ) ? $j++ : $j;
 				$index = strtoupper( substr( $member['title'], 0, 1 ) );
 				// check if the previous column was using the same letter as we want to use in the new column
@@ -420,7 +439,7 @@ class Pigeonholes extends LibertyAttachable {
 				}
 				$ret[$column][$index][] = $member;
 			}
-			$pParamHash = $ret;
+			$pMememberHash = $ret;
 			unset( $ret );
 		}
 	}
@@ -633,6 +652,8 @@ class Pigeonholes extends LibertyAttachable {
 	function expungePigeonholeMember( $pParamHash ) {
 		if( @BitBase::verifyId( $pParamHash['parent_id'] ) || @BitBase::verifyId( $pParamHash['member_id'] ) ) {
 			$where = '';
+			$bindVars = array();
+
 			if( @BitBase::verifyId( $pParamHash['parent_id'] ) ) {
 				$where .= " WHERE `parent_id`=? ";
 				$bindVars[] = $pParamHash['parent_id'];
@@ -645,12 +666,8 @@ class Pigeonholes extends LibertyAttachable {
 
 			if( !empty( $pParamHash['deletables'] ) && is_array( $pParamHash['deletables'] ) ) {
 				// only delete member data when it's part of the deletable structure
-				$in = "";
-				foreach( $pParamHash['deletables'] as $pid ) {
-					$bindVars[] = $pid;
-					$in .= !empty( $in ) ? ", ?" : "?";
-				}
-				$where .= ( empty( $where ) ? " WHERE " : " AND " )." `parent_id` IN( $in ) ";
+				$where .= ( empty( $where ) ? " WHERE " : " AND " )." `parent_id` IN( ".preg_replace( "/,$/", "", str_repeat( "?,", count( $pParamHash['deletables'] ) ) )." ) ";
+				$bindVars = array_merge( $bindVars, $pParamHash['deletables'] );
 			}
 
 			// now we're ready to remove the actual members

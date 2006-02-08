@@ -1,6 +1,6 @@
 <?php
 /**
- * $Header: /cvsroot/bitweaver/_bit_pigeonholes/Attic/servicefunctions_inc.php,v 1.9 2006/02/07 13:33:33 squareing Exp $
+ * $Header: /cvsroot/bitweaver/_bit_pigeonholes/Attic/servicefunctions_inc.php,v 1.10 2006/02/08 12:31:14 squareing Exp $
  *
  * Copyright ( c ) 2004 bitweaver.org
  * All Rights Reserved. See copyright.txt for details and a complete list of authors.
@@ -18,7 +18,6 @@ function display_pigeonholes( &$pObject ) {
 	if( $gBitSystem->isFeatureActive( 'display_pigeonhole_members' ) || $gBitSystem->isFeatureActive( 'display_pigeonhole_path' ) ) {
 		require_once( PIGEONHOLES_PKG_PATH.'Pigeonholes.php' );
 		$pigeonholes = new Pigeonholes();
-
 		if( $gBitUser->hasPermission( 'bit_p_view_pigeonholes' ) ) {
 			if( $pigeons = $pigeonholes->getPigeonholesFromContentId( $pObject->mContentId ) ) {
 				foreach( $pigeons as $pigeon ) {
@@ -28,24 +27,11 @@ function display_pigeonholes( &$pObject ) {
 					$pigeonData[] = $pigeonholes->mInfo;
 					// set the theme chosen for this page - virtually random if page is part of multiple themes
 					$pigeonholes->loadPreferences();
-					$gPreviewStyle = $pigeonholes->getPreference( 'pigeonholes_style' );
+					$gPreviewStyle = $pigeonholes->getPreference( 'style' );
 					// we need to check all pigeonholes in the path, load the prefs and work out if the user is allowed to view the page
-					foreach( $pigeonholes->getField( 'path' ) as $p ) {
-						$tmpPigeon = new Pigeonholes( NULL, $p['content_id'] );
-						$tmpPigeon->loadPreferences();
-						$group_id = $tmpPigeon->getPreference( 'pigeonholes_group_id' );
-						$permission = $tmpPigeon->getPreference( 'pigeonholes_permission' );
-						if( ( !empty( $group_id ) && !$gBitUser->isInGroup( $group_id ) ) ||
-							( !empty( $permission ) && !$gBitUser->hasPermission( $permission ) )
-						) {
-							$msg = tra( "This content is part of a category to which you have no access to. Please log in or request the appropriate permission for the site administrator." );
-							$gBitSystem->fatalPermission( NULL, $msg );
-						}
-						$style = $tmpPigeon->getPreference( 'pigeonholes_style' );
-						if( !empty( $style ) ) {
-							$gPreviewStyle = $style;
-						}
-						unset( $tmpPigeon );
+					if( !$pigeonholes->checkPathPermissions( $pigeonholes->getField( 'path' ) ) ) {
+						$msg = tra( "This content is part of a category to which you have no access to. Please log in or request the appropriate permission from the site administrator." );
+						$gBitSystem->fatalPermission( NULL, $msg );
 					}
 				}
 				$gBitSmarty->assign( 'pigeonData', !empty( $pigeonData ) ? $pigeonData : FALSE );

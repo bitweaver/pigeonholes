@@ -3,7 +3,7 @@
  * $Header
  *
  * @author   xing <xing@synapse.plus.com>
- * @version  $Revision: 1.8 $
+ * @version  $Revision: 1.9 $
  * @package  pigeonholes
  * @subpackage functions
  */
@@ -30,6 +30,10 @@ if( !empty( $pigeonList ) ) {
 			$gStructure = new LibertyStructure();
 		}
 		$pigeonList[$key]['subtree'] = $gStructure->getSubTree( $pigeonhole['root_structure_id'] );
+		// add permissions to all so we know if we can display pages within category
+//		foreach( $pigeonList[$key]['subtree'] as $k => $node ) {
+//			$pigeonList[$key]['subtree'][$k]['preferences'] = $gContent->loadPreferences( $node['content_id'] );
+//		}
 	}
 	$gBitSmarty->assign( 'pigeonList', $pigeonList );
 }

@@ -1,47 +1,14 @@
 {strip}
 {if $gBitSystemPrefs.pigeonholes_list_style == "dynamic" && !$no_details}
 
-	{* ======= crazy display for only few category memebers - only display method that allows custom sorting ======= *}
-	{if $gContent->mStructureId eq $subtree[ix].structure_id or $smarty.request.expand_all}
-		{assign var=iname value=Expanded}
-	{else}
-		{assign var=iname value=Collapsed}
-	{/if}
-
-	<div class="highlight">
-		{if $edit}
-			<div class="floaticon">
-				{smartlink ititle="Edit Category" ibiticon="liberty/edit" ifile="edit_pigeonholes.php" structure_id=$subtree[ix].structure_id action=edit}
-				{smartlink ititle="Remove Category" ibiticon="liberty/delete" ifile="edit_pigeonholes.php" structure_id=$subtree[ix].structure_id action=remove}
-			</div>
-		{/if}
-
-		<h3>
-			<a href="javascript:icntoggle('sid{$subtree[ix].structure_id}');">
-				{biticon ipackage=liberty iname=$iname id=sid`$subtree[ix].structure_id`img"} {$subtree[ix].title|escape}
-				{foreach from=$pigeonList item=pigeonItem}
-					{if $pigeonItem.structure_id eq $subtree[ix].structure_id}
-						<small> &nbsp; &nbsp; [ {$pigeonItem.members_count} ]</small>
-					{/if}
-				{/foreach}
-			</a> &nbsp;
-		</h3>
-
-		<script type="text/javascript">
-			setfoldericonstate('sid{$subtree[ix].structure_id}');
-		</script>
-
-		<noscript>
-			<div style="padding-left:18px;" class="small"><a href="{$smarty.const.PIGEONHOLES_PKG_URL}{if $edit}edit_pigeonholes{else}index{/if}.php?structure_id={$subtree[ix].structure_id}">{tr}Expand{/tr}</a></div>
-		</noscript>
-	</div>
+	<h3 class="highlight"><a href="{$smarty.const.PIGEONHOLES_PKG_URL}view.php?structure_id={$subtree[ix].structure_id}">{$subtree[ix].title|escape}</a></h3>
 
 	{foreach from=$pigeonList item=pigeonItem}
 		{if $pigeonItem.structure_id eq $subtree[ix].structure_id}
-			{$pigeonItem.data|escape}
 
 			{if $pigeonItem.members}
-				<ul id="sid{$subtree[ix].structure_id}" style="display:{if $gContent->mStructureId eq $subtree[ix].structure_id or $smarty.request.expand_all}block{else}none{/if}; padding:2em;" class="data">
+				{$pigeonItem.data|escape}
+				<ul style="display:{if $gContent->mStructureId eq $subtree[ix].structure_id or $smarty.request.expand_all}block{else}none{/if}; padding:2em;" class="data">
 					{foreach from=$pigeonItem.members item=pigeonMember}
 						{assign var=ctg1 value=$pigeonMember.content_type_guid}
 
@@ -70,11 +37,13 @@
 						</ul>
 					</li>
 				</ul>
-			{else}
-				<div id="sid{$subtree[ix].structure_id}" class="norecords">{tr}No Records Found{/tr}</div>
 			{/if}
 		{/if}
 	{/foreach}
+
+	{if $gContent->mInfo.structure_id eq $subtree[ix].structure_id}
+		{formfeedback hash=$memberFeedback}
+	{/if}
 
 {else}
 
