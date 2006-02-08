@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_pigeonholes/Pigeonholes.php,v 1.41 2006/02/08 21:51:14 squareing Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_pigeonholes/Pigeonholes.php,v 1.42 2006/02/08 23:24:28 spiderr Exp $
  *
  * +----------------------------------------------------------------------+
  * | Copyright ( c ) 2004, bitweaver.org
@@ -17,7 +17,7 @@
  * Pigeonholes class
  *
  * @author   xing <xing@synapse.plus.com>
- * @version  $Revision: 1.41 $
+ * @version  $Revision: 1.42 $
  * @package  pigeonholes
  */
 
@@ -466,8 +466,7 @@ class Pigeonholes extends LibertyAttachable {
 			// probably has to do with not null default nextval('public.liberty_structures_id_seq'::text)
 			if( !empty( $pParamHash['update'] ) ) {
 				if( !empty( $pParamHash['pigeonhole_store'] ) ) {
-					$locId = array ( "name" => "content_id", "value" => $this->mContentId );
-					$result = $this->mDb->associateUpdate( $table, $pParamHash['pigeonhole_store'], $locId );
+					$result = $this->mDb->associateUpdate( $table, $pParamHash['pigeonhole_store'], array("content_id" => $this->mContentId ) );
 				}
 				$pParamHash['structure_location_id'] = $this->mStructureId;
 			} else {
