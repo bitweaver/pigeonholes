@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_pigeonholes/Pigeonholes.php,v 1.40 2006/02/08 12:31:13 squareing Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_pigeonholes/Pigeonholes.php,v 1.41 2006/02/08 21:51:14 squareing Exp $
  *
  * +----------------------------------------------------------------------+
  * | Copyright ( c ) 2004, bitweaver.org
@@ -17,7 +17,7 @@
  * Pigeonholes class
  *
  * @author   xing <xing@synapse.plus.com>
- * @version  $Revision: 1.40 $
+ * @version  $Revision: 1.41 $
  * @package  pigeonholes
  */
 
@@ -402,17 +402,19 @@ class Pigeonholes extends LibertyAttachable {
 	* @return a nicely grouped set of pigeonhole members in a set of columns and starting letters.
 	* @access public
 	**/
-	function checkPathPermissions( &$pPath ) {
+	function checkPathPermissions( $pPath ) {
 		global $gBitUser;
-		foreach( $pPath as $key => $path ) {
-			// load preferences for this node, if it's not loaded yet
-			if( empty( $path['preferences'] ) ) {
-				$pPath[$key]['preferences'] = $this->loadPreferences( $path['content_id'] );
-			}
-			$group_id   = !empty( $pPath[$key]['preferences']['group_id'] )   ? $pPath[$key]['preferences']['group_id']   : NULL;
-			$permission = !empty( $pPath[$key]['preferences']['permission'] ) ? $pPath[$key]['preferences']['permission'] : NULL;
-			if( ( !empty( $group_id ) && !$gBitUser->isInGroup( $group_id ) ) || ( !empty( $permission ) && !$gBitUser->hasPermission( $permission ) ) ) {
-				return FALSE;
+		foreach( $pPath as $path ) {
+			$contentIds[] = $path['content_id'];
+		}
+		if( !empty( $contentIds ) ) {
+			$query = "SELECT `name`, `value` FROM `".BIT_DB_PREFIX."liberty_content_prefs` WHERE `content_id` IN( ".preg_replace( "/,$/", "", str_repeat( "?,", count( $contentIds ) ) )." ) ";
+			$result = $this->mDb->query( $query, $contentIds );
+			while( $aux = $result->fetchRow() ) {
+				${$aux['name']} = $aux['value'];
+				if( ( !empty( $group_id ) && !$gBitUser->isInGroup( $group_id ) ) || ( !empty( $permission ) && !$gBitUser->hasPermission( $permission ) ) ) {
+					return FALSE;
+				}
 			}
 		}
 		return TRUE;

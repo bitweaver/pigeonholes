@@ -1,6 +1,6 @@
 <?php
 /**
- * $Header: /cvsroot/bitweaver/_bit_pigeonholes/view.php,v 1.9 2006/02/08 14:05:53 lsces Exp $
+ * $Header: /cvsroot/bitweaver/_bit_pigeonholes/view.php,v 1.10 2006/02/08 21:51:14 squareing Exp $
  *
  * Copyright ( c ) 2004 bitweaver.org
  * Copyright ( c ) 2003 tikwiki.org
@@ -8,7 +8,7 @@
  * All Rights Reserved. See copyright.txt for details and a complete list of authors.
  * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details
  *
- * $Id: view.php,v 1.9 2006/02/08 14:05:53 lsces Exp $
+ * $Id: view.php,v 1.10 2006/02/08 21:51:14 squareing Exp $
  * @package pigeonholes
  * @subpackage functions
  */
@@ -86,8 +86,7 @@ $listHash = array(
 	'structure_id' => $gContent->mInfo['structure_id'],
 	'load_extras' => TRUE
 );
-$cpath = $gContent->getField( 'path' );
-if( $gContent->checkPathPermissions( $cpath ) ) {
+if( $gContent->checkPathPermissions( $gContent->getField( 'path' ) ) ) {
 	$pigeonList = $gContent->getList( $listHash );
 	$gBitSmarty->assign( 'pigeonList', $pigeonList );
 } else {
