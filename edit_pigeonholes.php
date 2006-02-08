@@ -1,6 +1,6 @@
 <?php
 /**
- * $Header: /cvsroot/bitweaver/_bit_pigeonholes/edit_pigeonholes.php,v 1.13 2006/02/07 13:33:33 squareing Exp $
+ * $Header: /cvsroot/bitweaver/_bit_pigeonholes/edit_pigeonholes.php,v 1.14 2006/02/08 08:53:15 lsces Exp $
  *
  * Copyright ( c ) 2004 bitweaver.org
  * Copyright ( c ) 2003 tikwiki.org
@@ -8,7 +8,7 @@
  * All Rights Reserved. See copyright.txt for details and a complete list of authors.
  * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details
  *
- * $Id: edit_pigeonholes.php,v 1.13 2006/02/07 13:33:33 squareing Exp $
+ * $Id: edit_pigeonholes.php,v 1.14 2006/02/08 08:53:15 lsces Exp $
  * @package pigeonholes
  * @subpackage functions
  */
@@ -161,7 +161,10 @@ $gBitSmarty->assign( 'feedback', !empty( $feedback ) ? $feedback : NULL );
 // Get list of available styles
 $styles = $gBitThemes->getStyles( NULL, TRUE );
 $gBitSmarty->assign( 'styles', $styles );
-
 // Display the template
-$gBitSystem->display( 'bitpackage:pigeonholes/edit_pigeonholes.tpl', !empty( $gStructure->mInfo['title'] ) ? tra( 'Edit Pigeonhole' ).': '.$gStructure->mInfo["title"] : tra( 'Create Pigeonhole' ) );
+if ( !empty( $gStructure ) ) {
+	$gBitSystem->display( 'bitpackage:pigeonholes/edit_pigeonholes.tpl', !empty( $gStructure->mInfo['title'] ) ? tra( 'Edit Pigeonhole' ).': '.$gStructure->mInfo["title"] : tra( 'Create Pigeonhole' ) );
+} else {
+	$gBitSystem->display( 'bitpackage:pigeonholes/edit_pigeonholes.tpl', tra( 'Create Pigeonhole' ) );
+}
 ?>
