@@ -42,29 +42,35 @@
 				{/forminput}
 			</div>
 
-			<div class="row">
-				{formlabel label="Theme" for="pigeonhole-style"}
-				{forminput}
-					{html_options id="pigeonhole-style" name="pigeonhole[prefs][style]" output=$styles values=$styles selected=$gContent->mPrefs.style}
-					{formhelp note="This theme will be applied when viewing any page belonging to this category." warning="Setting is inherited from parent category."}
-				{/forminput}
-			</div>
+			{if $gBitSystem->isFeatureActive( 'pigeonholes_themes' )}
+				<div class="row">
+					{formlabel label="Theme" for="pigeonhole-style"}
+					{forminput}
+						{html_options id="pigeonhole-style" name="pigeonhole[prefs][style]" output=$styles values=$styles selected=$gContent->mPrefs.style}
+						{formhelp note="This theme will be applied when viewing any page belonging to this category." warning="Setting is inherited from parent category."}
+					{/forminput}
+				</div>
+			{/if}
 
-			<div class="row">
-				{formlabel label="Permission" for="perm"}
-				{forminput}
-					{html_options name="pigeonhole[prefs][permission]" id="perm" options=$perms selected=`$gContent->mPrefs.permission`}
-					{formhelp note="Permission required to view any page in this category." warning="Setting is inherited from parent category."}
-				{/forminput}
-			</div>
+			{if $gBitSystem->isFeatureActive( 'pigeonholes_permissions' )}
+				<div class="row">
+					{formlabel label="Permission" for="perm"}
+					{forminput}
+						{html_options name="pigeonhole[prefs][permission]" id="perm" options=$perms selected=`$gContent->mPrefs.permission`}
+						{formhelp note="Permission required to view any page in this category." warning="Setting is inherited from parent category."}
+					{/forminput}
+				</div>
+			{/if}
 
-			<div class="row">
-				{formlabel label="Group" for="group"}
-				{forminput}
-					{html_options name="pigeonhole[prefs][group_id]" id="group" options=$groups selected=`$gContent->mPrefs.group_id`}
-					{formhelp note="Users of only this group can view the content of this category." warning="Setting is inherited from parent category."}
-				{/forminput}
-			</div>
+			{if $gBitSystem->isFeatureActive( 'pigeonholes_groups' )}
+				<div class="row">
+					{formlabel label="Group" for="group"}
+					{forminput}
+						{html_options name="pigeonhole[prefs][group]" id="group" options=$groups selected=`$gContent->mPrefs.group_id`}
+						{formhelp note="Users of only this group can view the content of this category." warning="Setting is inherited from parent category."}
+					{/forminput}
+				</div>
+			{/if}
 
 			<div class="row">
 				{formlabel label="Content" for="pigeonhole-content"}

@@ -1,5 +1,5 @@
 <?php
-// $Header: /cvsroot/bitweaver/_bit_pigeonholes/admin/admin_pigeonholes_inc.php,v 1.4 2006/01/24 10:21:23 squareing Exp $
+// $Header: /cvsroot/bitweaver/_bit_pigeonholes/admin/admin_pigeonholes_inc.php,v 1.5 2006/02/08 13:17:41 lsces Exp $
 
 $pigeonholeSettings = array(
 	'display_pigeonhole_path' => array(
@@ -13,6 +13,18 @@ $pigeonholeSettings = array(
 	'display_pigeonhole_description' => array(
 		'label' => 'Display Description',
 		'note' => 'When showing the category members, you can display the category description as well.',
+	),
+	'pigeonholes_themes' => array(
+		'label' => 'Enable variable theme selection',
+		'note' => 'Allow the selection of a different theme to use for a category.',
+	),
+	'pigeonholes_permissions' => array(
+		'label' => 'Enable variable permission selection',
+		'note' => 'Allow the selection of different permissions to use for each category.',
+	),
+	'pigeonholes_groups' => array(
+		'label' => 'Enable group management selection',
+		'note' => 'Allow the selection of a different group to use for a category.',
 	),
 );
 $gBitSmarty->assign( 'pigeonholeSettings', $pigeonholeSettings );

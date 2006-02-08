@@ -1,6 +1,6 @@
 <?php
 /**
- * $Header: /cvsroot/bitweaver/_bit_pigeonholes/edit_pigeonholes.php,v 1.14 2006/02/08 08:53:15 lsces Exp $
+ * $Header: /cvsroot/bitweaver/_bit_pigeonholes/edit_pigeonholes.php,v 1.15 2006/02/08 13:17:41 lsces Exp $
  *
  * Copyright ( c ) 2004 bitweaver.org
  * Copyright ( c ) 2003 tikwiki.org
@@ -8,7 +8,7 @@
  * All Rights Reserved. See copyright.txt for details and a complete list of authors.
  * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details
  *
- * $Id: edit_pigeonholes.php,v 1.14 2006/02/08 08:53:15 lsces Exp $
+ * $Id: edit_pigeonholes.php,v 1.15 2006/02/08 13:17:41 lsces Exp $
  * @package pigeonholes
  * @subpackage functions
  */
@@ -125,23 +125,28 @@ if( !empty( $_REQUEST['success'] ) ) {
 }
 
 // get all available perms only when the admin is visiting here.
-if( $gBitUser->isAdmin() ) {
-	$tmpPerms = $gBitUser->getGroupPermissions();
-} else {
-	$tmpPerms = $gBitUser->mPerms;
+if ( $gBitSystem->isFeatureActive( 'pigeonholes_permissions' ) ) {
+	if( $gBitUser->isAdmin() ) {
+		$tmpPerms = $gBitUser->getGroupPermissions();
+	} else {
+		$tmpPerms = $gBitUser->mPerms;
+	}
+
+	$perms[''] = tra( 'None' );
+	foreach( $tmpPerms as $perm => $info ) {
+		$perms[$info['package']][$perm] = $perm;
+	}
+	$gBitSmarty->assign( 'perms', $perms );
 }
-$perms[''] = tra( 'None' );
-foreach( $tmpPerms as $perm => $info ) {
-	$perms[$info['package']][$perm] = $perm;
-}
-$gBitSmarty->assign( 'perms', $perms );
 
 // get available groups ready that we can assign the pigoenhole to one of them
-$groups[''] = tra( 'None' );
-foreach( $gBitUser->mGroups as $group_id => $group ) {
-	$groups[$group_id] = $group['group_name'];
+if ( $gBitSystem->isFeatureActive( 'pigeonholes_groups' ) ) {
+	$groups[''] = tra( 'None' );
+	foreach( $gBitUser->mGroups as $group_id => $group ) {
+		$groups[$group_id] = $group['group_name'];
+	}
+	$gBitSmarty->assign( 'groups', $groups );
 }
-$gBitSmarty->assign( 'groups', $groups );
 
 // get content
 include_once( LIBERTY_PKG_PATH.'get_content_list_inc.php' );
@@ -159,8 +164,11 @@ $gBitSmarty->assign( 'pigeonList', $pigeonList );
 $gBitSmarty->assign( 'feedback', !empty( $feedback ) ? $feedback : NULL );
 
 // Get list of available styles
-$styles = $gBitThemes->getStyles( NULL, TRUE );
-$gBitSmarty->assign( 'styles', $styles );
+if ( $gBitSystem->isFeatureActive( 'pigeonholes_themes' ) ) {
+	$styles = $gBitThemes->getStyles( NULL, TRUE );
+	$gBitSmarty->assign( 'styles', $styles );
+}
+
 // Display the template
 if ( !empty( $gStructure ) ) {
 	$gBitSystem->display( 'bitpackage:pigeonholes/edit_pigeonholes.tpl', !empty( $gStructure->mInfo['title'] ) ? tra( 'Edit Pigeonhole' ).': '.$gStructure->mInfo["title"] : tra( 'Create Pigeonhole' ) );
