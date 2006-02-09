@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_pigeonholes/Pigeonholes.php,v 1.42 2006/02/08 23:24:28 spiderr Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_pigeonholes/Pigeonholes.php,v 1.43 2006/02/09 13:19:20 lsces Exp $
  *
  * +----------------------------------------------------------------------+
  * | Copyright ( c ) 2004, bitweaver.org
@@ -17,7 +17,7 @@
  * Pigeonholes class
  *
  * @author   xing <xing@synapse.plus.com>
- * @version  $Revision: 1.42 $
+ * @version  $Revision: 1.43 $
  * @package  pigeonholes
  */
 
@@ -130,6 +130,12 @@ class Pigeonholes extends LibertyAttachable {
 			$bindVars[] = strtoupper( $pListHash['title'] );
 		}
 
+		if( !$gBitSystem->isPackageActive( 'gatekeeper' ) ) {
+			$groups = array_keys($gBitUser->mGroups);
+			$where .= ( empty( $where ) ? " WHERE " : " AND " )." lc.`group_id` IN ( ".implode( ',',array_fill ( 0, count( $groups ),'?' ) )." )";
+			$bindVars = array_merge( $bindVars, $groups );
+		}		
+
 		$order = "ORDER BY lc.`content_type_guid`, lc.`title` ASC";
 
 		$ret = array();
@@ -183,6 +189,12 @@ class Pigeonholes extends LibertyAttachable {
 			$where .= " lc.`content_type_guid`=?";
 			$bindVars[] = $pListHash['content_type'];
 		}
+
+		if( !$gBitSystem->isPackageActive( 'gatekeeper' ) ) {
+			$groups = array_keys($gBitUser->mGroups);
+			$where .= ( empty( $where ) ? " WHERE " : " AND " )." lc.`group_id` IN ( ".implode( ',',array_fill ( 0, count( $groups ),'?' ) )." )";
+			$bindVars = array_merge( $bindVars, $groups );
+		}		
 
 		if( !empty( $pListHash['sort_mode'] ) ) {
 			$where .= " ORDER BY ".$this->mDb->convert_sortmode( $pListHash['sort_mode'] )." ";
@@ -321,7 +333,7 @@ class Pigeonholes extends LibertyAttachable {
 	* @access public
 	**/
 	function getList( &$pListHash ) {
-		global $gBitSystem;
+		global $gBitSystem, $gBitUser;
 		LibertyContent::prepGetList( $pListHash );
 
 		$ret = $bindVars = array();
@@ -343,6 +355,11 @@ class Pigeonholes extends LibertyAttachable {
 			$where .= " UPPER( lc.`title` ) LIKE ? ";
 			$bindVars[] = '%'.strtoupper( $pListHash['find'] ).'%';
 		}
+		if( !$gBitSystem->isPackageActive( 'gatekeeper' ) ) {
+			$groups = array_keys($gBitUser->mGroups);
+			$where .= ( empty( $where ) ? " WHERE " : " AND " )." lc.`group_id` IN ( ".implode( ',',array_fill ( 0, count( $groups ),'?' ) )." )";
+			$bindVars = array_merge( $bindVars, $groups );
+		}		
 
 		if( !empty( $pListHash['sort_mode'] ) ) {
 			$order .= " ORDER BY ".$this->mDb->convert_sortmode( $pListHash['sort_mode'] )." ";
