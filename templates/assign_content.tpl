@@ -32,7 +32,7 @@
 					{/forminput}
 
 					{forminput}
-						{html_options values=$contentTypes options=$contentTypes name=content_type id=content_type selected=$contentSelect}
+						{html_options options=$contentTypes name=content_type id=content_type selected=$contentSelect}
 					{/forminput}
 
 					{forminput}
