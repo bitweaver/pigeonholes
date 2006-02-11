@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_pigeonholes/Pigeonholes.php,v 1.44 2006/02/11 12:26:50 lsces Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_pigeonholes/Pigeonholes.php,v 1.45 2006/02/11 12:28:18 lsces Exp $
  *
  * +----------------------------------------------------------------------+
  * | Copyright ( c ) 2004, bitweaver.org
@@ -17,7 +17,7 @@
  * Pigeonholes class
  *
  * @author   xing <xing@synapse.plus.com>
- * @version  $Revision: 1.44 $
+ * @version  $Revision: 1.45 $
  * @package  pigeonholes
  */
 
@@ -184,12 +184,6 @@ class Pigeonholes extends LibertyAttachable {
 			$bindVars[] = $pListHash['content_type'];
 		}
 
-		if( !$gBitSystem->isPackageActive( 'gatekeeper' ) ) {
-			$groups = array_keys($gBitUser->mGroups);
-			$where .= ( empty( $where ) ? " WHERE " : " AND " )." lc.`group_id` IN ( ".implode( ',',array_fill ( 0, count( $groups ),'?' ) )." )";
-			$bindVars = array_merge( $bindVars, $groups );
-		}		
-
 		if( !empty( $pListHash['sort_mode'] ) ) {
 			$where .= " ORDER BY ".$this->mDb->convert_sortmode( $pListHash['sort_mode'] )." ";
 		} else {
@@ -349,11 +343,6 @@ class Pigeonholes extends LibertyAttachable {
 			$where .= " UPPER( lc.`title` ) LIKE ? ";
 			$bindVars[] = '%'.strtoupper( $pListHash['find'] ).'%';
 		}
-		if( !$gBitSystem->isPackageActive( 'gatekeeper' ) ) {
-			$groups = array_keys($gBitUser->mGroups);
-			$where .= ( empty( $where ) ? " WHERE " : " AND " )." lc.`group_id` IN ( ".implode( ',',array_fill ( 0, count( $groups ),'?' ) )." )";
-			$bindVars = array_merge( $bindVars, $groups );
-		}		
 
 		if( !empty( $pListHash['sort_mode'] ) ) {
 			$order .= " ORDER BY ".$this->mDb->convert_sortmode( $pListHash['sort_mode'] )." ";
