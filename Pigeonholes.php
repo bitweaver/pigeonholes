@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_pigeonholes/Pigeonholes.php,v 1.43 2006/02/09 13:19:20 lsces Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_pigeonholes/Pigeonholes.php,v 1.44 2006/02/11 12:26:50 lsces Exp $
  *
  * +----------------------------------------------------------------------+
  * | Copyright ( c ) 2004, bitweaver.org
@@ -17,7 +17,7 @@
  * Pigeonholes class
  *
  * @author   xing <xing@synapse.plus.com>
- * @version  $Revision: 1.43 $
+ * @version  $Revision: 1.44 $
  * @package  pigeonholes
  */
 
@@ -129,12 +129,6 @@ class Pigeonholes extends LibertyAttachable {
 			$join = ", `".BIT_DB_PREFIX."liberty_content` lc2";
 			$bindVars[] = strtoupper( $pListHash['title'] );
 		}
-
-		if( !$gBitSystem->isPackageActive( 'gatekeeper' ) ) {
-			$groups = array_keys($gBitUser->mGroups);
-			$where .= ( empty( $where ) ? " WHERE " : " AND " )." lc.`group_id` IN ( ".implode( ',',array_fill ( 0, count( $groups ),'?' ) )." )";
-			$bindVars = array_merge( $bindVars, $groups );
-		}		
 
 		$order = "ORDER BY lc.`content_type_guid`, lc.`title` ASC";
 
