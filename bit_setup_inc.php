@@ -1,7 +1,7 @@
 <?php
 /**
  * @author   xing <xing@synapse.plus.com>
- * @version  $Revision: 1.7 $
+ * @version  $Revision: 1.8 $
  * @package  Pigeonholes
  * @subpackage functions
  */
@@ -12,11 +12,11 @@ define( 'PIGEONHOLES_CONTENT_TYPE_GUID', 'pigeonholes' );
 
 if( $gBitSystem->isPackageActive( 'pigeonholes' ) ) {
 	$gLibertySystem->registerService( LIBERTY_SERVICE_CATEGORIZATION, PIGEONHOLES_PKG_NAME, array(
-		'content_display_function' => 'display_pigeonholes',
-		'content_preview_function' => 'pigeonholes_preview_content',
-		'content_edit_function' => 'pigeonholes_input_content',
-		'content_store_function' => 'pigeonholes_store_member',
-		'content_expunge_function' => 'pigeonholes_expunge_member',
+		'content_display_function' => 'pigeonholes_content_display',
+		'content_preview_function' => 'pigeonholes_content_preview',
+		'content_edit_function' => 'pigeonholes_content_input',
+		'content_store_function' => 'pigeonholes_content_store',
+		'content_expunge_function' => 'pigeonholes_content_expunge',
 		'content_edit_tab_tpl' => 'bitpackage:pigeonholes/pigeonholes_input_inc.tpl',
 		'content_view_tpl' => 'bitpackage:pigeonholes/display_members.tpl',
 		'content_nav_tpl' => 'bitpackage:pigeonholes/display_paths.tpl',

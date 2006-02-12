@@ -1,6 +1,6 @@
 <?php
 /**
- * $Header: /cvsroot/bitweaver/_bit_pigeonholes/Attic/servicefunctions_inc.php,v 1.10 2006/02/08 12:31:14 squareing Exp $
+ * $Header: /cvsroot/bitweaver/_bit_pigeonholes/Attic/servicefunctions_inc.php,v 1.11 2006/02/12 21:36:29 squareing Exp $
  *
  * Copyright ( c ) 2004 bitweaver.org
  * All Rights Reserved. See copyright.txt for details and a complete list of authors.
@@ -13,7 +13,7 @@
 /**
  * Pigeonhole display service
  */
-function display_pigeonholes( &$pObject ) {
+function pigeonholes_content_display( &$pObject ) {
 	global $gBitSystem, $gBitSmarty, $gBitUser, $gPreviewStyle;
 	if( $gBitSystem->isFeatureActive( 'display_pigeonhole_members' ) || $gBitSystem->isFeatureActive( 'display_pigeonhole_path' ) ) {
 		require_once( PIGEONHOLES_PKG_PATH.'Pigeonholes.php' );
@@ -43,7 +43,7 @@ function display_pigeonholes( &$pObject ) {
 /**
  * Pigeonhole edit template service
  */
-function pigeonholes_input_content( $pObject=NULL ) {
+function pigeonholes_content_input( $pObject=NULL ) {
 	global $gBitSmarty, $gBitUser;
 	$pigeonPathList = array();
 
@@ -61,7 +61,7 @@ function pigeonholes_input_content( $pObject=NULL ) {
 /**
  * Pigeonhole edit template service
  */
-function pigeonholes_expunge_member( $pObject=NULL ) {
+function pigeonholes_content_expunge( $pObject=NULL ) {
 	require_once( PIGEONHOLES_PKG_PATH.'Pigeonholes.php' );
 	$pigeonholes = new Pigeonholes();
 	$pigeonholes->expungePigeonholeMember( array( 'member_id' => $pObject->mContentId ) );
@@ -71,7 +71,7 @@ function pigeonholes_expunge_member( $pObject=NULL ) {
  * Pigeonhole preview service
  * when we hit preview, we make the selections persistent
  */
-function pigeonholes_preview_content() {
+function pigeonholes_content_preview() {
 	global $gBitSmarty, $gBitUser;
 	$pigeonPathList = array();
 
@@ -97,7 +97,7 @@ function pigeonholes_preview_content() {
  * Pigeonhole store service
  * store the content in any pigeonhole it wants
  */
-function pigeonholes_store_member( $pObject, $pParamHash ) {
+function pigeonholes_content_store( $pObject, $pParamHash ) {
 	global $gBitSmarty, $gBitUser;
 	if( $gBitUser->hasPermission( 'bit_p_insert_pigeonhole_member' ) ) {
 		require_once( PIGEONHOLES_PKG_PATH.'Pigeonholes.php' );
