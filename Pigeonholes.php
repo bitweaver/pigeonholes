@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_pigeonholes/Pigeonholes.php,v 1.45 2006/02/11 12:28:18 lsces Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_pigeonholes/Pigeonholes.php,v 1.46 2006/02/13 10:06:17 squareing Exp $
  *
  * +----------------------------------------------------------------------+
  * | Copyright ( c ) 2004, bitweaver.org
@@ -17,7 +17,7 @@
  * Pigeonholes class
  *
  * @author   xing <xing@synapse.plus.com>
- * @version  $Revision: 1.45 $
+ * @version  $Revision: 1.46 $
  * @package  pigeonholes
  */
 
@@ -753,8 +753,8 @@ class Pigeonholes extends LibertyAttachable {
 		}
 
 		if( @BitBase::verifyId( $pContentId ) ) {
-			$rewrite_tag = $gBitSystem->isFeatureActive( 'feature_pretty_urls_extended' ) ? 'view/' : '';
-			if( $gBitSystem->isFeatureActive( 'pretty_urls' ) || $gBitSystem->isFeatureActive( 'feature_pretty_urls_extended' ) ) {
+			$rewrite_tag = $gBitSystem->isFeatureActive( 'pretty_urls_extended' ) ? 'view/' : '';
+			if( $gBitSystem->isFeatureActive( 'pretty_urls' ) || $gBitSystem->isFeatureActive( 'pretty_urls_extended' ) ) {
 				$ret = PIGEONHOLES_PKG_URL.$rewrite_tag.$pContentId;
 			} else {
 				$ret = PIGEONHOLES_PKG_URL.'view.php?content_id='.$pContentId;
