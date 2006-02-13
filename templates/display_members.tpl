@@ -31,9 +31,9 @@
 								{if $ctg1 ne $ctg2}{if $ctg2}<br />{/if}{$gLibertySystem->mContentTypes.$ctg1.content_description}:&nbsp;{/if}
 
 								{if !$gBitSystemPrefs.limit_member_number or $member_count lt $gBitSystemPrefs.limit_member_number}
-									{if $gContent->mContentId == $member.content_id}<strong>{/if}
+									{if $serviceHash.content_id == $member.content_id}<strong>{/if}
 										{$member.display_link}
-									{if $gContent->mContentId == $member.content_id}</strong>{/if}
+									{if $serviceHash.content_id == $member.content_id}</strong>{/if}
 									&nbsp; &bull; &nbsp;
 								{else}
 									{assign var=more value=1}
