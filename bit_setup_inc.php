@@ -1,12 +1,18 @@
 <?php
 /**
  * @author   xing <xing@synapse.plus.com>
- * @version  $Revision: 1.8 $
+ * @version  $Revision: 1.9 $
  * @package  Pigeonholes
  * @subpackage functions
  */
 global $gBitSystem, $gBitUser;
-$gBitSystem->registerPackage( 'pigeonholes', dirname( __FILE__).'/', TRUE, LIBERTY_SERVICE_CATEGORIZATION );
+
+$registerHash = array(
+	'package_name' => 'pigeonholes',
+	'package_path' => dirname( __FILE__ ).'/',
+	'service' => LIBERTY_SERVICE_CATEGORIZATION,
+);
+$gBitSystem->registerPackage( $registerHash );
 
 define( 'PIGEONHOLES_CONTENT_TYPE_GUID', 'pigeonholes' );
 
