@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_pigeonholes/Pigeonholes.php,v 1.46 2006/02/13 10:06:17 squareing Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_pigeonholes/Pigeonholes.php,v 1.47 2006/02/18 09:10:27 lsces Exp $
  *
  * +----------------------------------------------------------------------+
  * | Copyright ( c ) 2004, bitweaver.org
@@ -17,7 +17,7 @@
  * Pigeonholes class
  *
  * @author   xing <xing@synapse.plus.com>
- * @version  $Revision: 1.46 $
+ * @version  $Revision: 1.47 $
  * @package  pigeonholes
  */
 
@@ -408,10 +408,10 @@ class Pigeonholes extends LibertyAttachable {
 			$contentIds[] = $path['content_id'];
 		}
 		if( !empty( $contentIds ) ) {
-			$query = "SELECT `name`, `value` FROM `".BIT_DB_PREFIX."liberty_content_prefs` WHERE `content_id` IN( ".preg_replace( "/,$/", "", str_repeat( "?,", count( $contentIds ) ) )." ) ";
+			$query = "SELECT `name`, `pref_value` FROM `".BIT_DB_PREFIX."liberty_content_prefs` WHERE `content_id` IN( ".preg_replace( "/,$/", "", str_repeat( "?,", count( $contentIds ) ) )." ) ";
 			$result = $this->mDb->query( $query, $contentIds );
 			while( $aux = $result->fetchRow() ) {
-				${$aux['name']} = $aux['value'];
+				${$aux['name']} = $aux['pref_value'];
 				if( ( !empty( $group_id ) && !$gBitUser->isInGroup( $group_id ) ) || ( !empty( $permission ) && !$gBitUser->hasPermission( $permission ) ) ) {
 					return FALSE;
 				}
