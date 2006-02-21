@@ -12,7 +12,7 @@ $tables = array(
 		parent_id I4 NOTNULL PRIMARY,
 		content_id I4 NOTNULL PRIMARY
 		CONSTRAINT ',
-			CONSTRAINT `pigeonhole_members_parent_ref` FOREIGN KEY (`parent_id`) REFERENCES `".BIT_DB_PREFIX."pigeonholes`( `content_id` ),
+			CONSTRAINT `pigeonhole_members_parent_ref` FOREIGN KEY (`parent_id`) REFERENCES `".BIT_DB_PREFIX."liberty_content`( `content_id` ),
 			CONSTRAINT `pigeonhole_members_content_ref` FOREIGN KEY (`content_id`) REFERENCES `".BIT_DB_PREFIX."liberty_content`( `content_id` )'
 	"
 );
