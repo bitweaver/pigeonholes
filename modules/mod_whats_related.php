@@ -1,6 +1,6 @@
 <?php
 /**
- * $Header: /cvsroot/bitweaver/_bit_pigeonholes/modules/mod_whats_related.php,v 1.4 2006/02/04 12:18:31 squareing Exp $
+ * $Header: /cvsroot/bitweaver/_bit_pigeonholes/modules/mod_whats_related.php,v 1.5 2006/02/24 12:06:08 squareing Exp $
  *
  * Copyright (c) 2004 bitweaver.org
  * Copyright (c) 2003 tikwiki.org
@@ -8,7 +8,7 @@
  * All Rights Reserved. See copyright.txt for details and a complete list of authors.
  * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details
  *
- * $Id: mod_whats_related.php,v 1.4 2006/02/04 12:18:31 squareing Exp $
+ * $Id: mod_whats_related.php,v 1.5 2006/02/24 12:06:08 squareing Exp $
  * @package categories
  * @subpackage modules
  */
@@ -16,7 +16,6 @@
 global $gContent;
 if( !empty( $gContent->mContentId ) ) {
 	if( $gBitUser->hasPermission( 'bit_p_view_pigeonholes' ) ) {
-		require_once( PIGEONHOLES_PKG_PATH.'Pigeonholes.php' );
 		$pigeonholes = new Pigeonholes();
 
 		if( $pigeons = $pigeonholes->getPigeonholesFromContentId( $gContent->mContentId ) ) {

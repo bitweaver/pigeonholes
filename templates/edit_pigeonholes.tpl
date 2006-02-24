@@ -75,7 +75,7 @@
 			<div class="row">
 				{formlabel label="Content" for="pigeonhole-content"}
 				{forminput}
-					{html_options options=$contentDescs name=content_type_guid selected=$contentSelect}
+					{html_options options=$contentTypes name=content_type_guid selected=$contentSelect}
 				{/forminput}
 
 				{forminput}

@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_pigeonholes/Pigeonholes.php,v 1.47 2006/02/18 09:10:27 lsces Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_pigeonholes/Pigeonholes.php,v 1.48 2006/02/24 12:06:07 squareing Exp $
  *
  * +----------------------------------------------------------------------+
  * | Copyright ( c ) 2004, bitweaver.org
@@ -17,7 +17,7 @@
  * Pigeonholes class
  *
  * @author   xing <xing@synapse.plus.com>
- * @version  $Revision: 1.47 $
+ * @version  $Revision: 1.48 $
  * @package  pigeonholes
  */
 
@@ -403,17 +403,19 @@ class Pigeonholes extends LibertyAttachable {
 	* @access public
 	**/
 	function checkPathPermissions( $pPath ) {
-		global $gBitUser;
-		foreach( $pPath as $path ) {
-			$contentIds[] = $path['content_id'];
-		}
-		if( !empty( $contentIds ) ) {
-			$query = "SELECT `name`, `pref_value` FROM `".BIT_DB_PREFIX."liberty_content_prefs` WHERE `content_id` IN( ".preg_replace( "/,$/", "", str_repeat( "?,", count( $contentIds ) ) )." ) ";
-			$result = $this->mDb->query( $query, $contentIds );
-			while( $aux = $result->fetchRow() ) {
-				${$aux['name']} = $aux['pref_value'];
-				if( ( !empty( $group_id ) && !$gBitUser->isInGroup( $group_id ) ) || ( !empty( $permission ) && !$gBitUser->hasPermission( $permission ) ) ) {
-					return FALSE;
+		global $gBitUser, $gBitSystem;
+		if( $gBitSystem->getPreference( 'pigeonholes_permissions' ) || $gBitSystem->getPreference( 'pigeonholes_groups' ) ) {
+			foreach( $pPath as $path ) {
+				$contentIds[] = $path['content_id'];
+			}
+			if( !empty( $contentIds ) ) {
+				$query = "SELECT `name`, `pref_value` FROM `".BIT_DB_PREFIX."liberty_content_prefs` WHERE `content_id` IN( ".preg_replace( "/,$/", "", str_repeat( "?,", count( $contentIds ) ) )." ) ";
+				$result = $this->mDb->query( $query, $contentIds );
+				while( $aux = $result->fetchRow() ) {
+					${$aux['name']} = $aux['pref_value'];
+					if( ( !empty( $group_id ) && !$gBitUser->isInGroup( $group_id ) ) || ( !empty( $permission ) && !$gBitUser->hasPermission( $permission ) ) ) {
+						return FALSE;
+					}
 				}
 			}
 		}
@@ -794,4 +796,129 @@ function pigeonholes_alphabetiser($a, $b) {
 	return strcasecmp( $a["title"], $b["title"] );
 }
 
+
+// ============= SERVICE FUNCTIONS =============
+
+function pigeonholes_content_display( &$pObject ) {
+	global $gBitSystem, $gBitSmarty, $gBitUser, $gPreviewStyle;
+	if( $gBitSystem->isFeatureActive( 'display_pigeonhole_members' ) || $gBitSystem->isFeatureActive( 'display_pigeonhole_path' ) ) {
+		$pigeonholes = new Pigeonholes();
+		if( $gBitUser->hasPermission( 'bit_p_view_pigeonholes' ) ) {
+			if( $pigeons = $pigeonholes->getPigeonholesFromContentId( $pObject->mContentId ) ) {
+				foreach( $pigeons as $pigeon ) {
+					$pigeonholes->mContentId = $pigeon['content_id'];
+					$pigeonholes->load( TRUE );
+					//$pigeonholes->loadPreferences();
+					$pigeonData[] = $pigeonholes->mInfo;
+					// set the theme chosen for this page - virtually random if page is part of multiple themes
+					$pigeonholes->loadPreferences();
+					$gPreviewStyle = $pigeonholes->getPreference( 'style' );
+					// we need to check all pigeonholes in the path, load the prefs and work out if the user is allowed to view the page
+					if( !$pigeonholes->checkPathPermissions( $pigeonholes->getField( 'path' ) ) ) {
+						$msg = tra( "This content is part of a category to which you have no access to. Please log in or request the appropriate permission from the site administrator." );
+						$gBitSystem->fatalPermission( NULL, $msg );
+					}
+				}
+				$gBitSmarty->assign( 'pigeonData', !empty( $pigeonData ) ? $pigeonData : FALSE );
+			}
+		}
+	}
+}
+
+function pigeonholes_content_edit( $pObject=NULL ) {
+	global $gBitSmarty, $gBitUser;
+	$pigeonPathList = array();
+
+	if( $gBitUser->hasPermission( 'bit_p_insert_pigeonhole_member' ) ) {
+		$pigeonholes = new Pigeonholes();
+
+		// get pigeonholes path list
+		if( $pigeonPathList = $pigeonholes->getPigeonholesPathList( !empty( $pObject->mContentId ) ? $pObject->mContentId : NULL ) ) {
+			$gBitSmarty->assign( 'pigeonPathList', $pigeonPathList );
+		}
+	}
+}
+
+function pigeonholes_content_expunge( $pObject=NULL ) {
+	$pigeonholes = new Pigeonholes();
+	$pigeonholes->expungePigeonholeMember( array( 'member_id' => $pObject->mContentId ) );
+}
+
+function pigeonholes_content_preview() {
+	global $gBitSmarty, $gBitUser;
+	$pigeonPathList = array();
+
+	if( $gBitUser->hasPermission( 'bit_p_insert_pigeonhole_member' ) ) {
+		$pigeonholes = new Pigeonholes();
+
+		// get pigeonholes path list
+		if( $pigeonPathList = $pigeonholes->getPigeonholesPathList() ) {
+			foreach( $pigeonPathList as $key => $path ) {
+				if( !empty( $_REQUEST['pigeonholes']['pigeonhole'] ) && in_array( $key, $_REQUEST['pigeonholes']['pigeonhole'] ) ) {
+					$pigeonPathList[$key][0]['selected'] = TRUE;
+				} else {
+					$pigeonPathList[$key][0]['selected'] = FALSE;
+				}
+			}
+			$gBitSmarty->assign( 'pigeonPathList', $pigeonPathList );
+		}
+	}
+}
+
+function pigeonholes_content_store( $pObject, $pParamHash ) {
+	global $gBitSmarty, $gBitUser;
+	if( $gBitUser->hasPermission( 'bit_p_insert_pigeonhole_member' ) ) {
+		if( !empty( $pParamHash['content_id'] ) ) {
+			if( is_object( $pObject ) && empty( $pParamHash['content_id'] ) ) {
+				$pParamHash['content_id'] = $pObject->mContentId;
+			}
+
+			$pigeonholes = new Pigeonholes();
+			$pigeonPathList = $pigeonholes->getPigeonholesPathList( $pParamHash['content_id'] );
+
+			// here we need to work out if we need to save at all
+			// get all originally selected items
+			$selectedItem = array();
+			if( !empty( $pigeonPathList ) ) {
+				foreach( $pigeonPathList as $path ) {
+					if( !empty( $path[0]['selected'] ) ) {
+						$pathItem = array_pop( $path );
+						$selectedItem[] = $pathItem['content_id'];
+					}
+				}
+			}
+
+			// quick and dirty check to start off with
+			if( empty( $_REQUEST['pigeonholes'] ) || count( $_REQUEST['pigeonholes']['pigeonhole'] ) != count( $selectedItem ) ) {
+				$modified = TRUE;
+			} else {
+				// more thorough check
+				foreach( $selectedItem as $item ) {
+					if( !in_array( $item, $_REQUEST['pigeonholes']['pigeonhole'] ) ) {
+						$modified = TRUE;
+					}
+				}
+			}
+
+			if( !empty( $modified ) ) {
+				// first remove all entries with this content_id
+				if( $pigeonholes->expungePigeonholeMember( array( 'member_id' => $pParamHash['content_id'] ) ) && !empty( $_REQUEST['pigeonholes'] ) ) {
+					// insert the content into the desired pigeonholes
+					foreach( $_REQUEST['pigeonholes']['pigeonhole'] as $p_id ) {
+						$memberHash[] = array(
+							'parent_id' => $p_id,
+							'content_id' => $pParamHash['content_id']
+						);
+					}
+
+					if( !$pigeonholes->insertPigeonholeMember( $memberHash ) ) {
+						$gBitSmarty->assign( 'msg', tra( "There was a problem inserting the content into the pigeonholes." ) );
+						$gBitSystem->display( 'error.tpl' );
+						die;
+					}
+				}
+			}
+		}
+	}
+}
 ?>

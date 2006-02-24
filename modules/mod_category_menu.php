@@ -2,7 +2,6 @@
 global $gContent;
 if( !empty( $gContent->mContentId ) ) {
 	if( $gBitUser->hasPermission( 'bit_p_view_pigeonholes' ) ) {
-		require_once( PIGEONHOLES_PKG_PATH.'Pigeonholes.php' );
 		$pigeonholes = new Pigeonholes();
 
 		if( empty( $gStructure ) ) {
