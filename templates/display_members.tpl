@@ -1,7 +1,7 @@
 {strip}
 {if $gBitSystem->isFeatureActive( 'display_pigeonhole_members' ) and $pigeonData}
 	<div class="display pigeonholes">
-		{if $gBitSystemPrefs.limit_member_number == 0}
+		{if $gBitSystem->getConfig('limit_member_number') == 0}
 			<h2>{tr}Categories{/tr}</h2>
 			{foreach from=$pigeonData item=pigeonItem}
 				{$pigeonItem.display_path}
@@ -30,7 +30,7 @@
 
 								{if $ctg1 ne $ctg2}{if $ctg2}<br />{/if}{$gLibertySystem->mContentTypes.$ctg1.content_description}:&nbsp;{/if}
 
-								{if !$gBitSystemPrefs.limit_member_number or $member_count lt $gBitSystemPrefs.limit_member_number}
+								{if !$gBitSystem->getConfig('limit_member_number') or $member_count lt $gBitSystem->getConfig('limit_member_number')}
 									{if $serviceHash.content_id == $member.content_id}<strong>{/if}
 										{$member.display_link}
 									{if $serviceHash.content_id == $member.content_id}</strong>{/if}

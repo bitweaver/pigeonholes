@@ -1,5 +1,5 @@
 {strip}
-{if $gBitSystemPrefs.pigeonholes_list_style == "dynamic" && !$no_details}
+{if $gBitSystem->getConfig('pigeonholes_list_style') == "dynamic" && !$no_details}
 
 	<h3 class="highlight"><a href="{$smarty.const.PIGEONHOLES_PKG_URL}view.php?structure_id={$subtree[ix].structure_id}">{$subtree[ix].title|escape}</a></h3>
 

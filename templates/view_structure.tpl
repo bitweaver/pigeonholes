@@ -5,7 +5,7 @@
 	</div>
 
 	<div class="body">
-		{if $gBitSystemPrefs.pigeonholes_list_style == "table"}
+		{if $gBitSystem->getConfig('pigeonholes_list_style') == "table"}
 			{include file="bitpackage:pigeonholes/view_structure_inc.tpl" no_details=true no_edit=true}
 			{formfeedback hash=$memberFeedback}
 			{include file="bitpackage:pigeonholes/view_table_inc.tpl" no_details=true no_edit=true}

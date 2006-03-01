@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_pigeonholes/Pigeonholes.php,v 1.48 2006/02/24 12:06:07 squareing Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_pigeonholes/Pigeonholes.php,v 1.49 2006/03/01 20:16:23 spiderr Exp $
  *
  * +----------------------------------------------------------------------+
  * | Copyright ( c ) 2004, bitweaver.org
@@ -17,7 +17,7 @@
  * Pigeonholes class
  *
  * @author   xing <xing@synapse.plus.com>
- * @version  $Revision: 1.48 $
+ * @version  $Revision: 1.49 $
  * @package  pigeonholes
  */
 
@@ -376,7 +376,7 @@ class Pigeonholes extends LibertyAttachable {
 				$aux['display_path'] = Pigeonholes::getDisplayPath( $aux['path'] );
 				$aux['members'] = $this->getMemberList( array( 'content_id' => $aux['content_id'] ) );
 				$aux['members_count'] = count( $aux['members'] );
-				if( $gBitSystem->getPreference( 'pigeonholes_list_style' ) == 'table' ) {
+				if( $gBitSystem->getConfig( 'pigeonholes_list_style' ) == 'table' ) {
 					$this->alphabetiseMembers( $aux['members'] );
 				}
 			}
@@ -404,7 +404,7 @@ class Pigeonholes extends LibertyAttachable {
 	**/
 	function checkPathPermissions( $pPath ) {
 		global $gBitUser, $gBitSystem;
-		if( $gBitSystem->getPreference( 'pigeonholes_permissions' ) || $gBitSystem->getPreference( 'pigeonholes_groups' ) ) {
+		if( $gBitSystem->getConfig( 'pigeonholes_permissions' ) || $gBitSystem->getConfig( 'pigeonholes_groups' ) ) {
 			foreach( $pPath as $path ) {
 				$contentIds[] = $path['content_id'];
 			}
@@ -431,7 +431,7 @@ class Pigeonholes extends LibertyAttachable {
 		global $gBitSystem;
 		if( !empty( $pMememberHash ) ) {
 			usort( $pMememberHash, "pigeonholes_alphabetiser" );
-			$per_column = ceil( count( $pMememberHash ) / $gBitSystem->getPreference( 'pigeonhole_display_columns', 3 ) );
+			$per_column = ceil( count( $pMememberHash ) / $gBitSystem->getConfig( 'pigeonhole_display_columns', 3 ) );
 			$i = 1;
 			$j = 1;
 			foreach( $pMememberHash as $member ) {
