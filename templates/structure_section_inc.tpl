@@ -13,12 +13,12 @@
 		</div>
 	{/if}
 
-	<a href="javascript:icntoggle('sid{$subtree[ix].structure_id}');">
+	<a href="javascript:flipIcon('sid{$subtree[ix].structure_id}');">
 		{biticon ipackage=liberty iname=$iname id=sid`$subtree[ix].structure_id`img"} {$subtree[ix].title}
 	</a> &nbsp;
 
 	<script type="text/javascript">
-		setfoldericonstate('sid{$subtree[ix].structure_id}');
+		flipIcon('sid{$subtree[ix].structure_id}');
 	</script>
 
 	{foreach from=$pigeonList item=pigeonItem}
