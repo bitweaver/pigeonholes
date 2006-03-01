@@ -1,4 +1,4 @@
-{* $Header: /cvsroot/bitweaver/_bit_pigeonholes/templates/admin_pigeonholes.tpl,v 1.3 2006/03/01 20:16:23 spiderr Exp $ *}
+{* $Header: /cvsroot/bitweaver/_bit_pigeonholes/templates/admin_pigeonholes.tpl,v 1.4 2006/03/01 21:12:30 spiderr Exp $ *}
 {strip}
 {form}
 	{legend legend="Category Settings"}
@@ -7,7 +7,7 @@
 			<div class="row">
 				{formlabel label=`$output.label` for=$feature}
 				{forminput}
-					{html_checkboxes name="$feature" values="y" checked=`$gBitSystem->getConfig('')$feature` labels=false id=$feature}
+					{html_checkboxes name="$feature" values="y" checked=$gBitSystem->getConfig($feature) labels=false id=$feature}
 					{formhelp note=`$output.note` page=`$output.page`}
 				{/forminput}
 			</div>
