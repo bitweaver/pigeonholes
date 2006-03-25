@@ -75,14 +75,14 @@
 						<th>{smartlink ititle="Content Type" isort=content_type_guid max_rows=$smarty.request.max_rows content_type=$contentSelect find_objects=$find_objects include=$smarty.request.include page=$page}</th>
 						{if $assignableContent}
 							{foreach from=$pigeonList item=pigeon}
-								<th><abbr title="{$pigeon.title}">{counter}</abbr></th>
+								<th><abbr title="{$pigeon.title|escape}">{counter}</abbr></th>
 							{/foreach}
 						{/if}
 					</tr>
 
 					{foreach from=$assignableContent item=item}
 						<tr class="{cycle values='odd,even'}">
-							<td><a href="{$smarty.const.BIT_ROOT_URL}index.php?content_id={$item.content_id}">{$item.title}</a></td>
+							<td><a href="{$smarty.const.BIT_ROOT_URL}index.php?content_id={$item.content_id}">{$item.title|escape}</a></td>
 							<td>{assign var=content_type_guid value=`$item.content_type_guid`}{$contentTypes.$content_type_guid}</td>
 							{foreach from=$pigeonList item=pigeon}
 								<td style="text-align:center">
@@ -90,7 +90,7 @@
 										{foreach from=$item.assigned item=parent_id}
 											{if $pigeon.content_id eq $parent_id}checked="checked"{/if}
 										{/foreach}
-									title="{$pigeon.title}" />
+									title="{$pigeon.title|escape}" />
 								</td>
 							{/foreach}
 						</tr>

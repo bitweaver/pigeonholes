@@ -8,7 +8,7 @@
 					<label>
 						<input type="checkbox" value="{$pigeonId}" {if $path.0.selected}checked="checked" {/if}name="pigeonholes[pigeonhole][]" />
 						{foreach from=$path item=node}
-							{if $node.parent_id} &raquo;{/if} {$node.title}
+							{if $node.parent_id} &raquo;{/if} {$node.title|escape}
 						{/foreach}
 						<br />
 					</label>

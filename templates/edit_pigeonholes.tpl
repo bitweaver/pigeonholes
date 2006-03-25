@@ -30,7 +30,7 @@
 			<div class="row">
 				{formlabel label="Title" for="pigeonhole-title"}
 				{forminput}
-					<input type="text" size="50" id="pigeonhole-title" name="pigeonhole[title]" value="{$pigeonInfo.title}" />
+					<input type="text" size="50" id="pigeonhole-title" name="pigeonhole[title]" value="{$pigeonInfo.title|escape}" />
 				{/forminput}
 			</div>
 
