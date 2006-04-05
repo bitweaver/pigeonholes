@@ -6,10 +6,10 @@ $upgrades = array(
 	'BWR1' => array(
 		'BWR2' => array(
 
-// transfer all the settings into liberty_content_prefs
+// transfer all the pigeonhole settings into liberty_content_prefs
 array( 'PHP' => '
 	global $gBitSystem;
-	$pigeonhole_settings = $gBitSystem->mDb->getAssoc( "SELECT `content_id`, `name`, `value` FROM `".BIT_DB_PREFIX."bit_pigeonhole_settings` );
+	$pigeonhole_settings = $gBitSystem->mDb->getAssoc( "SELECT `content_id`, `name`, `value` FROM `".BIT_DB_PREFIX."bit_pigeonhole_settings`" );
 	if( !empty( $pigeonhole_settings ) ) {
 		foreach( $pigeonhole_settings as $store ) {
 			$query = "INSERT INTO `".BIT_DB_PREFIX."liberty_content_prefs` (`content_id`,`name`,`value`) VALUES(?, ?, ?)";
@@ -17,16 +17,6 @@ array( 'PHP' => '
 		}
 	}
 '),
-
-// add constraints for pgsql
-array( 'QUERY' =>
-	array( 'PGSQL' => array(
-		"ALTER TABLE `".BIT_DB_PREFIX."bit_pigeonholes` ADD CONSTRAINT `bit_pigeonholes_ref` FOREIGN KEY (`content_id`) REFERENCES `".BIT_DB_PREFIX."tiki_content`( `content_id` )",
-		"ALTER TABLE `".BIT_DB_PREFIX."bit_pigeonholes` ADD CONSTRAINT `bit_pigeonholes_ref` FOREIGN KEY (`structure_id`) REFERENCES `".BIT_DB_PREFIX."tiki_structures`( `structure_id` )",
-		"ALTER TABLE `".BIT_DB_PREFIX."bit_pigeonhole_members` ADD CONSTRAINT `bit_pigeonhole_members_ref` FOREIGN KEY (`parent_id`) REFERENCES `".BIT_DB_PREFIX."bit_pigeonholes`( `content_id` )",
-		"ALTER TABLE `".BIT_DB_PREFIX."bit_pigeonhole_members` ADD CONSTRAINT `bit_pigeonhole_members_ref` FOREIGN KEY (`content_id`) REFERENCES `".BIT_DB_PREFIX."tiki_content`( `content_id` )",
-	)),
-),
 
 // drop unused columns and tables
 array( 'DATADICT' => array(
@@ -44,6 +34,16 @@ array( 'DATADICT' => array(
 		'bit_pigeonhole_members' => 'pigeonhole_members',
 	)),
 )),
+
+// add constraints for pgsql
+array( 'QUERY' =>
+	array( 'PGSQL' => array(
+		"ALTER TABLE `".BIT_DB_PREFIX."pigeonholes` ADD CONSTRAINT `pigeonholes_ref` FOREIGN KEY (`content_id`) REFERENCES `".BIT_DB_PREFIX."liberty_content`( `content_id` )",
+		"ALTER TABLE `".BIT_DB_PREFIX."pigeonholes` ADD CONSTRAINT `pigeonholes_ref` FOREIGN KEY (`structure_id`) REFERENCES `".BIT_DB_PREFIX."liberty_structures`( `structure_id` )",
+		"ALTER TABLE `".BIT_DB_PREFIX."pigeonhole_members` ADD CONSTRAINT `pigeonhole_members_ref` FOREIGN KEY (`content_id`) REFERENCES `".BIT_DB_PREFIX."liberty_content`( `content_id` )",
+	)),
+),
+
 		)
 	)
 );
