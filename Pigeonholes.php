@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_pigeonholes/Pigeonholes.php,v 1.50 2006/04/11 13:07:41 squareing Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_pigeonholes/Pigeonholes.php,v 1.51 2006/04/11 14:47:35 sylvieg Exp $
  *
  * +----------------------------------------------------------------------+
  * | Copyright ( c ) 2004, bitweaver.org
@@ -17,7 +17,7 @@
  * Pigeonholes class
  *
  * @author   xing <xing@synapse.plus.com>
- * @version  $Revision: 1.50 $
+ * @version  $Revision: 1.51 $
  * @package  pigeonholes
  */
 
@@ -317,6 +317,7 @@ class Pigeonholes extends LibertyAttachable {
 	* @param $pListHash[find] search for a pigeonhole title - case insensitive
 	* @param $pListHash[max_rows] maximum number of rows to return
 	* @param $pListHash[offset] number of results data is offset by
+	* @param $pListHash[title] pigeonhole name
 	* @return array of pigeonholes in 'data' and count of pigeonholes in 'cant'
 	* @access public
 	**/
@@ -342,6 +343,12 @@ class Pigeonholes extends LibertyAttachable {
 			$where .= empty( $where ) ? ' WHERE ' : ' AND ';
 			$where .= " UPPER( lc.`title` ) LIKE ? ";
 			$bindVars[] = '%'.strtoupper( $pListHash['find'] ).'%';
+		}
+
+		if ( !empty( $pListHash['title'] ) ) {
+			$where .= empty( $where ) ? ' WHERE ' : ' AND ';
+			$where .=  ' lc.`title` = ?';
+			$bindVars[] = $pListHash['title'];
 		}
 
 		if( !empty( $pListHash['sort_mode'] ) ) {
