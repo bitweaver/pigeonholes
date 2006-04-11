@@ -1,7 +1,7 @@
 <?php
 global $gContent;
 if( !empty( $gContent->mContentId ) ) {
-	if( $gBitUser->hasPermission( 'bit_p_view_pigeonholes' ) ) {
+	if( $gBitUser->hasPermission( 'p_pigeonholes_view' ) ) {
 		$pigeonholes = new Pigeonholes();
 
 		if( empty( $gStructure ) ) {

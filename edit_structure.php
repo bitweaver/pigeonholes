@@ -1,6 +1,6 @@
 <?php
 /**
- * $Header: /cvsroot/bitweaver/_bit_pigeonholes/edit_structure.php,v 1.2 2006/01/14 19:55:18 squareing Exp $
+ * $Header: /cvsroot/bitweaver/_bit_pigeonholes/edit_structure.php,v 1.3 2006/04/11 13:07:41 squareing Exp $
  *
  * Copyright ( c ) 2004 bitweaver.org
  * Copyright ( c ) 2003 tikwiki.org
@@ -8,7 +8,7 @@
  * All Rights Reserved. See copyright.txt for details and a complete list of authors.
  * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details
  *
- * $Id: edit_structure.php,v 1.2 2006/01/14 19:55:18 squareing Exp $
+ * $Id: edit_structure.php,v 1.3 2006/04/11 13:07:41 squareing Exp $
  * @package pigeonholes
  * @subpackage functions
  */
@@ -19,12 +19,12 @@
 require_once( '../bit_setup_inc.php' );
 
 $gBitSystem->verifyPackage( 'pigeonholes' );
-$gBitSystem->verifyPermission( 'bit_p_edit_pigeonholes' );
+$gBitSystem->verifyPermission( 'p_pigeonholes_edit' );
 
 $gBitSmarty->assign( 'loadDynamicTree', TRUE );
 include_once( PIGEONHOLES_PKG_PATH.'lookup_pigeonholes_inc.php' );
 
-$verifyStructurePermission = 'bit_p_edit_pigeonholes';
+$verifyStructurePermission = 'p_pigeonholes_edit';
 include_once( LIBERTY_PKG_PATH.'edit_structure_inc.php' );
 
 // Display the template

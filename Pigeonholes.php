@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_pigeonholes/Pigeonholes.php,v 1.49 2006/03/01 20:16:23 spiderr Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_pigeonholes/Pigeonholes.php,v 1.50 2006/04/11 13:07:41 squareing Exp $
  *
  * +----------------------------------------------------------------------+
  * | Copyright ( c ) 2004, bitweaver.org
@@ -17,7 +17,7 @@
  * Pigeonholes class
  *
  * @author   xing <xing@synapse.plus.com>
- * @version  $Revision: 1.49 $
+ * @version  $Revision: 1.50 $
  * @package  pigeonholes
  */
 
@@ -803,7 +803,7 @@ function pigeonholes_content_display( &$pObject ) {
 	global $gBitSystem, $gBitSmarty, $gBitUser, $gPreviewStyle;
 	if( $gBitSystem->isFeatureActive( 'display_pigeonhole_members' ) || $gBitSystem->isFeatureActive( 'display_pigeonhole_path' ) ) {
 		$pigeonholes = new Pigeonholes();
-		if( $gBitUser->hasPermission( 'bit_p_view_pigeonholes' ) ) {
+		if( $gBitUser->hasPermission( 'p_pigeonholes_view' ) ) {
 			if( $pigeons = $pigeonholes->getPigeonholesFromContentId( $pObject->mContentId ) ) {
 				foreach( $pigeons as $pigeon ) {
 					$pigeonholes->mContentId = $pigeon['content_id'];
@@ -829,7 +829,7 @@ function pigeonholes_content_edit( $pObject=NULL ) {
 	global $gBitSmarty, $gBitUser;
 	$pigeonPathList = array();
 
-	if( $gBitUser->hasPermission( 'bit_p_insert_pigeonhole_member' ) ) {
+	if( $gBitUser->hasPermission( 'p_pigeonholes_insert_member' ) ) {
 		$pigeonholes = new Pigeonholes();
 
 		// get pigeonholes path list
@@ -848,7 +848,7 @@ function pigeonholes_content_preview() {
 	global $gBitSmarty, $gBitUser;
 	$pigeonPathList = array();
 
-	if( $gBitUser->hasPermission( 'bit_p_insert_pigeonhole_member' ) ) {
+	if( $gBitUser->hasPermission( 'p_pigeonholes_insert_member' ) ) {
 		$pigeonholes = new Pigeonholes();
 
 		// get pigeonholes path list
@@ -867,7 +867,7 @@ function pigeonholes_content_preview() {
 
 function pigeonholes_content_store( $pObject, $pParamHash ) {
 	global $gBitSmarty, $gBitUser;
-	if( $gBitUser->hasPermission( 'bit_p_insert_pigeonhole_member' ) ) {
+	if( $gBitUser->hasPermission( 'p_pigeonholes_insert_member' ) ) {
 		if( !empty( $pParamHash['content_id'] ) ) {
 			if( is_object( $pObject ) && empty( $pParamHash['content_id'] ) ) {
 				$pParamHash['content_id'] = $pObject->mContentId;

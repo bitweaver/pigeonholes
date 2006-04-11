@@ -1,6 +1,6 @@
 <?php
 /**
- * $Header: /cvsroot/bitweaver/_bit_pigeonholes/view.php,v 1.11 2006/02/23 15:12:56 bitweaver Exp $
+ * $Header: /cvsroot/bitweaver/_bit_pigeonholes/view.php,v 1.12 2006/04/11 13:07:41 squareing Exp $
  *
  * Copyright ( c ) 2004 bitweaver.org
  * Copyright ( c ) 2003 tikwiki.org
@@ -8,7 +8,7 @@
  * All Rights Reserved. See copyright.txt for details and a complete list of authors.
  * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details
  *
- * $Id: view.php,v 1.11 2006/02/23 15:12:56 bitweaver Exp $
+ * $Id: view.php,v 1.12 2006/04/11 13:07:41 squareing Exp $
  * @package pigeonholes
  * @subpackage functions
  */
@@ -19,7 +19,7 @@
 require_once( '../bit_setup_inc.php' );
 
 $gBitSystem->verifyPackage( 'pigeonholes' );
-$gBitSystem->verifyPermission( 'bit_p_view_pigeonholes' );
+$gBitSystem->verifyPermission( 'p_pigeonholes_view' );
 
 include_once( PIGEONHOLES_PKG_PATH.'lookup_pigeonholes_inc.php' );
 
@@ -35,7 +35,7 @@ $gStructure = new LibertyStructure( $gContent->mInfo['root_structure_id'] );
 $gStructure->load();
 
 if( !empty( $_REQUEST['action'] ) ) {
-	if( $_REQUEST['action'] == 'dismember' && !empty( $_REQUEST['content_id'] ) && !empty( $_REQUEST['parent_id'] ) && $gBitUser->hasPermission( 'bit_p_edit_pigeonholes' ) ) {
+	if( $_REQUEST['action'] == 'dismember' && !empty( $_REQUEST['content_id'] ) && !empty( $_REQUEST['parent_id'] ) && $gBitUser->hasPermission( 'p_pigeonholes_edit' ) ) {
 		if( $gContent->expungePigeonholeMember( array( 'parent_id' => $_REQUEST['content_id'], 'member_id' => $_REQUEST['parent_id'] ) ) ) {
 			$feedback['success'] = tra( 'The item was successfully removed' );
 		} else {

@@ -50,9 +50,9 @@ $gBitInstaller->registerPreferences( PIGEONHOLES_PKG_NAME, array(
 
 // ### Default UserPermissions
 $gBitInstaller->registerUserPermissions( PIGEONHOLES_PKG_NAME, array(
-	array( 'bit_p_view_pigeonholes', 'Can view pigeonholes', 'basic', PIGEONHOLES_PKG_NAME ),
-	array( 'bit_p_insert_pigeonhole_member', 'Can insert content into an existing pigeonhole', 'registered', PIGEONHOLES_PKG_NAME ),
-	array( 'bit_p_edit_pigeonholes', 'Can edit pigeonholes', 'editors', PIGEONHOLES_PKG_NAME ),
+	array( 'p_pigeonholes_view', 'Can view pigeonholes', 'basic', PIGEONHOLES_PKG_NAME ),
+	array( 'p_pigeonholes_insert_member', 'Can insert content into an existing pigeonhole', 'registered', PIGEONHOLES_PKG_NAME ),
+	array( 'p_pigeonholes_edit', 'Can edit pigeonholes', 'editors', PIGEONHOLES_PKG_NAME ),
 ) );
 
 ?>
