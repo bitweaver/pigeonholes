@@ -1,4 +1,4 @@
-{* $Header: /cvsroot/bitweaver/_bit_pigeonholes/templates/admin_pigeonholes.tpl,v 1.4 2006/03/01 21:12:30 spiderr Exp $ *}
+{* $Header: /cvsroot/bitweaver/_bit_pigeonholes/templates/admin_pigeonholes.tpl,v 1.5 2006/04/14 20:25:53 squareing Exp $ *}
 {strip}
 {form}
 	{legend legend="Category Settings"}
@@ -24,7 +24,7 @@
 		<div class="row">
 			{formlabel label="Number of Members" for="member_number"}
 			{forminput}
-				{html_options name="limit_member_number" options=$memberLimit values=$memberLimit selected=`$gBitSystem->getConfig('limit_member_number')` id=member_number}
+				{html_options name="pigeonholes_limit_member_number" options=$memberLimit values=$memberLimit selected=`$gBitSystem->getConfig('pigeonholes_limit_member_number')` id=member_number}
 				{formhelp note="Here you can specify what number of members are displayed at the bottom of a page."}
 			{/forminput}
 		</div>

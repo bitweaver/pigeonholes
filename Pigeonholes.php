@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_pigeonholes/Pigeonholes.php,v 1.51 2006/04/11 14:47:35 sylvieg Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_pigeonholes/Pigeonholes.php,v 1.52 2006/04/14 20:25:52 squareing Exp $
  *
  * +----------------------------------------------------------------------+
  * | Copyright ( c ) 2004, bitweaver.org
@@ -17,7 +17,7 @@
  * Pigeonholes class
  *
  * @author   xing <xing@synapse.plus.com>
- * @version  $Revision: 1.51 $
+ * @version  $Revision: 1.52 $
  * @package  pigeonholes
  */
 
@@ -808,7 +808,7 @@ function pigeonholes_alphabetiser($a, $b) {
 
 function pigeonholes_content_display( &$pObject ) {
 	global $gBitSystem, $gBitSmarty, $gBitUser, $gPreviewStyle;
-	if( $gBitSystem->isFeatureActive( 'display_pigeonhole_members' ) || $gBitSystem->isFeatureActive( 'display_pigeonhole_path' ) ) {
+	if( $gBitSystem->isFeatureActive( 'pigeonholes_display_members' ) || $gBitSystem->isFeatureActive( 'display_pigeonhole_path' ) ) {
 		$pigeonholes = new Pigeonholes();
 		if( $gBitUser->hasPermission( 'p_pigeonholes_view' ) ) {
 			if( $pigeons = $pigeonholes->getPigeonholesFromContentId( $pObject->mContentId ) ) {

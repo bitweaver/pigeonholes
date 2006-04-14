@@ -1,12 +1,12 @@
 <?php
-// $Header: /cvsroot/bitweaver/_bit_pigeonholes/admin/admin_pigeonholes_inc.php,v 1.5 2006/02/08 13:17:41 lsces Exp $
+// $Header: /cvsroot/bitweaver/_bit_pigeonholes/admin/admin_pigeonholes_inc.php,v 1.6 2006/04/14 20:25:52 squareing Exp $
 
 $pigeonholeSettings = array(
 	'display_pigeonhole_path' => array(
 		'label' => 'Display Path',
 		'note' => 'Display category paths above the page leading to the object.',
 	),
-	'display_pigeonhole_members' => array(
+	'pigeonholes_display_members' => array(
 		'label' => 'Display Members',
 		'note' => 'Show the other members of the same categories at the bottom of the page.',
 	),
@@ -51,7 +51,7 @@ if( !empty( $_REQUEST['pigeonhole_settings'] ) ) {
 		simple_set_toggle( $item, PIGEONHOLES_PKG_NAME );
 	}
 
-	simple_set_value( 'limit_member_number', PIGEONHOLES_PKG_NAME );
+	simple_set_value( 'pigeonholes_limit_member_number', PIGEONHOLES_PKG_NAME );
 	simple_set_value( 'pigeonholes_list_style', PIGEONHOLES_PKG_NAME );
 }
 ?>
