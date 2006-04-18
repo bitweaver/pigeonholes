@@ -30,7 +30,7 @@
 			{if $gBitUser->hasPermission( 'p_pigeonholes_edit' )}
 				<div class="floaticon">
 					{smartlink ititle="Insert new Category" ifile="edit_pigeonholes.php" ibiticon="liberty/new" structure_id=`$item.structure_id` action=create}
-					{smartlink ititle="Edit Category" ifile="edit_pigeonholes.php" ibiticon="liberty/edit" structure_id=`$item.structure_id`}
+					{smartlink ititle="Edit Category" ifile="edit_pigeonholes.php" ibiticon="liberty/edit" structure_id=`$item.structure_id` action="edit"}
 					{smartlink ititle="Change Structure" ifile="edit_structure.php" ibiticon="pigeonholes/organise" structure_id=`$item.structure_id`}
 					{smartlink ititle="Remove Category" ifile="edit_pigeonholes.php" ibiticon="liberty/delete" action="remove" structure_id=`$item.structure_id`}
 				</div>
