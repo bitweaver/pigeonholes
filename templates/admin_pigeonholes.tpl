@@ -1,4 +1,4 @@
-{* $Header: /cvsroot/bitweaver/_bit_pigeonholes/templates/admin_pigeonholes.tpl,v 1.5 2006/04/14 20:25:53 squareing Exp $ *}
+{* $Header: /cvsroot/bitweaver/_bit_pigeonholes/templates/admin_pigeonholes.tpl,v 1.6 2006/04/18 00:41:26 squareing Exp $ *}
 {strip}
 {form}
 	{legend legend="Category Settings"}
@@ -16,7 +16,7 @@
 		<div class="row">
 			{formlabel label="List style" for="pigeonholes_list_style"}
 			{forminput}
-				{html_options name="pigeonholes_list_style" options=$listStyles values=$listStyles selected=`$gBitSystem->getConfig('pigeonholes_list_style')` id=pigeonholes_list_style}
+				{html_options name="pigeonholes_list_style" options=$listStyles values=$listStyles selected=$gBitSystem->getConfig('pigeonholes_list_style') id=pigeonholes_list_style}
 				{formhelp note="Select the display method. Table listing is better suited for large categories.<br />Custom sorting only works with the dynamic list method."}
 			{/forminput}
 		</div>
@@ -24,7 +24,7 @@
 		<div class="row">
 			{formlabel label="Number of Members" for="member_number"}
 			{forminput}
-				{html_options name="pigeonholes_limit_member_number" options=$memberLimit values=$memberLimit selected=`$gBitSystem->getConfig('pigeonholes_limit_member_number')` id=member_number}
+				{html_options name="pigeonholes_limit_member_number" options=$memberLimit values=$memberLimit selected=$gBitSystem->getConfig('pigeonholes_limit_member_number') id=member_number}
 				{formhelp note="Here you can specify what number of members are displayed at the bottom of a page."}
 			{/forminput}
 		</div>
