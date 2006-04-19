@@ -1,4 +1,4 @@
-{* $Header: /cvsroot/bitweaver/_bit_pigeonholes/templates/admin_pigeonholes.tpl,v 1.6 2006/04/18 00:41:26 squareing Exp $ *}
+{* $Header: /cvsroot/bitweaver/_bit_pigeonholes/templates/admin_pigeonholes.tpl,v 1.7 2006/04/19 10:29:20 sylvieg Exp $ *}
 {strip}
 {form}
 	{legend legend="Category Settings"}
@@ -26,6 +26,14 @@
 			{forminput}
 				{html_options name="pigeonholes_limit_member_number" options=$memberLimit values=$memberLimit selected=$gBitSystem->getConfig('pigeonholes_limit_member_number') id=member_number}
 				{formhelp note="Here you can specify what number of members are displayed at the bottom of a page."}
+			{/forminput}
+		</div>
+
+		<div class="row">
+			{formlabel label="Number of categories for a scrolling list" for="pigeonholes_scrolling_list_number"}
+			{forminput}
+				<input type="text" size="4" maxlength="4" name="pigeonholes_scrolling_list_number" id="pigeonholes_scrolling_list_number" value="{$gBitSystem->getConfig('pigeonholes_scrolling_list_number')}" />
+			{formhelp note="If you have more than this number of categories, categories selection is displayed in a scrolling list instead of checkboxes"}
 			{/forminput}
 		</div>
 

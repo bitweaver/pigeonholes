@@ -1,5 +1,5 @@
 <?php
-// $Header: /cvsroot/bitweaver/_bit_pigeonholes/admin/admin_pigeonholes_inc.php,v 1.6 2006/04/14 20:25:52 squareing Exp $
+// $Header: /cvsroot/bitweaver/_bit_pigeonholes/admin/admin_pigeonholes_inc.php,v 1.7 2006/04/19 10:29:19 sylvieg Exp $
 
 $pigeonholeSettings = array(
 	'display_pigeonhole_path' => array(
@@ -53,5 +53,6 @@ if( !empty( $_REQUEST['pigeonhole_settings'] ) ) {
 
 	simple_set_value( 'pigeonholes_limit_member_number', PIGEONHOLES_PKG_NAME );
 	simple_set_value( 'pigeonholes_list_style', PIGEONHOLES_PKG_NAME );
+	simple_set_value( 'pigeonholes_scrolling_list_number', PIGEONHOLES_PKG_NAME );
 }
 ?>
