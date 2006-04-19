@@ -1,6 +1,6 @@
 <<?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_pigeonholes/Pigeonholes.php,v 1.53 2006/04/18 21:39:44 sylvieg Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_pigeonholes/Pigeonholes.php,v 1.54 2006/04/19 09:41:10 sylvieg Exp $
  *
  * +----------------------------------------------------------------------+
  * | Copyright ( c ) 2004, bitweaver.org
@@ -17,7 +17,7 @@
  * Pigeonholes class
  *
  * @author   xing <xing@synapse.plus.com>
- * @version  $Revision: 1.53 $
+ * @version  $Revision: 1.54 $
  * @package  pigeonholes
  */
 
@@ -826,7 +826,9 @@ function pigeonholes_content_display( &$pObject ) {
 					$pigeonData[] = $pigeonholes->mInfo;
 					// set the theme chosen for this page - virtually random if page is part of multiple themes
 					$pigeonholes->loadPreferences();
-					$gPreviewStyle = $pigeonholes->getPreference( 'style' );
+					if ( $gBitSystem->isFeatureActive( 'pigeonholes_themes' ) && ($g = $pigeonholes->getPreference( 'style' ) ) ) {
+						$gPreviewStyle = $g;
+					}
 					// we need to check all pigeonholes in the path, load the prefs and work out if the user is allowed to view the page
 					if( !$pigeonholes->checkPathPermissions( $pigeonholes->getField( 'path' ) ) ) {
 						$msg = tra( "This content is part of a category to which you have no access to. Please log in or request the appropriate permission from the site administrator." );
