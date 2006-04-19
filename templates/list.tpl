@@ -5,7 +5,7 @@
 	</div>
 
 	{* user sort related assigning *}
-	{if $gBitSystem->isFeatureActive( 'display_name' ) eq login}
+	{if $gBitSystem->getConfig( 'users_display_name' ) eq 'login'}
 		{assign var=isort_author value=creator_user}
 		{assign var=isort_editor value=modifier_user}
 	{else}
