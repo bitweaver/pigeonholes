@@ -29,15 +29,15 @@
 		{foreach from=$pigeonList item=item}
 			{if $gBitUser->hasPermission( 'p_pigeonholes_edit' )}
 				<div class="floaticon">
+					{smartlink ititle="Change Structure" ifile="edit_structure.php" ibiticon="pigeonholes/organise" structure_id=`$item.structure_id`}
 					{smartlink ititle="Insert new Category" ifile="edit_pigeonholes.php" ibiticon="liberty/new" structure_id=`$item.structure_id` action=create}
 					{smartlink ititle="Edit Category" ifile="edit_pigeonholes.php" ibiticon="liberty/edit" structure_id=`$item.structure_id` action="edit"}
-					{smartlink ititle="Change Structure" ifile="edit_structure.php" ibiticon="pigeonholes/organise" structure_id=`$item.structure_id`}
 					{smartlink ititle="Remove Category" ifile="edit_pigeonholes.php" ibiticon="liberty/delete" action="remove" structure_id=`$item.structure_id`}
 				</div>
 			{/if}
 			<h2>{$item.display_link}</h2>
 			{$item.data}
-			{include file="bitpackage:pigeonholes/view_structure_inc.tpl" no_edit=TRUE subtree=$item.subtree no_details=true}
+			{include file="bitpackage:pigeonholes/view_structure_inc.tpl" no_edit=true subtree=$item.subtree no_details=true}
 			<hr />
 		{foreachelse}
 			<div class="norecords">
