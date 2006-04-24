@@ -50,6 +50,7 @@
 	{* ======= very basic display of the pigoenhole structure ======= *}
 	{if !$no_edit}
 		<div class="floaticon">
+			{smartlink ititle="Insert new Category" ifile="edit_pigeonholes.php" ibiticon="liberty/new" structure_id=`$subtree[ix].structure_id` action=create}
 			{smartlink ititle="Edit Category" ibiticon="liberty/edit" ifile="edit_pigeonholes.php" structure_id=$subtree[ix].structure_id action=edit}
 			{smartlink ititle="Remove Category" ibiticon="liberty/delete" ifile="edit_pigeonholes.php" structure_id=$subtree[ix].structure_id action=remove}
 		</div>
@@ -64,6 +65,7 @@
 	{if $current}<strong>{/if}
 		<a href="{$smarty.const.PIGEONHOLES_PKG_URL}view.php?structure_id={$subtree[ix].structure_id}">{$subtree[ix].title|escape}</a>
 	{if $current}</strong>{/if}
+	{biticon ipackage=liberty iname=spacer}
 
 	{if !$no_details}
 		{foreach from=$pigeonList item=pigeonItem}

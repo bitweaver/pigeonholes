@@ -37,7 +37,7 @@
 			{/if}
 			<h2>{$item.display_link}</h2>
 			{$item.data}
-			{include file="bitpackage:pigeonholes/view_structure_inc.tpl" no_edit=true subtree=$item.subtree no_details=true}
+			{include file="bitpackage:pigeonholes/view_structure_inc.tpl" subtree=$item.subtree no_details=true}
 			<hr />
 		{foreachelse}
 			<div class="norecords">
