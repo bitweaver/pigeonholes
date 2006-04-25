@@ -2,7 +2,7 @@
 {jstab title="Categorize"}
 	{legend legend="Categorize"}
 		<div class="row">
-			{formlabel label="Pick Categories"}
+			{formlabel label="Pick Categories" for="pigeonholes"}
 			{if $pigeonPathList|@count ne 0}
 				{forminput}
 					{if $pigeonPathList|@count < $gBitSystem->getConfig( 'pigeonholes_scrolling_list_number' )}
@@ -16,12 +16,13 @@
 							</label>
 						{/foreach}
 					{else}
-						<select name="pigeonholes[pigeonhole][]" id="" multiple="multiple" size="5">
+						<select name="pigeonholes[pigeonhole][]" id="pigeonholes" multiple="multiple" size="5">
 							{foreach from=$pigeonPathList key=pigeonId item=path}
-								<option value="{$pigeonId}" {if $path.0.selected}selected="selected" {/if}name="pigeonholes[pigeonhole][]" />
-								{foreach from=$path item=node}
-									{if $node.parent_id} &raquo;{/if} {$node.title|escape}
-								{/foreach}
+								<option value="{$pigeonId}" {if $path.0.selected}selected="selected"{/if}>
+									{foreach from=$path item=node}
+										{if $node.parent_id} &raquo;{/if} {$node.title|escape}
+									{/foreach}
+								</option>
 							{/foreach}
 						</select>
 					{/if}
