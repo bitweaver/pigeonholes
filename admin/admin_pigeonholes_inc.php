@@ -1,5 +1,5 @@
 <?php
-// $Header: /cvsroot/bitweaver/_bit_pigeonholes/admin/admin_pigeonholes_inc.php,v 1.7 2006/04/19 10:29:19 sylvieg Exp $
+// $Header: /cvsroot/bitweaver/_bit_pigeonholes/admin/admin_pigeonholes_inc.php,v 1.8 2006/04/26 11:02:08 bitweaver Exp $
 
 $pigeonholeSettings = array(
 	'display_pigeonhole_path' => array(
@@ -25,6 +25,10 @@ $pigeonholeSettings = array(
 	'pigeonholes_groups' => array(
 		'label' => 'Enable group management selection',
 		'note' => 'Allow the selection of a different group to use for a category.',
+	),
+	'pigeonholes_use_jstab' => array(
+		'label' => 'Use seperate Tab',
+		'note' => 'When editing content use a seperate tab to categorise.',
 	),
 );
 $gBitSmarty->assign( 'pigeonholeSettings', $pigeonholeSettings );
