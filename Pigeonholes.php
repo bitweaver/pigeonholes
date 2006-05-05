@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_pigeonholes/Pigeonholes.php,v 1.56 2006/05/02 15:31:20 squareing Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_pigeonholes/Pigeonholes.php,v 1.57 2006/05/05 16:51:47 squareing Exp $
  *
  * +----------------------------------------------------------------------+
  * | Copyright ( c ) 2004, bitweaver.org
@@ -17,7 +17,7 @@
  * Pigeonholes class
  *
  * @author   xing <xing@synapse.plus.com>
- * @version  $Revision: 1.56 $
+ * @version  $Revision: 1.57 $
  * @package  pigeonholes
  */
 
@@ -423,7 +423,7 @@ class Pigeonholes extends LibertyAttachable {
 				$contentIds[] = $path['content_id'];
 			}
 			if( !empty( $contentIds ) ) {
-				$query = "SELECT `name`, `pref_value` FROM `".BIT_DB_PREFIX."liberty_content_prefs` WHERE `content_id` IN( ".preg_replace( "/,$/", "", str_repeat( "?,", count( $contentIds ) ) )." ) ";
+				$query = "SELECT `pref_name`, `pref_value` FROM `".BIT_DB_PREFIX."liberty_content_prefs` WHERE `content_id` IN( ".preg_replace( "/,$/", "", str_repeat( "?,", count( $contentIds ) ) )." ) ";
 				$result = $this->mDb->query( $query, $contentIds );
 				while( $aux = $result->fetchRow() ) {
 					${$aux['name']} = $aux['pref_value'];
@@ -504,14 +504,6 @@ class Pigeonholes extends LibertyAttachable {
 				$result = $this->mDb->associateInsert( $table, $pParamHash['pigeonhole_store'] );
 			}
 
-			// store individual pigeonhole preferences
-			if( !empty( $pParamHash['pigeonhole_prefs_store'] ) ) {
-				foreach( $pParamHash['pigeonhole_prefs_store'] as $name => $value ) {
-					// make sure null is used when value is empty. this makes sure the preference is removed from the table rather than filled with empty strings
-					$this->storePreference( $name, ( !empty( $value ) ? $value : NULL ) );
-				}
-			}
-
 			// store content items
 			if( !empty( $pParamHash['pigeonhole_members_store'] ) ) {
 				// remove items first
@@ -589,8 +581,8 @@ class Pigeonholes extends LibertyAttachable {
 			}
 		}
 
-		// pigeonhole settings store
-		$pParamHash['pigeonhole_prefs_store'] = !empty( $pParamHash['prefs'] ) ? $pParamHash['prefs'] : NULL;
+		// individual pigeonhole preference store
+		$pParamHash['preferences_store'] = !empty( $pParamHash['prefs'] ) ? $pParamHash['prefs'] : NULL;
 
 		// structure store
 		if( @BitBase::verifyId( $pParamHash['root_structure_id'] ) ) {

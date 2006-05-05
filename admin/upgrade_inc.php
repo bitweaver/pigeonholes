@@ -12,7 +12,7 @@ array( 'PHP' => '
 	$pigeonhole_settings = $gBitSystem->mDb->getAssoc( "SELECT `content_id`, `name`, `value` FROM `".BIT_DB_PREFIX."bit_pigeonhole_settings`" );
 	if( !empty( $pigeonhole_settings ) ) {
 		foreach( $pigeonhole_settings as $store ) {
-			$query = "INSERT INTO `".BIT_DB_PREFIX."liberty_content_prefs` (`content_id`,`name`,`value`) VALUES(?, ?, ?)";
+			$query = "INSERT INTO `".BIT_DB_PREFIX."liberty_content_prefs` (`content_id`,`pref_name`,`value`) VALUES(?, ?, ?)";
 			$result = $this->mDb->query( $query, $store );
 		}
 	}
