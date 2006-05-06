@@ -4,9 +4,9 @@ $tables = array(
 	'pigeonholes' => "
 		content_id I4 NOTNULL PRIMARY,
 		structure_id I4 NOTNULL PRIMARY
-		CONSTRAINT ',
-			CONSTRAINT `pigeonholes_content_ref` FOREIGN KEY (`content_id`) REFERENCES `".BIT_DB_PREFIX."liberty_content`( `content_id` ),
-			CONSTRAINT `pigeonholes_structure_ref` FOREIGN KEY (`structure_id`) REFERENCES `".BIT_DB_PREFIX."liberty_structures`( `structure_id` )'
+		CONSTRAINT '
+			, CONSTRAINT `pigeonholes_content_ref` FOREIGN KEY (`content_id`) REFERENCES `".BIT_DB_PREFIX."liberty_content`( `content_id` )
+			, CONSTRAINT `pigeonholes_structure_ref` FOREIGN KEY (`structure_id`) REFERENCES `".BIT_DB_PREFIX."liberty_structures`( `structure_id` )'
 	",
 	'pigeonhole_members' => "
 		parent_id I4 NOTNULL PRIMARY,
