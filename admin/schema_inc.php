@@ -11,9 +11,9 @@ $tables = array(
 	'pigeonhole_members' => "
 		parent_id I4 NOTNULL PRIMARY,
 		content_id I4 NOTNULL PRIMARY
-		CONSTRAINT ',
-			CONSTRAINT `pigeonhole_members_parent_ref` FOREIGN KEY (`parent_id`) REFERENCES `".BIT_DB_PREFIX."liberty_content`( `content_id` ),
-			CONSTRAINT `pigeonhole_members_content_ref` FOREIGN KEY (`content_id`) REFERENCES `".BIT_DB_PREFIX."liberty_content`( `content_id` )'
+		CONSTRAINT '
+			, CONSTRAINT `pigeonhole_members_parent_ref` FOREIGN KEY (`parent_id`) REFERENCES `".BIT_DB_PREFIX."liberty_content`( `content_id` )
+			, CONSTRAINT `pigeonhole_members_content_ref` FOREIGN KEY (`content_id`) REFERENCES `".BIT_DB_PREFIX."liberty_content`( `content_id` )'
 	"
 );
 
@@ -26,9 +26,6 @@ foreach( array_keys( $tables ) AS $tableName ) {
 $gBitInstaller->registerPackageInfo( PIGEONHOLES_PKG_NAME, array(
 	'description' => "A Categorisation system that makes it easy to keep an overview of your data. Has a simple, yet powerful interface for categorising multiple pages at once.",
 	'license' => '<a href="http://www.gnu.org/licenses/licenses.html#LGPL">LGPL</a>',
-	'version' => '0.1',
-	'state' => 'experimental',
-	'dependencies' => '',
 ) );
 
 // ### Sequences
