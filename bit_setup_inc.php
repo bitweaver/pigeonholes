@@ -1,7 +1,7 @@
 <?php
 /**
  * @author   xing <xing@synapse.plus.com>
- * @version  $Revision: 1.12 $
+ * @version  $Revision: 1.13 $
  * @package  Pigeonholes
  * @subpackage functions
  */
@@ -29,6 +29,7 @@ if( $gBitSystem->isPackageActive( 'pigeonholes' ) ) {
 		'content_edit_'.( $gBitSystem->isFeatureActive( 'pigeonholes_use_jstab' ) ? 'tab_' : 'mini_' ).'tpl' => 'bitpackage:pigeonholes/pigeonholes_input_'.( $gBitSystem->isFeatureActive( 'pigeonholes_use_jstab' ) ? '' : 'mini_' ).'inc.tpl',
 		'content_view_tpl' => 'bitpackage:pigeonholes/display_members.tpl',
 		'content_nav_tpl' => 'bitpackage:pigeonholes/display_paths.tpl',
+		'content_list_sql_function' => 'pigeonholes_content_list_sql',
 	) );
 
 	if( $gBitUser->hasPermission( 'p_pigeonholes_view' ) ) {
