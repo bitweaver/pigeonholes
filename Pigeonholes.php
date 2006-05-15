@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_pigeonholes/Pigeonholes.php,v 1.58 2006/05/15 08:36:46 sylvieg Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_pigeonholes/Pigeonholes.php,v 1.59 2006/05/15 13:10:48 sylvieg Exp $
  *
  * +----------------------------------------------------------------------+
  * | Copyright ( c ) 2004, bitweaver.org
@@ -17,7 +17,7 @@
  * Pigeonholes class
  *
  * @author   xing <xing@synapse.plus.com>
- * @version  $Revision: 1.58 $
+ * @version  $Revision: 1.59 $
  * @package  pigeonholes
  */
 
@@ -315,10 +315,14 @@ class Pigeonholes extends LibertyAttachable {
 	* @param $pListHash contains array of items used to limit search results
 	* @param $pListHash[sort_mode] column and orientation by which search results are sorted
 	* @param $pListHash[find] search for a pigeonhole title - case insensitive
-	* @param $pListHash[max_rows] maximum number of rows to return
+	* @param $pListHash[max_records] maximum number of rows to return
 	* @param $pListHash[offset] number of results data is offset by
 	* @param $pListHash[title] pigeonhole name
 	* @param $pListHash[parent_id] pigeonhole parent_id, optional
+	* @param $pListHash[root_structure_id] 
+	* @param $pListHash[load_only_root]
+	* @param $pListHash[parent_content_id] all the sons of the pigeonhole parent content_id , optional
+	* @param $pListHash[load_also_root] if parent_content_id is set load also the father, optionnal
 	* @return array of pigeonholes in 'data' and count of pigeonholes in 'cant'
 	* @access public
 	**/
@@ -327,7 +331,7 @@ class Pigeonholes extends LibertyAttachable {
 		LibertyContent::prepGetList( $pListHash );
 
 		$ret = $bindVars = array();
-		$where = $order = '';
+		$where = $order = $join = '';
 
 		if( @BitBase::verifyId( $pListHash['root_structure_id'] ) ) {
 			$where .= empty( $where ) ? ' WHERE ' : ' AND ';
@@ -358,6 +362,17 @@ class Pigeonholes extends LibertyAttachable {
 			$bindVars[] = $pListHash['parent_id'];
 		}
 
+		if ( !empty( $pListHash['parent_content_id'] ) ) {
+			$join .= 'INNER JOIN `'.BIT_DB_PREFIX.'liberty_structures` lsf ON (ls.`parent_id` = lsf.`structure_id`';
+			if ( !empty( $pListHash['load_also_root'] ) ) {
+			 	$join .= 'OR ls.`structure_id`= lsf.`structure_id`';
+			}
+			$join .= ')';
+			$where .= empty( $where ) ? ' WHERE ' : ' AND ';
+			$where .= ' lsf.`content_id` = ? ';
+			$bindVars[] = $pListHash['parent_content_id'];
+		}
+
 		if( !empty( $pListHash['sort_mode'] ) ) {
 			$order .= " ORDER BY ".$this->mDb->convert_sortmode( $pListHash['sort_mode'] )." ";
 		} else {
@@ -373,7 +388,7 @@ class Pigeonholes extends LibertyAttachable {
 				LEFT JOIN `".BIT_DB_PREFIX."users_users` uue ON ( uue.`user_id` = lc.`modifier_user_id` )
 				LEFT JOIN `".BIT_DB_PREFIX."users_users` uuc ON ( uuc.`user_id` = lc.`user_id` )
 				INNER JOIN `".BIT_DB_PREFIX."liberty_structures` ls ON ( ls.`structure_id` = pig.`structure_id` )
-			$where $order";
+			$join $where $order";
 
 		$result = $this->mDb->query( $query, $bindVars, $pListHash['max_records'], $pListHash['offset'] );
 
@@ -404,7 +419,7 @@ class Pigeonholes extends LibertyAttachable {
 				LEFT JOIN `".BIT_DB_PREFIX."users_users` uue ON ( uue.`user_id` = lc.`modifier_user_id` )
 				LEFT JOIN `".BIT_DB_PREFIX."users_users` uuc ON ( uuc.`user_id` = lc.`user_id` )
 				INNER JOIN `".BIT_DB_PREFIX."liberty_structures` ls ON ( ls.`structure_id` = pig.`structure_id` )
-			$where";
+			$join $where";
 		$pListHash['cant'] = $this->mDb->getOne( $query, $bindVars );
 
 		LibertyContent::postGetList( $pListHash );
