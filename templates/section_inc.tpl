@@ -26,7 +26,7 @@
 
 						<li>
 							<a href="{$smarty.const.BIT_ROOT_URL}index.php?content_id={$pigeonMember.content_id}">{$pigeonMember.title|escape}</a>
-							{if $gBitUser->hasPermission( 'edit_pigeonholes' )}
+							{if $gBitUser->hasPermission( 'p_pigeonholes_edit' )}
 								&nbsp; {smartlink ititle="Remove Item" ibiticon="liberty/delete_small" expand_all=$smarty.request.expand_all action=dismember structure_id=$pigeonItem.structure_id parent_id=$pigeonMember.content_id content_id=$pigeonItem.content_id}
 							{/if}
 						</li>
@@ -48,7 +48,7 @@
 {else}
 
 	{* ======= very basic display of the pigoenhole structure ======= *}
-	{if !$no_edit}
+	{if !$no_edit  and $gBitUser->hasPermission( 'p_pigeonholes_edit' )}
 		<div class="floaticon">
 			{smartlink ititle="Insert new Category" ifile="edit_pigeonholes.php" ibiticon="liberty/new" structure_id=`$subtree[ix].structure_id` action=create}
 			{smartlink ititle="Edit Category" ibiticon="liberty/edit" ifile="edit_pigeonholes.php" structure_id=$subtree[ix].structure_id action=edit}
