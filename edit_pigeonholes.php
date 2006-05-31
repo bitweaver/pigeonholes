@@ -1,6 +1,6 @@
 <?php
 /**
- * $Header: /cvsroot/bitweaver/_bit_pigeonholes/edit_pigeonholes.php,v 1.19 2006/04/11 13:07:41 squareing Exp $
+ * $Header: /cvsroot/bitweaver/_bit_pigeonholes/edit_pigeonholes.php,v 1.20 2006/05/31 18:02:56 squareing Exp $
  *
  * Copyright ( c ) 2004 bitweaver.org
  * Copyright ( c ) 2003 tikwiki.org
@@ -8,7 +8,7 @@
  * All Rights Reserved. See copyright.txt for details and a complete list of authors.
  * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details
  *
- * $Id: edit_pigeonholes.php,v 1.19 2006/04/11 13:07:41 squareing Exp $
+ * $Id: edit_pigeonholes.php,v 1.20 2006/05/31 18:02:56 squareing Exp $
  * @package pigeonholes
  * @subpackage functions
  */
@@ -154,6 +154,7 @@ foreach( $contentList['data'] as $cItem ) {
 	$cList[$contentTypes[$cItem['content_type_guid']]][$cItem['content_id']] = $cItem['title'].' [id: '.$cItem['content_id'].']';
 }
 $gBitSmarty->assign( 'contentList', $cList );
+$gBitSmarty->assign( 'contentTypes', $contentTypes );
 $gBitSmarty->assign( 'contentSelect', $contentSelect );
 
 $listHash['root_structure_id'] = !empty( $gContent->mInfo['root_structure_id'] ) ? $gContent->mInfo['root_structure_id'] : NULL;
