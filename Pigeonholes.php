@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_pigeonholes/Pigeonholes.php,v 1.59 2006/05/15 13:10:48 sylvieg Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_pigeonholes/Pigeonholes.php,v 1.60 2006/05/31 18:03:54 squareing Exp $
  *
  * +----------------------------------------------------------------------+
  * | Copyright ( c ) 2004, bitweaver.org
@@ -17,7 +17,7 @@
  * Pigeonholes class
  *
  * @author   xing <xing@synapse.plus.com>
- * @version  $Revision: 1.59 $
+ * @version  $Revision: 1.60 $
  * @package  pigeonholes
  */
 
@@ -32,7 +32,7 @@ require_once( LIBERTY_PKG_PATH.'LibertyStructure.php' );
  *
  * @package  pigeonholes
  */
-class Pigeonholes extends LibertyAttachable {
+class Pigeonholes extends LibertyContent {
 	/**
 	* initiate class
 	* @param $pContentId content id of the pigeonhole - use either one of the ids.
@@ -41,7 +41,7 @@ class Pigeonholes extends LibertyAttachable {
 	* @access public
 	**/
 	function Pigeonholes( $pStructureId=NULL, $pContentId=NULL ) {
-		LibertyAttachable::LibertyAttachable();
+		LibertyContent::LibertyContent();
 		$this->registerContentType( PIGEONHOLES_CONTENT_TYPE_GUID, array(
 			'content_type_guid' => PIGEONHOLES_CONTENT_TYPE_GUID,
 			'content_description' => 'Pigeonhole',
