@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_pigeonholes/Pigeonholes.php,v 1.60 2006/05/31 18:03:54 squareing Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_pigeonholes/Pigeonholes.php,v 1.61 2006/06/05 23:54:05 bitweaver Exp $
  *
  * +----------------------------------------------------------------------+
  * | Copyright ( c ) 2004, bitweaver.org
@@ -17,7 +17,7 @@
  * Pigeonholes class
  *
  * @author   xing <xing@synapse.plus.com>
- * @version  $Revision: 1.60 $
+ * @version  $Revision: 1.61 $
  * @package  pigeonholes
  */
 
@@ -133,7 +133,7 @@ class Pigeonholes extends LibertyContent {
 		$order = "ORDER BY lc.`content_type_guid`, lc.`title` ASC";
 
 		$ret = array();
-		$query = "SELECT pigm.*, lc.`content_id`, tct.`content_description`, lc.`last_modified`, lc.`user_id`, lc.`title`, lc.`content_type_guid`, uu.`login`, uu.`real_name`
+		$query = "SELECT pigm.*, lc.`content_id`, tct.`content_description`, lc.`last_modified`, lc.`user_id`, lc.`title`, lc.`content_type_guid`, lc.`created`, uu.`login`, uu.`real_name`
 			FROM `".BIT_DB_PREFIX."pigeonhole_members` pigm
 				INNER JOIN `".BIT_DB_PREFIX."pigeonholes` pig ON ( pig.`content_id` = pigm.`parent_id` )
 				INNER JOIN `".BIT_DB_PREFIX."liberty_content` lc ON ( lc.`content_id` = pigm.`content_id` )
