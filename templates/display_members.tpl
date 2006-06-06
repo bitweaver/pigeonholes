@@ -5,7 +5,7 @@
 			<h2>{tr}Categories{/tr}</h2>
 			{foreach from=$pigeonData item=pigeonItem}
 				{$pigeonItem.display_path}
-				{if $pigeonItem.data and $gBitSystem->isFeatureActive( 'display_pigeonhole_description' )}
+				{if $pigeonItem.data and $gBitSystem->isFeatureActive( 'pigeonholes_display_description' )}
 					: {$pigeonItem.data}
 				{/if}
 				&nbsp; &bull; &nbsp;
@@ -17,7 +17,7 @@
 					<h3>{$pigeonItem.display_path}</h3>
 
 					<div class="boxcontent">
-						{if $pigeonItem.data and $gBitSystem->isFeatureActive( 'display_pigeonhole_description' )}
+						{if $pigeonItem.data and $gBitSystem->isFeatureActive( 'pigeonholes_display_description' )}
 							{$pigeonItem.data}<br />
 						{/if}
 

@@ -1,8 +1,8 @@
 <?php
-// $Header: /cvsroot/bitweaver/_bit_pigeonholes/admin/admin_pigeonholes_inc.php,v 1.8 2006/04/26 11:02:08 bitweaver Exp $
+// $Header: /cvsroot/bitweaver/_bit_pigeonholes/admin/admin_pigeonholes_inc.php,v 1.9 2006/06/06 07:25:47 squareing Exp $
 
 $pigeonholeSettings = array(
-	'display_pigeonhole_path' => array(
+	'pigeonholes_display_path' => array(
 		'label' => 'Display Path',
 		'note' => 'Display category paths above the page leading to the object.',
 	),
@@ -10,7 +10,7 @@ $pigeonholeSettings = array(
 		'label' => 'Display Members',
 		'note' => 'Show the other members of the same categories at the bottom of the page.',
 	),
-	'display_pigeonhole_description' => array(
+	'pigeonholes_display_description' => array(
 		'label' => 'Display Description',
 		'note' => 'When showing the category members, you can display the category description as well.',
 	),
