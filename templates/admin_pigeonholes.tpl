@@ -1,9 +1,10 @@
-{* $Header: /cvsroot/bitweaver/_bit_pigeonholes/templates/admin_pigeonholes.tpl,v 1.7 2006/04/19 10:29:20 sylvieg Exp $ *}
+{* $Header: /cvsroot/bitweaver/_bit_pigeonholes/templates/admin_pigeonholes.tpl,v 1.8 2006/06/11 11:02:05 squareing Exp $ *}
 {strip}
 {form}
-	{legend legend="Category Settings"}
-		<input type="hidden" name="page" value="{$page}" />
-		{foreach from=$pigeonholeSettings key=feature item=output}
+	<input type="hidden" name="page" value="{$page}" />
+
+	{legend legend="Pigeonhole Display Settings"}
+		{foreach from=$pigeonholeDisplaySettings key=feature item=output}
 			<div class="row">
 				{formlabel label=`$output.label` for=$feature}
 				{forminput}
@@ -28,6 +29,18 @@
 				{formhelp note="Here you can specify what number of members are displayed at the bottom of a page."}
 			{/forminput}
 		</div>
+	{/legend}
+
+	{legend legend="Pigeonhole Edit Settings"}
+		{foreach from=$pigeonholeEditSettings key=feature item=output}
+			<div class="row">
+				{formlabel label=`$output.label` for=$feature}
+				{forminput}
+					{html_checkboxes name="$feature" values="y" checked=$gBitSystem->getConfig($feature) labels=false id=$feature}
+					{formhelp note=`$output.note` page=`$output.page`}
+				{/forminput}
+			</div>
+		{/foreach}
 
 		<div class="row">
 			{formlabel label="Number of categories for a scrolling list" for="pigeonholes_scrolling_list_number"}
@@ -36,10 +49,10 @@
 			{formhelp note="If you have more than this number of categories, categories selection is displayed in a scrolling list instead of checkboxes"}
 			{/forminput}
 		</div>
-
-		<div class="row submit">
-			<input type="submit" name="pigeonhole_settings" value="{tr}Change preferences{/tr}" />
-		</div>
 	{/legend}
+
+	<div class="row submit">
+		<input type="submit" name="pigeonhole_settings" value="{tr}Change preferences{/tr}" />
+	</div>
 {/form}
 {/strip}

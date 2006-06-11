@@ -1,7 +1,7 @@
 <?php
-// $Header: /cvsroot/bitweaver/_bit_pigeonholes/admin/admin_pigeonholes_inc.php,v 1.10 2006/06/11 10:47:34 squareing Exp $
+// $Header: /cvsroot/bitweaver/_bit_pigeonholes/admin/admin_pigeonholes_inc.php,v 1.11 2006/06/11 11:02:04 squareing Exp $
 
-$pigeonholeSettings = array(
+$pigeonholeDisplaySettings = array(
 	'pigeonholes_display_path' => array(
 		'label' => 'Display Path',
 		'note' => 'Display category paths above the page leading to the object.',
@@ -23,15 +23,19 @@ $pigeonholeSettings = array(
 		'note' => 'Limit category access to users with a given permission. Permission settings are inhertied by child categories.',
 	),
 	'pigeonholes_groups' => array(
-		'label' => 'Group management',
+		'label' => 'Group gating',
 		'note' => 'Limit category access to specific groups. Group settings are inhertied by child categories.',
 	),
+);
+$gBitSmarty->assign( 'pigeonholeDisplaySettings', $pigeonholeDisplaySettings );
+
+$pigeonholeEditSettings = array(
 	'pigeonholes_use_jstab' => array(
 		'label' => 'Use seperate Tab',
 		'note' => 'When editing content use a seperate tab to categorise.',
 	),
 );
-$gBitSmarty->assign( 'pigeonholeSettings', $pigeonholeSettings );
+$gBitSmarty->assign( 'pigeonholeEditSettings', $pigeonholeEditSettings );
 
 $listStyles = array(
 	'dynamic' => tra( 'Dynamic list' ),
@@ -51,6 +55,7 @@ $memberLimit = array(
 $gBitSmarty->assign( 'memberLimit', $memberLimit );
 
 if( !empty( $_REQUEST['pigeonhole_settings'] ) ) {
+	$pigeonholeSettings = array_merge( $pigeonholeDisplaySettings, $pigeonholeEditSettings );
 	foreach( array_keys( $pigeonholeSettings ) as $item ) {
 		simple_set_toggle( $item, PIGEONHOLES_PKG_NAME );
 	}
