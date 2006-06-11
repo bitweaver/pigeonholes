@@ -1,5 +1,5 @@
 <?php
-// $Header: /cvsroot/bitweaver/_bit_pigeonholes/admin/admin_pigeonholes_inc.php,v 1.9 2006/06/06 07:25:47 squareing Exp $
+// $Header: /cvsroot/bitweaver/_bit_pigeonholes/admin/admin_pigeonholes_inc.php,v 1.10 2006/06/11 10:47:34 squareing Exp $
 
 $pigeonholeSettings = array(
 	'pigeonholes_display_path' => array(
@@ -15,16 +15,16 @@ $pigeonholeSettings = array(
 		'note' => 'When showing the category members, you can display the category description as well.',
 	),
 	'pigeonholes_themes' => array(
-		'label' => 'Enable variable theme selection',
+		'label' => 'Theme selection',
 		'note' => 'Allow the selection of a different theme to use for a category.',
 	),
 	'pigeonholes_permissions' => array(
-		'label' => 'Enable variable permission selection',
-		'note' => 'Allow the selection of different permissions to use for each category.',
+		'label' => 'Permission gating',
+		'note' => 'Limit category access to users with a given permission. Permission settings are inhertied by child categories.',
 	),
 	'pigeonholes_groups' => array(
-		'label' => 'Enable group management selection',
-		'note' => 'Allow the selection of a different group to use for a category.',
+		'label' => 'Group management',
+		'note' => 'Limit category access to specific groups. Group settings are inhertied by child categories.',
 	),
 	'pigeonholes_use_jstab' => array(
 		'label' => 'Use seperate Tab',
