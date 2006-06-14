@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_pigeonholes/Pigeonholes.php,v 1.62 2006/06/06 07:25:47 squareing Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_pigeonholes/Pigeonholes.php,v 1.63 2006/06/14 22:43:13 windblown Exp $
  *
  * +----------------------------------------------------------------------+
  * | Copyright ( c ) 2004, bitweaver.org
@@ -17,7 +17,7 @@
  * Pigeonholes class
  *
  * @author   xing <xing@synapse.plus.com>
- * @version  $Revision: 1.62 $
+ * @version  $Revision: 1.63 $
  * @package  pigeonholes
  */
 
@@ -441,7 +441,7 @@ class Pigeonholes extends LibertyContent {
 				$query = "SELECT `pref_name`, `pref_value` FROM `".BIT_DB_PREFIX."liberty_content_prefs` WHERE `content_id` IN( ".preg_replace( "/,$/", "", str_repeat( "?,", count( $contentIds ) ) )." ) ";
 				$result = $this->mDb->query( $query, $contentIds );
 				while( $aux = $result->fetchRow() ) {
-					${$aux['name']} = $aux['pref_value'];
+					${$aux['pref_name']} = $aux['pref_value'];
 					if( ( !empty( $group_id ) && !$gBitUser->isInGroup( $group_id ) ) || ( !empty( $permission ) && !$gBitUser->hasPermission( $permission ) ) ) {
 						return FALSE;
 					}
