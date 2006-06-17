@@ -28,10 +28,12 @@
 					{/if}
 				{/forminput}
 			{else}
-				<p>{tr}There are no categories available at the moment.{/tr}</p>
-				{if $gBitUser->isAdmin()}
-					{smartlink ititle="Create Category" ipackage="pigeonholes" ifile="edit_pigeonholes.php"}
-				{/if}
+				{forminput}
+					<p>{tr}There are no categories available at the moment.{/tr}</p>
+					{if $gBitUser->isAdmin()}
+						{smartlink ititle="Create Category" ipackage="pigeonholes" ifile="edit_pigeonholes.php"}
+					{/if}
+				{/forminput}
 			{/if}
 		</div>
 	{/legend}
