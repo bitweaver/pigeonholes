@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_pigeonholes/Pigeonholes.php,v 1.63 2006/06/14 22:43:13 windblown Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_pigeonholes/Pigeonholes.php,v 1.64 2006/06/18 07:43:06 squareing Exp $
  *
  * +----------------------------------------------------------------------+
  * | Copyright ( c ) 2004, bitweaver.org
@@ -17,7 +17,7 @@
  * Pigeonholes class
  *
  * @author   xing <xing@synapse.plus.com>
- * @version  $Revision: 1.63 $
+ * @version  $Revision: 1.64 $
  * @package  pigeonholes
  */
 
@@ -163,8 +163,10 @@ class Pigeonholes extends LibertyContent {
 	* @return array of content not in any pigeonhole yet
 	* @access public
 	**/
-	function getAssignableContent( $pListHash ) {
+	function getAssignableContent( &$pListHash ) {
 		global $gBitUser, $gLibertySystem, $gBitSystem;
+		LibertyContent::prepGetList( $pListHash );
+
 		$where = '';
 		$bindVars = array();
 
@@ -185,16 +187,16 @@ class Pigeonholes extends LibertyContent {
 		}
 
 		if( !empty( $pListHash['sort_mode'] ) ) {
-			$where .= " ORDER BY ".$this->mDb->convert_sortmode( $pListHash['sort_mode'] )." ";
+			$order = " ORDER BY ".$this->mDb->convert_sortmode( $pListHash['sort_mode'] )." ";
 		} else {
-			$where .= " ORDER BY lc.`content_type_guid`, lc.`title` ASC";
+			$order = " ORDER BY lc.`content_type_guid`, lc.`title` ASC";
 		}
 
 		$query = "SELECT pigm.`parent_id`, lc.`content_id`, lc.`user_id`, lc.`title`, lc.`content_type_guid`, uu.`login`, uu.`real_name`
 			FROM `".BIT_DB_PREFIX."liberty_content` lc
 			LEFT JOIN `".BIT_DB_PREFIX."pigeonhole_members` pigm ON ( pigm.`content_id` = lc.`content_id` )
 			LEFT JOIN `".BIT_DB_PREFIX."users_users` uu ON ( uu.`user_id` = lc.`user_id` )
-			$where";
+			$where $order";
 		$result = $this->mDb->query( $query, $bindVars, @BitBase::verifyId( $pListHash['max_records'] ) ? $pListHash['max_records'] : NULL );
 
 		$contentTypes = $gLibertySystem->mContentTypes;
@@ -225,6 +227,14 @@ class Pigeonholes extends LibertyContent {
 			}
 		}
 
+		$query = "SELECT COUNT( lc.`content_id` )
+			FROM `".BIT_DB_PREFIX."liberty_content` lc
+			LEFT JOIN `".BIT_DB_PREFIX."pigeonhole_members` pigm ON ( pigm.`content_id` = lc.`content_id` )
+			LEFT JOIN `".BIT_DB_PREFIX."users_users` uu ON ( uu.`user_id` = lc.`user_id` )
+			$where";
+		$pListHash['cant'] = $this->mDb->getOne( $query, $bindVars );
+
+		LibertyContent::postGetList( $pListHash );
 		return( !empty( $ret ) ? $ret : NULL );
 	}
 
