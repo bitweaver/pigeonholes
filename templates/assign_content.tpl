@@ -69,7 +69,7 @@
 				{/if}
 
 				<table class="data">
-					<caption>{tr}Available Content{/tr} <span class="total">[ {$listInfo.total_records} ]</span></caption>
+					<caption>{tr}Available Content{/tr}</caption>
 					<tr>
 						<th>{smartlink ititle="Title" isort=title idefault=1 max_rows=$smarty.request.max_rows content_type=$contentSelect find_objects=$find_objects include=$smarty.request.include page=$page}</th>
 						<th>{smartlink ititle="Content Type" isort=content_type_guid max_rows=$smarty.request.max_rows content_type=$contentSelect find_objects=$find_objects include=$smarty.request.include page=$page}</th>

@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_pigeonholes/Pigeonholes.php,v 1.64 2006/06/18 07:43:06 squareing Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_pigeonholes/Pigeonholes.php,v 1.65 2006/06/18 07:58:13 squareing Exp $
  *
  * +----------------------------------------------------------------------+
  * | Copyright ( c ) 2004, bitweaver.org
@@ -17,7 +17,7 @@
  * Pigeonholes class
  *
  * @author   xing <xing@synapse.plus.com>
- * @version  $Revision: 1.64 $
+ * @version  $Revision: 1.65 $
  * @package  pigeonholes
  */
 
@@ -165,7 +165,6 @@ class Pigeonholes extends LibertyContent {
 	**/
 	function getAssignableContent( &$pListHash ) {
 		global $gBitUser, $gLibertySystem, $gBitSystem;
-		LibertyContent::prepGetList( $pListHash );
 
 		$where = '';
 		$bindVars = array();
@@ -227,14 +226,6 @@ class Pigeonholes extends LibertyContent {
 			}
 		}
 
-		$query = "SELECT COUNT( lc.`content_id` )
-			FROM `".BIT_DB_PREFIX."liberty_content` lc
-			LEFT JOIN `".BIT_DB_PREFIX."pigeonhole_members` pigm ON ( pigm.`content_id` = lc.`content_id` )
-			LEFT JOIN `".BIT_DB_PREFIX."users_users` uu ON ( uu.`user_id` = lc.`user_id` )
-			$where";
-		$pListHash['cant'] = $this->mDb->getOne( $query, $bindVars );
-
-		LibertyContent::postGetList( $pListHash );
 		return( !empty( $ret ) ? $ret : NULL );
 	}
 
