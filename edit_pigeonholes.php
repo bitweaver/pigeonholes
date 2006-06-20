@@ -1,6 +1,6 @@
 <?php
 /**
- * $Header: /cvsroot/bitweaver/_bit_pigeonholes/edit_pigeonholes.php,v 1.20 2006/05/31 18:02:56 squareing Exp $
+ * $Header: /cvsroot/bitweaver/_bit_pigeonholes/edit_pigeonholes.php,v 1.21 2006/06/20 17:32:53 squareing Exp $
  *
  * Copyright ( c ) 2004 bitweaver.org
  * Copyright ( c ) 2003 tikwiki.org
@@ -8,7 +8,7 @@
  * All Rights Reserved. See copyright.txt for details and a complete list of authors.
  * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details
  *
- * $Id: edit_pigeonholes.php,v 1.20 2006/05/31 18:02:56 squareing Exp $
+ * $Id: edit_pigeonholes.php,v 1.21 2006/06/20 17:32:53 squareing Exp $
  * @package pigeonholes
  * @subpackage functions
  */
@@ -157,8 +157,11 @@ $gBitSmarty->assign( 'contentList', $cList );
 $gBitSmarty->assign( 'contentTypes', $contentTypes );
 $gBitSmarty->assign( 'contentSelect', $contentSelect );
 
-$listHash['root_structure_id'] = !empty( $gContent->mInfo['root_structure_id'] ) ? $gContent->mInfo['root_structure_id'] : NULL;
-$listHash['force_extras'] = TRUE;
+$listHash = array(
+	'root_structure_id' => !empty( $gContent->mInfo['root_structure_id'] ) ? $gContent->mInfo['root_structure_id'] : NULL;
+	'force_extras'      => TRUE;
+	'max_records'       => -1;
+);
 $pigeonList = $gContent->getList( $listHash );
 $gBitSmarty->assign( 'pigeonList', $pigeonList );
 $gBitSmarty->assign( 'feedback', !empty( $feedback ) ? $feedback : NULL );
