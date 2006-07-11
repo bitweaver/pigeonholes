@@ -11,7 +11,7 @@
 			{if $gBitUser->hasPermission( 'p_pigeonholes_edit' ) and $gContent->mStructureId}
 				<li><a class="head" href="{$smarty.const.PIGEONHOLES_PKG_URL}edit_pigeonholes.php?structure_id={$gContent->mInfo.structure_id}">{biticon ipackage=liberty iname=edit iexplain="Edit Category" iforce="icon"} {tr}Edit Category{/tr}</a>
 					<ul>
-						<li><a class="item" href="{$smarty.const.PIGEONHOLES_PKG_URL}edit_pigeonholes.php?structure_id={$gContent->mInfo.root_structure_id}&amp;action=create">{biticon ipackage=liberty iname=new iexplain="Insert Category" iforce="icon"} {tr}Insert Category{/tr}</a></li>
+						<li><a class="item" href="{$smarty.const.PIGEONHOLES_PKG_URL}edit_pigeonholes.php?structure_id={$gContent->mInfo.root_structure_id}&amp;action=create">{biticon ipackage=liberty iname=insert iexplain="Insert Category" iforce="icon"} {tr}Insert Category{/tr}</a></li>
 						<li><a class="item" href="{$smarty.const.PIGEONHOLES_PKG_URL}edit_structure.php?structure_id={$gContent->mInfo.structure_id}">{biticon ipackage=pigeonholes iname=organise iexplain="Change Structure" iforce="icon"} {tr}Change Structure{/tr}</a></li>
 					</ul>
 				</li>
