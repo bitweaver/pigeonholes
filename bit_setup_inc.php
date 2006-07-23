@@ -1,11 +1,11 @@
 <?php
 /**
  * @author   xing <xing@synapse.plus.com>
- * @version  $Revision: 1.13 $
+ * @version  $Revision: 1.14 $
  * @package  Pigeonholes
  * @subpackage functions
  */
-global $gBitSystem, $gBitUser;
+global $gBitSystem, $gBitUser, $gLibertySystem;
 
 $registerHash = array(
 	'package_name' => 'pigeonholes',
