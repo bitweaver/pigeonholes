@@ -1,6 +1,6 @@
 <?php
 /**
- * $Header: /cvsroot/bitweaver/_bit_pigeonholes/edit_pigeonholes.php,v 1.22 2006/06/23 10:40:58 sylvieg Exp $
+ * $Header: /cvsroot/bitweaver/_bit_pigeonholes/edit_pigeonholes.php,v 1.23 2006/09/03 13:27:44 squareing Exp $
  *
  * Copyright ( c ) 2004 bitweaver.org
  * Copyright ( c ) 2003 tikwiki.org
@@ -8,7 +8,7 @@
  * All Rights Reserved. See copyright.txt for details and a complete list of authors.
  * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details
  *
- * $Id: edit_pigeonholes.php,v 1.22 2006/06/23 10:40:58 sylvieg Exp $
+ * $Id: edit_pigeonholes.php,v 1.23 2006/09/03 13:27:44 squareing Exp $
  * @package pigeonholes
  * @subpackage functions
  */
@@ -140,6 +140,7 @@ if ( $gBitSystem->isFeatureActive( 'pigeonholes_permissions' ) ) {
 }
 
 // get available groups ready that we can assign the pigoenhole to one of them
+$gBitUser->mGroups;
 if ( $gBitSystem->isFeatureActive( 'pigeonholes_groups' ) ) {
 	$groups[''] = tra( 'None' );
 	foreach( $gBitUser->mGroups as $group_id => $group ) {

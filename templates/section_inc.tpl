@@ -65,7 +65,7 @@
 	{if $current}<strong>{/if}
 		<a href="{$smarty.const.PIGEONHOLES_PKG_URL}view.php?structure_id={$subtree[ix].structure_id}#members">{$subtree[ix].title|escape}</a>
 	{if $current}</strong>{/if}
-	{biticon ipackage=liberty iname=spacer}
+	{biticon ipackage=liberty iname=spacer iforce=icon}
 
 	{if !$no_details}
 		{foreach from=$pigeonList item=pigeonItem}
