@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_pigeonholes/Pigeonholes.php,v 1.65 2006/06/18 07:58:13 squareing Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_pigeonholes/Pigeonholes.php,v 1.66 2006/09/07 19:07:51 squareing Exp $
  *
  * +----------------------------------------------------------------------+
  * | Copyright ( c ) 2004, bitweaver.org
@@ -17,7 +17,7 @@
  * Pigeonholes class
  *
  * @author   xing <xing@synapse.plus.com>
- * @version  $Revision: 1.65 $
+ * @version  $Revision: 1.66 $
  * @package  pigeonholes
  */
 
@@ -230,12 +230,16 @@ class Pigeonholes extends LibertyContent {
 	}
 
 	/**
-	* get an array of paths for all pigeonholes. used for pages where data can be inserted into pigeonholes
-	* @param $pContentId content id of pigeonhole.
-	* @return path in form of an array on success, FALSE ( boolean ) if content is in no pigeonhole
-	* @access public
-	**/
-	function getPigeonholesPathList( $pContentId=NULL ) {
+	 * get an array of paths for all pigeonholes. used for pages where data can be inserted into pigeonholes
+	 * 
+	 * @param numeric $pContentId content id of pigeonhole.
+	 * @param numeric $pTruncate Setting this to a number will do some smart truncations depending on how many parents there are
+	 *                           setting it to 60 will allow 30 chars for all parents combined and 30 for the actual title
+	 * @access public
+	 * @return TRUE on success, FALSE if there is no pigeonhole
+	 * @TODO: We need to sort the returned values that successive pigoenholes are grouped together.
+	 */
+	function getPigeonholesPathList( $pContentId=NULL, $pTruncate = FALSE ) {
 		$query = "SELECT pig.`content_id`, pig.`structure_id`
 			FROM `".BIT_DB_PREFIX."pigeonholes` pig
 			INNER JOIN `".BIT_DB_PREFIX."liberty_structures` ls ON ( ls.`structure_id` = pig.`structure_id` )
@@ -245,6 +249,27 @@ class Pigeonholes extends LibertyContent {
 		foreach( $pigeonholes as $pigeonhole ) {
 			$ret[$pigeonhole['content_id']] = $this->getPigeonholePath( $pigeonhole['structure_id'] );
 		}
+
+		if( $pTruncate ) {
+			foreach( $ret as $cid => $path ) {
+				// count here to minimise speed loss
+				$count = count( $path );
+				foreach( $path as $pos => $pig ) {
+					// calculate limit at which category is truncated
+					if( $count == 1 ) {
+						$limit = $pTruncate;
+					} elseif( $pos == $count - 1 ) {
+						$limit = ceil( $pTruncate / 2 );
+					} else {
+						$limit = ceil( $pTruncate / 2 / $count );
+					}
+					$ret[$cid][$pos]['title'] = substr( $pig['title'], 0, $limit ).( ( strlen( $pig['title'] ) <= $limit ) ? '' : '...' );
+				}
+			}
+		}
+
+		// sort the pathlist to make the display nicer
+		usort( $ret, 'pigeonholes_pathlist_sorter' );
 
 		if( @BitBase::verifyId( $pContentId ) && $assigned = $this->getPigeonholesFromContentId( $pContentId ) ) {
 			foreach( $assigned as $a ) {
@@ -814,8 +839,22 @@ class Pigeonholes extends LibertyContent {
 	}
 }
 
-function pigeonholes_alphabetiser($a, $b) {
+function pigeonholes_alphabetiser( $a, $b ) {
 	return strcasecmp( $a["title"], $b["title"] );
+}
+
+function pigeonholes_pathlist_sorter( $aa, $ab ) {
+	foreach( $aa as $key => $a ) {
+		if( !empty( $ab[$key] ) ) {
+			if( $a['structure_id'] < $ab[$key]['structure_id'] ) {
+				return -1;
+			} elseif( $a['structure_id'] > $ab[$key]['structure_id'] ) {
+				return 1;
+			}
+		} else {
+			return 1;
+		}
+	}
 }
 
 
@@ -859,7 +898,7 @@ function pigeonholes_content_edit( $pObject=NULL ) {
 		$pigeonholes = new Pigeonholes();
 
 		// get pigeonholes path list
-		if( $pigeonPathList = $pigeonholes->getPigeonholesPathList( !empty( $pObject->mContentId ) ? $pObject->mContentId : NULL ) ) {
+		if( $pigeonPathList = $pigeonholes->getPigeonholesPathList( ( !empty( $pObject->mContentId ) ? $pObject->mContentId : NULL ), 100 ) ) {
 			$gBitSmarty->assign( 'pigeonPathList', $pigeonPathList );
 		}
 	}
