@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_pigeonholes/Pigeonholes.php,v 1.67 2006/09/08 06:58:46 squareing Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_pigeonholes/Pigeonholes.php,v 1.68 2006/09/08 16:36:53 bitweaver Exp $
  *
  * +----------------------------------------------------------------------+
  * | Copyright ( c ) 2004, bitweaver.org
@@ -17,7 +17,7 @@
  * Pigeonholes class
  *
  * @author   xing <xing@synapse.plus.com>
- * @version  $Revision: 1.67 $
+ * @version  $Revision: 1.68 $
  * @package  pigeonholes
  */
 
@@ -270,7 +270,7 @@ class Pigeonholes extends LibertyContent {
 			}
 
 			// sort the pathlist to make the display nicer
-			usort( $ret, 'pigeonholes_pathlist_sorter' );
+			uasort( $ret, 'pigeonholes_pathlist_sorter' );
 
 			if( @BitBase::verifyId( $pContentId ) && $assigned = $this->getPigeonholesFromContentId( $pContentId ) ) {
 				foreach( $assigned as $a ) {
