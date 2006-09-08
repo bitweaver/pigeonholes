@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_pigeonholes/Pigeonholes.php,v 1.66 2006/09/07 19:07:51 squareing Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_pigeonholes/Pigeonholes.php,v 1.67 2006/09/08 06:58:46 squareing Exp $
  *
  * +----------------------------------------------------------------------+
  * | Copyright ( c ) 2004, bitweaver.org
@@ -17,7 +17,7 @@
  * Pigeonholes class
  *
  * @author   xing <xing@synapse.plus.com>
- * @version  $Revision: 1.66 $
+ * @version  $Revision: 1.67 $
  * @package  pigeonholes
  */
 
@@ -250,30 +250,32 @@ class Pigeonholes extends LibertyContent {
 			$ret[$pigeonhole['content_id']] = $this->getPigeonholePath( $pigeonhole['structure_id'] );
 		}
 
-		if( $pTruncate ) {
-			foreach( $ret as $cid => $path ) {
-				// count here to minimise speed loss
-				$count = count( $path );
-				foreach( $path as $pos => $pig ) {
-					// calculate limit at which category is truncated
-					if( $count == 1 ) {
-						$limit = $pTruncate;
-					} elseif( $pos == $count - 1 ) {
-						$limit = ceil( $pTruncate / 2 );
-					} else {
-						$limit = ceil( $pTruncate / 2 / $count );
+		if( !empty( $ret ) ) {
+			if( $pTruncate ) {
+				foreach( $ret as $cid => $path ) {
+					// count here to minimise speed loss
+					$count = count( $path );
+					foreach( $path as $pos => $pig ) {
+						// calculate limit at which category is truncated
+						if( $count == 1 ) {
+							$limit = $pTruncate;
+						} elseif( $pos == $count - 1 ) {
+							$limit = ceil( $pTruncate / 2 );
+						} else {
+							$limit = ceil( $pTruncate / 2 / $count );
+						}
+						$ret[$cid][$pos]['title'] = substr( $pig['title'], 0, $limit ).( ( strlen( $pig['title'] ) <= $limit ) ? '' : '...' );
 					}
-					$ret[$cid][$pos]['title'] = substr( $pig['title'], 0, $limit ).( ( strlen( $pig['title'] ) <= $limit ) ? '' : '...' );
 				}
 			}
-		}
 
-		// sort the pathlist to make the display nicer
-		usort( $ret, 'pigeonholes_pathlist_sorter' );
+			// sort the pathlist to make the display nicer
+			usort( $ret, 'pigeonholes_pathlist_sorter' );
 
-		if( @BitBase::verifyId( $pContentId ) && $assigned = $this->getPigeonholesFromContentId( $pContentId ) ) {
-			foreach( $assigned as $a ) {
-				$ret[$a['content_id']][0]['selected'] = TRUE;
+			if( @BitBase::verifyId( $pContentId ) && $assigned = $this->getPigeonholesFromContentId( $pContentId ) ) {
+				foreach( $assigned as $a ) {
+					$ret[$a['content_id']][0]['selected'] = TRUE;
+				}
 			}
 		}
 
