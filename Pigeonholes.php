@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_pigeonholes/Pigeonholes.php,v 1.69 2006/09/08 20:29:12 squareing Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_pigeonholes/Pigeonholes.php,v 1.70 2006/09/09 05:59:21 squareing Exp $
  *
  * +----------------------------------------------------------------------+
  * | Copyright ( c ) 2004, bitweaver.org
@@ -17,7 +17,7 @@
  * Pigeonholes class
  *
  * @author   xing <xing@synapse.plus.com>
- * @version  $Revision: 1.69 $
+ * @version  $Revision: 1.70 $
  * @package  pigeonholes
  */
 
@@ -996,15 +996,15 @@ function pigeonholes_content_store( $pObject, $pParamHash ) {
 function pigeonholes_content_list_sql( &$pObject, $pParamHash = NULL ) {
 	global $gBitSystem;
 	$ret = array();
-	if( /*$gBitSystem->isFeatureActive( 'pigeonholes_categorize_'.$pObject->getContentType() ) && */ !empty( $pParamHash['category_filter'] ) ) {
-		if ( is_array( $pParamHash['category_filter'] ) ) {
+	if( /*$gBitSystem->isFeatureActive( 'pigeonholes_categorize_'.$pObject->getContentType() ) && */ !empty( $pParamHash['pigeonholes']['filter'] ) ) {
+		if ( is_array( $pParamHash['pigeonholes']['filter'] ) ) {
 			$ret['join_sql'] = "LEFT JOIN `".BIT_DB_PREFIX."pigeonhole_members` pm ON (lc .`content_id`= pm.`content_id`)";
-			$ret['where_sql'] = ' AND pm.`parent_id` in ('.implode( ',', array_fill(0, count( $pParamHash['category_filter']  ), '?' ) ).')';
-			$ret['bind_vars'] = $pParamHash['category_filter'];
+			$ret['where_sql'] = ' AND pm.`parent_id` in ('.implode( ',', array_fill(0, count( $pParamHash['pigeonholes']['filter']  ), '?' ) ).')';
+			$ret['bind_vars'] = $pParamHash['pigeonholes']['filter'];
 		} else {
 			$ret['join_sql'] = "LEFT JOIN `".BIT_DB_PREFIX."pigeonhole_members` pm ON (lc .`content_id`= pm.`content_id`)";
 			$ret['where_sql'] = " AND pm.`parent_id`=? ";
-			$ret['bind_vars'][] = $pParamHash['category_filter'];
+			$ret['bind_vars'][] = $pParamHash['pigeonholes']['filter'];
 		}
 	}
 	return $ret;
