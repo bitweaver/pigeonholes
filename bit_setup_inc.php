@@ -1,7 +1,7 @@
 <?php
 /**
  * @author   xing <xing@synapse.plus.com>
- * @version  $Revision: 1.14 $
+ * @version  $Revision: 1.15 $
  * @package  Pigeonholes
  * @subpackage functions
  */
@@ -33,7 +33,12 @@ if( $gBitSystem->isPackageActive( 'pigeonholes' ) ) {
 	) );
 
 	if( $gBitUser->hasPermission( 'p_pigeonholes_view' ) ) {
-		$gBitSystem->registerAppMenu( PIGEONHOLES_PKG_DIR, 'Categories', PIGEONHOLES_PKG_URL.'index.php', 'bitpackage:pigeonholes/menu_pigeonholes.tpl', 'Pigeonholes' );
+		$menuHash = array(
+			'package_name'  => PIGEONHOLES_PKG_NAME,
+			'index_url'     => PIGEONHOLES_PKG_URL.'index.php',
+			'menu_template' => 'bitpackage:pigeonholes/menu_pigeonholes.tpl',
+		);
+		$gBitSystem->registerAppMenu( $menuHash );
 	}
 }
 ?>
