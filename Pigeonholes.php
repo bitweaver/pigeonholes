@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_pigeonholes/Pigeonholes.php,v 1.71 2006/09/20 17:19:59 wjames5 Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_pigeonholes/Pigeonholes.php,v 1.72 2006/09/20 21:31:06 wjames5 Exp $
  *
  * +----------------------------------------------------------------------+
  * | Copyright ( c ) 2004, bitweaver.org
@@ -17,7 +17,7 @@
  * Pigeonholes class
  *
  * @author   xing <xing@synapse.plus.com>
- * @version  $Revision: 1.71 $
+ * @version  $Revision: 1.72 $
  * @package  pigeonholes
  */
 
@@ -1010,7 +1010,7 @@ function pigeonholes_content_list_sql( &$pObject, $pParamHash = NULL ) {
 	if( !empty( $pParamHash['liberty_categories'] ) ) {
 			$ret['join_sql'] = "LEFT JOIN `".BIT_DB_PREFIX."pigeonhole_members` pm ON (lc .`content_id`= pm.`content_id`)";
 		if ( is_array( $pParamHash['liberty_categories'] ) ) {
-			$ret['where_sql'] = ' AND pm.`parent_id` in ('.implode( ',', array_fill(0, count( $pParamHash['pigeonholes']['filter']  ), '?' ) ).')';
+			$ret['where_sql'] = ' AND pm.`parent_id` in ('.implode( ',', array_fill(0, count( $pParamHash['liberty_categories']  ), '?' ) ).')';
 			$ret['bind_vars'] = $pParamHash['liberty_categories'];
 		} else {
 			$ret['where_sql'] = " AND pm.`parent_id`=? ";
