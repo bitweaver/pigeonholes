@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_pigeonholes/Pigeonholes.php,v 1.72 2006/09/20 21:31:06 wjames5 Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_pigeonholes/Pigeonholes.php,v 1.73 2006/09/22 19:20:40 sylvieg Exp $
  *
  * +----------------------------------------------------------------------+
  * | Copyright ( c ) 2004, bitweaver.org
@@ -17,7 +17,7 @@
  * Pigeonholes class
  *
  * @author   xing <xing@synapse.plus.com>
- * @version  $Revision: 1.72 $
+ * @version  $Revision: 1.73 $
  * @package  pigeonholes
  */
 
@@ -393,7 +393,7 @@ class Pigeonholes extends LibertyContent {
 		if ( !empty( $pListHash['parent_content_id'] ) ) {
 			$join .= 'INNER JOIN `'.BIT_DB_PREFIX.'liberty_structures` lsf ON (ls.`parent_id` = lsf.`structure_id`';
 			if ( !empty( $pListHash['load_also_root'] ) ) {
-			 	$join .= 'OR ls.`structure_id`= lsf.`structure_id`';
+			 	$join .= ' OR ls.`structure_id`= lsf.`structure_id`';
 			}
 			$join .= ')';
 			$where .= empty( $where ) ? ' WHERE ' : ' AND ';
