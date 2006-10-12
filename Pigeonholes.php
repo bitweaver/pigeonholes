@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_pigeonholes/Pigeonholes.php,v 1.73 2006/09/22 19:20:40 sylvieg Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_pigeonholes/Pigeonholes.php,v 1.74 2006/10/12 07:16:11 squareing Exp $
  *
  * +----------------------------------------------------------------------+
  * | Copyright ( c ) 2004, bitweaver.org
@@ -17,7 +17,7 @@
  * Pigeonholes class
  *
  * @author   xing <xing@synapse.plus.com>
- * @version  $Revision: 1.73 $
+ * @version  $Revision: 1.74 $
  * @package  pigeonholes
  */
 
@@ -133,12 +133,18 @@ class Pigeonholes extends LibertyContent {
 		$order = "ORDER BY lc.`content_type_guid`, lc.`title` ASC";
 
 		$ret = array();
-		$query = "SELECT pigm.*, lc.`content_id`, tct.`content_description`, lc.`last_modified`, lc.`user_id`, lc.`title`, lc.`content_type_guid`, lc.`created`, uu.`login`, uu.`real_name`
+		$query = "
+			SELECT pigm.*,
+			lc.`content_id`, lc.`last_modified`, lc.`user_id`, lc.`title`, lc.`content_type_guid`, lc.`created`,
+			tct.`content_description`,
+			uu.`login`, uu.`real_name`,
+			wp.`description`
 			FROM `".BIT_DB_PREFIX."pigeonhole_members` pigm
 				INNER JOIN `".BIT_DB_PREFIX."pigeonholes` pig ON ( pig.`content_id` = pigm.`parent_id` )
 				INNER JOIN `".BIT_DB_PREFIX."liberty_content` lc ON ( lc.`content_id` = pigm.`content_id` )
 				INNER JOIN `".BIT_DB_PREFIX."liberty_content_types` tct ON ( lc.`content_type_guid` = tct.`content_type_guid` )
 				INNER JOIN `".BIT_DB_PREFIX."users_users` uu ON ( uu.`user_id` = lc.`user_id` )
+				LEFT OUTER JOIN `".BIT_DB_PREFIX."wiki_pages` wp ON ( wp.`content_id` = lc.`content_id` )
 			$join $where $order";
 		$result = $this->mDb->query( $query, $bindVars, @BitBase::verifyId( $pListHash['max_records'] ) ? $pListHash['max_records'] : NULL );
 		$contentTypes = $gLibertySystem->mContentTypes;
