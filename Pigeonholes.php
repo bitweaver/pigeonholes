@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_pigeonholes/Pigeonholes.php,v 1.74 2006/10/12 07:16:11 squareing Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_pigeonholes/Pigeonholes.php,v 1.75 2006/10/13 09:24:55 lsces Exp $
  *
  * +----------------------------------------------------------------------+
  * | Copyright ( c ) 2004, bitweaver.org
@@ -17,7 +17,7 @@
  * Pigeonholes class
  *
  * @author   xing <xing@synapse.plus.com>
- * @version  $Revision: 1.74 $
+ * @version  $Revision: 1.75 $
  * @package  pigeonholes
  */
 
@@ -243,7 +243,7 @@ class Pigeonholes extends LibertyContent {
 	 *                           setting it to 60 will allow 30 chars for all parents combined and 30 for the actual title
 	 * @access public
 	 * @return TRUE on success, FALSE if there is no pigeonhole
-	 * @TODO: We need to sort the returned values that successive pigoenholes are grouped together.
+	 * @TODO We need to sort the returned values that successive pigoenholes are grouped together.
 	 */
 	function getPigeonholesPathList( $pContentId=NULL, $pTruncate = FALSE ) {
 		$query = "SELECT pig.`content_id`, pig.`structure_id`
