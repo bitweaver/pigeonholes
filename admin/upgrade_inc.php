@@ -8,7 +8,7 @@ $upgrades = array(
 // transfer all the pigeonhole settings into liberty_content_prefs
 array( 'PHP' => '
 	global $gBitSystem;
-	$pigeonhole_settings = $gBitSystem->mDb->getAssoc( "SELECT `content_id`, `name`, `value` FROM `".BIT_DB_PREFIX."bit_pigeonhole_settings`" );
+	$pigeonhole_settings = $gBitSystem->mDb->getAll( "SELECT `content_id`, `name`, `value` FROM `".BIT_DB_PREFIX."bit_pigeonhole_settings`" );
 	if( !empty( $pigeonhole_settings ) ) {
 		foreach( $pigeonhole_settings as $store ) {
 			$query = "INSERT INTO `".BIT_DB_PREFIX."liberty_content_prefs` (`content_id`,`pref_name`,`pref_value`) VALUES(?, ?, ?)";
