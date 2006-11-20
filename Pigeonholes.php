@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_pigeonholes/Pigeonholes.php,v 1.75 2006/10/13 09:24:55 lsces Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_pigeonholes/Pigeonholes.php,v 1.76 2006/11/20 15:17:24 squareing Exp $
  *
  * +----------------------------------------------------------------------+
  * | Copyright ( c ) 2004, bitweaver.org
@@ -17,7 +17,7 @@
  * Pigeonholes class
  *
  * @author   xing <xing@synapse.plus.com>
- * @version  $Revision: 1.75 $
+ * @version  $Revision: 1.76 $
  * @package  pigeonholes
  */
 
@@ -353,8 +353,8 @@ class Pigeonholes extends LibertyContent {
 	* @param $pListHash[offset] number of results data is offset by
 	* @param $pListHash[title] pigeonhole name
 	* @param $pListHash[parent_id] pigeonhole parent_id, optional
-	* @param $pListHash[root_structure_id] 
-	* @param $pListHash[load_only_root]
+	* @param $pListHash[root_structure_id] only load the pigoenhole this root_structure_id is part of
+	* @param $pListHash[load_only_root] only load top most items
 	* @param $pListHash[parent_content_id] all the sons of the pigeonhole parent content_id , optional
 	* @param $pListHash[load_also_root] if parent_content_id is set load also the father, optionnal
 	* @return array of pigeonholes in 'data' and count of pigeonholes in 'cant'
@@ -384,19 +384,19 @@ class Pigeonholes extends LibertyContent {
 			$bindVars[] = '%'.strtoupper( $pListHash['find'] ).'%';
 		}
 
-		if ( !empty( $pListHash['title'] ) ) {
+		if( !empty( $pListHash['title'] ) ) {
 			$where .= empty( $where ) ? ' WHERE ' : ' AND ';
 			$where .=  ' lc.`title` = ?';
 			$bindVars[] = $pListHash['title'];
 		}
 
-		if ( isset( $pListHash['parent_id'] ) ) {
+		if( isset( $pListHash['parent_id'] ) ) {
 			$where .= empty( $where ) ? ' WHERE ' : ' AND ';
 			$where .= ' ls.`parent_id` = ? ';
 			$bindVars[] = $pListHash['parent_id'];
 		}
 
-		if ( !empty( $pListHash['parent_content_id'] ) ) {
+		if( !empty( $pListHash['parent_content_id'] ) ) {
 			$join .= 'INNER JOIN `'.BIT_DB_PREFIX.'liberty_structures` lsf ON (ls.`parent_id` = lsf.`structure_id`';
 			if ( !empty( $pListHash['load_also_root'] ) ) {
 			 	$join .= ' OR ls.`structure_id`= lsf.`structure_id`';
