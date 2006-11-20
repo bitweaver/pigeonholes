@@ -1,6 +1,6 @@
 {strip}
 {if $gBitSystem->isFeatureActive( 'pigeonholes_display_members' ) and $pigeonData}
-	<div class="display pigeonholes">
+	<div class="service pigeonholes">
 		{if $gBitSystem->getConfig('pigeonholes_limit_member_number') == 0}
 			<h2>{tr}Categories{/tr}</h2>
 			{foreach from=$pigeonData item=pigeonItem}
