@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_pigeonholes/Pigeonholes.php,v 1.76 2006/11/20 15:17:24 squareing Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_pigeonholes/Pigeonholes.php,v 1.77 2006/12/25 21:44:04 squareing Exp $
  *
  * +----------------------------------------------------------------------+
  * | Copyright ( c ) 2004, bitweaver.org
@@ -17,7 +17,7 @@
  * Pigeonholes class
  *
  * @author   xing <xing@synapse.plus.com>
- * @version  $Revision: 1.76 $
+ * @version  $Revision: 1.77 $
  * @package  pigeonholes
  */
 
@@ -789,7 +789,7 @@ class Pigeonholes extends LibertyContent {
 			}
 
 			// finally nuke the structure in liberty_structures
-			$struct->s_remove_page( $this->mStructureId, FALSE );
+			$struct->removeStructureNode( $this->mStructureId, FALSE );
 		}
 		return $ret;
 	}
