@@ -1,9 +1,8 @@
 <IfModule mod_rewrite.c>
 	RewriteEngine  on
 #	RewriteBase	/pigeonholes/
-#	RewriteCond	%{SCRIPT_FILENAME}  -f [OR]
-#	RewriteCond	%{SCRIPT_FILENAME}/index.php    -f
-#	RewriteRule	^(.*)$            - [L]
-
-	RewriteRule ^([0-9]+)$  index.php?content_id=$1  [L]
+	RewriteCond	%{SCRIPT_FILENAME}  -f [OR]
+	RewriteCond	%{SCRIPT_FILENAME}/index.php    -f
+	RewriteRule	^(.*)$            - [L]
+	RewriteRule ^([0-9]+)(\&.*)?$  view.php?content_id=$1$2  [L]
 </IfModule>
