@@ -6,7 +6,7 @@
 			{foreach from=$pigeonData item=pigeonItem}
 				{$pigeonItem.display_path}
 				{if $pigeonItem.data and $gBitSystem->isFeatureActive( 'pigeonholes_display_description' )}
-					: {$pigeonItem.data}
+					: {$pigeonItem.data|escape}
 				{/if}
 				&nbsp; &bull; &nbsp;
 			{/foreach}
@@ -17,7 +17,7 @@
 
 				<p>
 					{if $pigeonItem.data and $gBitSystem->isFeatureActive( 'pigeonholes_display_description' )}
-						{$pigeonItem.data}<br />
+						{$pigeonItem.data|escape}<br />
 					{/if}
 
 					{* reset vars *}
