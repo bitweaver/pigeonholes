@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_pigeonholes/Pigeonholes.php,v 1.77 2006/12/25 21:44:04 squareing Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_pigeonholes/Pigeonholes.php,v 1.78 2007/01/06 09:46:19 squareing Exp $
  *
  * +----------------------------------------------------------------------+
  * | Copyright ( c ) 2004, bitweaver.org
@@ -17,7 +17,7 @@
  * Pigeonholes class
  *
  * @author   xing <xing@synapse.plus.com>
- * @version  $Revision: 1.77 $
+ * @version  $Revision: 1.78 $
  * @package  pigeonholes
  */
 
@@ -192,7 +192,7 @@ class Pigeonholes extends LibertyContent {
 		}
 
 		if( !empty( $pListHash['sort_mode'] ) ) {
-			$order = " ORDER BY ".$this->mDb->convert_sortmode( $pListHash['sort_mode'] )." ";
+			$order = " ORDER BY ".$this->mDb->convertSortmode( $pListHash['sort_mode'] )." ";
 		} else {
 			$order = " ORDER BY lc.`content_type_guid`, lc.`title` ASC";
 		}
@@ -408,7 +408,7 @@ class Pigeonholes extends LibertyContent {
 		}
 
 		if( !empty( $pListHash['sort_mode'] ) ) {
-			$order .= " ORDER BY ".$this->mDb->convert_sortmode( $pListHash['sort_mode'] )." ";
+			$order .= " ORDER BY ".$this->mDb->convertSortmode( $pListHash['sort_mode'] )." ";
 		} else {
 			// default sort mode makes list look nice
 			$order .= " ORDER BY ls.`root_structure_id`, ls.`structure_id` ASC";
