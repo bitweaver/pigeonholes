@@ -1,5 +1,5 @@
 <?php
-// $Header: /cvsroot/bitweaver/_bit_pigeonholes/admin/admin_pigeonholes_inc.php,v 1.11 2006/06/11 11:02:04 squareing Exp $
+// $Header: /cvsroot/bitweaver/_bit_pigeonholes/admin/admin_pigeonholes_inc.php,v 1.12 2007/01/10 11:22:37 squareing Exp $
 
 $pigeonholeDisplaySettings = array(
 	'pigeonholes_display_path' => array(
@@ -13,6 +13,10 @@ $pigeonholeDisplaySettings = array(
 	'pigeonholes_display_description' => array(
 		'label' => 'Display Description',
 		'note' => 'When showing the category members, you can display the category description as well.',
+	),
+	'pigeonholes_display_subtree' => array(
+		'label' => 'Display Subtree',
+		'note' => 'When viewing the kategory list, you can display the subcategories as well.',
 	),
 	'pigeonholes_themes' => array(
 		'label' => 'Theme selection',
