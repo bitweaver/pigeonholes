@@ -37,7 +37,9 @@
 			{/if}
 			<h2>{$item.display_link}</h2>
 			{$item.data|escape}
-			{include file="bitpackage:pigeonholes/view_structure_inc.tpl" subtree=$item.subtree no_details=true}
+			{if $gBitSystem->isFeatureActive( 'pigeonholes_display_subtree' ) && count($item.subtree) > 1}
+				{include file="bitpackage:pigeonholes/view_structure_inc.tpl" subtree=$item.subtree no_details=true}
+			{/if}
 			<hr />
 		{foreachelse}
 			<div class="norecords">
