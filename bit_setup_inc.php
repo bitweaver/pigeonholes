@@ -1,7 +1,7 @@
 <?php
 /**
  * @author   xing <xing@synapse.plus.com>
- * @version  $Revision: 1.15 $
+ * @version  $Revision: 1.16 $
  * @package  Pigeonholes
  * @subpackage functions
  */
@@ -20,16 +20,17 @@ if( $gBitSystem->isPackageActive( 'pigeonholes' ) ) {
 	// include service functions
 	require_once( PIGEONHOLES_PKG_PATH.'Pigeonholes.php' );
 
+	$tpl = $gBitSystem->isFeatureActive( 'pigeonholes_use_jstab' ) ? 'tab' : 'mini';
 	$gLibertySystem->registerService( LIBERTY_SERVICE_CATEGORIZATION, PIGEONHOLES_PKG_NAME, array(
-		'content_display_function' => 'pigeonholes_content_display',
-		'content_preview_function' => 'pigeonholes_content_preview',
-		'content_edit_function' => 'pigeonholes_content_edit',
-		'content_store_function' => 'pigeonholes_content_store',
-		'content_expunge_function' => 'pigeonholes_content_expunge',
-		'content_edit_'.( $gBitSystem->isFeatureActive( 'pigeonholes_use_jstab' ) ? 'tab_' : 'mini_' ).'tpl' => 'bitpackage:pigeonholes/pigeonholes_input_'.( $gBitSystem->isFeatureActive( 'pigeonholes_use_jstab' ) ? '' : 'mini_' ).'inc.tpl',
-		'content_view_tpl' => 'bitpackage:pigeonholes/display_members.tpl',
-		'content_nav_tpl' => 'bitpackage:pigeonholes/display_paths.tpl',
+		'content_display_function'  => 'pigeonholes_content_display',
+		'content_preview_function'  => 'pigeonholes_content_preview',
+		'content_edit_function'     => 'pigeonholes_content_edit',
+		'content_store_function'    => 'pigeonholes_content_store',
+		'content_expunge_function'  => 'pigeonholes_content_expunge',
+		'content_view_tpl'          => 'bitpackage:pigeonholes/service_view_members_inc.tpl',
+		'content_nav_tpl'           => 'bitpackage:pigeonholes/service_nav_path_inc.tpl',
 		'content_list_sql_function' => 'pigeonholes_content_list_sql',
+		'content_edit_'.$tpl.'_tpl' => 'bitpackage:pigeonholes/service_edit_'.$tpl.'_inc.tpl',
 	) );
 
 	if( $gBitUser->hasPermission( 'p_pigeonholes_view' ) ) {
