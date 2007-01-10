@@ -21,7 +21,7 @@
 						<ul>
 							{foreach from=$members item=member}
 								<li>
-									{$member.display_link} &nbsp; <small>{$member.content_description}</small>
+									{$member.display_link} &nbsp; <small>{tr}{$member.content_description}{/tr}</small>
 								</li>
 							{/foreach}
 						</ul>
