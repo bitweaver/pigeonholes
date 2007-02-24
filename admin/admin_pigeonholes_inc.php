@@ -1,5 +1,5 @@
 <?php
-// $Header: /cvsroot/bitweaver/_bit_pigeonholes/admin/admin_pigeonholes_inc.php,v 1.12 2007/01/10 11:22:37 squareing Exp $
+// $Header: /cvsroot/bitweaver/_bit_pigeonholes/admin/admin_pigeonholes_inc.php,v 1.13 2007/02/24 08:51:09 squareing Exp $
 
 $pigeonholeDisplaySettings = array(
 	'pigeonholes_display_path' => array(
@@ -35,8 +35,8 @@ $gBitSmarty->assign( 'pigeonholeDisplaySettings', $pigeonholeDisplaySettings );
 
 $pigeonholeEditSettings = array(
 	'pigeonholes_use_jstab' => array(
-		'label' => 'Use seperate Tab',
-		'note' => 'When editing content use a seperate tab to categorise.',
+		'label' => 'Use separate Tab',
+		'note' => 'When editing content use a separate tab to categorise.',
 	),
 );
 $gBitSmarty->assign( 'pigeonholeEditSettings', $pigeonholeEditSettings );
