@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_pigeonholes/Pigeonholes.php,v 1.79 2007/02/16 19:05:55 nickpalmer Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_pigeonholes/Pigeonholes.php,v 1.80 2007/02/26 17:19:33 nickpalmer Exp $
  *
  * +----------------------------------------------------------------------+
  * | Copyright ( c ) 2004, bitweaver.org
@@ -17,7 +17,7 @@
  * Pigeonholes class
  *
  * @author   xing <xing@synapse.plus.com>
- * @version  $Revision: 1.79 $
+ * @version  $Revision: 1.80 $
  * @package  pigeonholes
  */
 
@@ -86,6 +86,7 @@ class Pigeonholes extends LibertyContent {
 				$this->mInfo['display_name'] = BitUser::getTitle( $this->mInfo );
 				$this->mInfo['editor'] = ( isset( $row['modifier_real_name'] ) ? $row['modifier_real_name'] : $row['modifier_user'] );
 				$this->mInfo['display_link'] = $this->getDisplayLink();
+				$this->mInfo['display_url'] = $this->getDisplayUrl();
 			}
 
 			// if the content for the pigeonhole is requested, get it
@@ -808,7 +809,7 @@ class Pigeonholes extends LibertyContent {
 		global $gBitSystem;
 		$ret = NULL;
 		// try to get the correct content_id from anywhere possible
-		if( !@BitBase::verifyId( $pContentId ) && !empty( $this ) ) {
+		if( !@BitBase::verifyId( $pContentId ) && !empty( $this->mContentId ) ) {
 			$pContentId = $this->mContentId;
 		} elseif( !@BitBase::verifyId( $pContentId ) && !empty( $pMixed ) ) {
 			$pContentId = $pMixed['content_id'];
