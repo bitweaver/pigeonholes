@@ -16,11 +16,18 @@
 					{forminput}
 						<select name="max_records">
 							<option value="10"  {if $smarty.request.max_records eq 10 or !$smarty.request.max_rows}selected="selected"{/if}>10</option>
+							{if $gBitSystem->isFeatureActive('reverse_assign_table')}
 							<option value="50"  {if $smarty.request.max_records eq 50}selected="selected"{/if}>50</option>
 							<option value="100" {if $smarty.request.max_records eq 100}selected="selected"{/if}>100</option>
 							<option value="200" {if $smarty.request.max_records eq 200}selected="selected"{/if}>200</option>
 							<option value="500" {if $smarty.request.max_records eq 500}selected="selected"{/if}>500</option>
 							<option value="-1" {if $smarty.request.max_records eq -1}selected="selected"{/if}>{tr}All{/tr}</option>
+							{else}
+							<option value="15"  {if $smarty.request.max_records eq 15}selected="selected"{/if}>15</option>
+							<option value="20" {if $smarty.request.max_records eq 20}selected="selected"{/if}>20</option>
+							<option value="25" {if $smarty.request.max_records eq 25}selected="selected"{/if}>25</option>
+							<option value="-1" {if $smarty.request.max_records eq -1}selected="selected"{/if}>{tr}All{/tr}</option>
+							{/if}
 						</select> {tr}Records{/tr}
 					{/forminput}
 
@@ -68,6 +75,48 @@
 					{formfeedback warning="Using this insertion method will reset any custom sorting you have done so far."}
 				{/if}
 
+				{if !$gBitSystem->isFeatureActive('reverse_assign_table')}
+				{foreach from=$assignableContent item=item}
+					<dl>
+						<dt>{counter name=dogEatsPigeon}</dt>
+						<dd>{$contentTypes[$item.content_type_guid]}: <a href="{$smarty.const.BIT_ROOT_URL}index.php?content_id={$item.content_id}">{$item.title|escape}</a></dd>
+					</dl>
+				{foreachelse}
+					<div class=warning>No assignable content.</div>
+				{/foreach}
+
+				{if $assignableContent}
+				<table class="data">
+					<caption>{tr}Available Categories{/tr}</caption>
+					<tr>
+						<th>Categories</th>
+						{foreach from=$assignableContent item=item}
+							<th><abbr title="{$item.title|escape} - {$contentTypes[$item.content_type_guid]}">{counter}</abbr></th>
+						{/foreach}
+					</tr>
+
+					{foreach from=$pigeonList item=pigeon}
+						<tr class="{cycle values='odd,even'}">
+							<td>{$pigeon.display_path}
+							</td>
+							{foreach from=$assignableContent item=item}
+								<td style="text-align:center">
+									<input type="checkbox" name="pigeonhole[{$item.content_id}][]" value="{$pigeon.content_id}"
+										{foreach from=$item.assigned item=parent_id}
+											{if $pigeon.content_id eq $parent_id}checked="checked"{/if}
+										{/foreach}
+									title="{$item.title|escape}" />
+								</td>
+							{/foreach}
+						</tr>
+					{foreachelse}
+						<tr>
+							<td colspan="2" class="norecords">{tr}No Content can be found with your selection criteria{/tr}</td>
+						</tr>
+					{/foreach}
+				</table>
+				{/if}
+				{else}
 				<table class="data">
 					<caption>{tr}Available Content{/tr}</caption>
 					<tr>
@@ -102,20 +151,27 @@
 				</table>
 
 				{if $assignableContent}
-					<div class="row submit">
-						<input type="submit" name="insert_content" value="Insert Content into Categories" />
-					</div>
-				{/if}
-			{/form}
-
-			{if $assignableContent}
 				{foreach from=$pigeonList item=pigeon}
 					<dl>
 						<dt>{counter name=dogEatsPigeon}</dt>
 						<dd>{$pigeon.display_path}<br /><small>{$pigeon.data|escape}</small></dd>
 					</dl>
 				{/foreach}
-			{/if}
+				{/if}
+
+				{/if}
+
+				{if $assignableContent}
+					<div class="row submit">
+						<input type="submit" name="insert_content" value="Insert Content into Categories" />
+						<input type="hidden" name="list_page" value="{math equation="x + 1" x=$listInfo.current_page}" />
+						<input type="hidden" name="find" value="{$listInfo.find}" />
+						<input type="submit" name="insert_content_and_next" value="Insert Content into Categories and Go To Next Page" />
+					</div>
+				{/if}
+				{pagination}
+			{/form}
+
 		{/if}
 	</div><!-- end .body -->
 </div><!-- end .liberty -->

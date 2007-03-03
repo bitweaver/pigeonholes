@@ -1,6 +1,6 @@
 <?php
 /**
- * $Header: /cvsroot/bitweaver/_bit_pigeonholes/assign_content.php,v 1.7 2006/12/31 13:01:16 squareing Exp $
+ * $Header: /cvsroot/bitweaver/_bit_pigeonholes/assign_content.php,v 1.8 2007/03/03 21:19:52 nickpalmer Exp $
  *
  * Copyright ( c ) 2004 bitweaver.org
  * Copyright ( c ) 2003 tikwiki.org
@@ -8,7 +8,7 @@
  * All Rights Reserved. See copyright.txt for details and a complete list of authors.
  * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details
  *
- * $Id: assign_content.php,v 1.7 2006/12/31 13:01:16 squareing Exp $
+ * $Id: assign_content.php,v 1.8 2007/03/03 21:19:52 nickpalmer Exp $
  * @package pigeonholes
  * @subpackage functions
  */
@@ -41,10 +41,12 @@ $listHash = array(
 	'max_records' => ( @BitBase::verifyId( $_REQUEST['max_records'] ) ) ? $_REQUEST['max_records'] : 10,
 	'include_members' => ( ( !empty( $_REQUEST['include'] ) && $_REQUEST['include'] == 'members' ) ? TRUE : FALSE ),
 	'content_type' => $contentSelect,
+	'list_page' => (empty($_REQUEST['list_page']) ? NULL : $_REQUEST['list_page']),
 );
+
 $assignableContent = $gContent->getAssignableContent( $listHash );
 
-if( !empty( $_REQUEST['insert_content'] ) && isset( $_REQUEST['pigeonhole'] ) ) {
+if( (!empty( $_REQUEST['insert_content'] ) || !empty( $_REQUEST['insert_content_and_next'])) && isset( $_REQUEST['pigeonhole'] ) ) {
 	// here we need to limit all killing to the selected structure
 	$deletableParentIds = array();
 	if( empty( $gStructure ) && @BitBase::verifyId( $_REQUEST['root_structure_id'] ) ) {
@@ -85,8 +87,13 @@ if( !empty( $_REQUEST['insert_content'] ) && isset( $_REQUEST['pigeonhole'] ) ) 
 
 	// we need to reload the assignableContent, since settings have changed
 	// reuse previous listhash since display settings aren't changed
+	if (!empty( $_REQUEST['insert_content_and_next'])) {
+		$listHash['list_page'] = $_REQUEST['list_page']; 
+	}
 	$assignableContent = $gContent->getAssignableContent( $listHash );
 }
+
+$gBitSmarty->assign_by_ref( 'listInfo', $listHash['listInfo'] );
 
 $listHash = array(
 	'load_only_root' => TRUE,
@@ -103,8 +110,11 @@ $listHash = array(
 	'root_structure_id' => ( !empty( $_REQUEST['root_structure_id'] ) ? $_REQUEST['root_structure_id'] : NULL ),
 	'force_extras' => TRUE,
 	'max_records' => -1,
+	'sort_mode' => 'ls.structure_id_asc',
 );
+
 $pigeonList = $gContent->getList( $listHash );
+
 $gBitSmarty->assign( 'pigeonList', $pigeonList );
 $gBitSmarty->assign( 'assignableContent', $assignableContent );
 $gBitSmarty->assign( 'contentCount', count( $assignableContent ) );

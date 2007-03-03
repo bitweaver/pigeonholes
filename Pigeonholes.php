@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_pigeonholes/Pigeonholes.php,v 1.80 2007/02/26 17:19:33 nickpalmer Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_pigeonholes/Pigeonholes.php,v 1.81 2007/03/03 21:19:52 nickpalmer Exp $
  *
  * +----------------------------------------------------------------------+
  * | Copyright ( c ) 2004, bitweaver.org
@@ -17,7 +17,7 @@
  * Pigeonholes class
  *
  * @author   xing <xing@synapse.plus.com>
- * @version  $Revision: 1.80 $
+ * @version  $Revision: 1.81 $
  * @package  pigeonholes
  */
 
@@ -175,6 +175,7 @@ class Pigeonholes extends LibertyContent {
 
 		$where = '';
 		$bindVars = array();
+		LibertyContent::prepGetList( $pListHash );
 
 		if( empty( $pListHash['include_members'] ) ) {
 			$where .= "WHERE pigm.`content_id` IS NULL";
@@ -192,6 +193,10 @@ class Pigeonholes extends LibertyContent {
 			$bindVars[] = $pListHash['content_type'];
 		}
 
+		$where .= empty( $where ) ? ' WHERE ' : ' AND ';
+		$where .= " lc.`content_type_guid` != ? ";
+		$bindVars[] = PIGEONHOLES_CONTENT_TYPE_GUID;
+
 		if( !empty( $pListHash['sort_mode'] ) ) {
 			$order = " ORDER BY ".$this->mDb->convertSortmode( $pListHash['sort_mode'] )." ";
 		} else {
@@ -203,7 +208,14 @@ class Pigeonholes extends LibertyContent {
 			LEFT JOIN `".BIT_DB_PREFIX."pigeonhole_members` pigm ON ( pigm.`content_id` = lc.`content_id` )
 			LEFT JOIN `".BIT_DB_PREFIX."users_users` uu ON ( uu.`user_id` = lc.`user_id` )
 			$where $order";
-		$result = $this->mDb->query( $query, $bindVars, @BitBase::verifyId( $pListHash['max_records'] ) ? $pListHash['max_records'] : NULL );
+		$result = $this->mDb->query( $query, $bindVars, @BitBase::verifyId( $pListHash['max_records'] ) ? $pListHash['max_records'] : NULL , $pListHash['offset']);
+
+		$query = "SELECT count(lc.`content_id`)
+			FROM `".BIT_DB_PREFIX."liberty_content` lc
+			LEFT JOIN `".BIT_DB_PREFIX."pigeonhole_members` pigm ON ( pigm.`content_id` = lc.`content_id` )
+			LEFT JOIN `".BIT_DB_PREFIX."users_users` uu ON ( uu.`user_id` = lc.`user_id` )
+			$where";
+		$pListHash['cant'] = $this->mDb->getOne( $query, $bindVars);
 
 		$contentTypes = $gLibertySystem->mContentTypes;
 		while( $row = $result->fetchRow() ) {
@@ -233,6 +245,7 @@ class Pigeonholes extends LibertyContent {
 			}
 		}
 
+		LibertyContent::postGetList( $pListHash );		
 		return( !empty( $ret ) ? $ret : NULL );
 	}
 
