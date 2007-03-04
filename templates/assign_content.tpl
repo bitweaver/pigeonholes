@@ -16,7 +16,7 @@
 					{forminput}
 						<select name="max_records">
 							<option value="10"  {if $smarty.request.max_records eq 10 or !$smarty.request.max_rows}selected="selected"{/if}>10</option>
-							{if $gBitSystem->isFeatureActive('reverse_assign_table')}
+							{if !$gBitSystem->isFeatureActive('reverse_assign_table')}
 							<option value="50"  {if $smarty.request.max_records eq 50}selected="selected"{/if}>50</option>
 							<option value="100" {if $smarty.request.max_records eq 100}selected="selected"{/if}>100</option>
 							<option value="200" {if $smarty.request.max_records eq 200}selected="selected"{/if}>200</option>
@@ -75,7 +75,7 @@
 					{formfeedback warning="Using this insertion method will reset any custom sorting you have done so far."}
 				{/if}
 
-				{if !$gBitSystem->isFeatureActive('reverse_assign_table')}
+				{if $gBitSystem->isFeatureActive('reverse_assign_table')}
 				{foreach from=$assignableContent item=item}
 					<dl>
 						<dt>{counter name=dogEatsPigeon}</dt>
