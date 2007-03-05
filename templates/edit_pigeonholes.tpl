@@ -42,6 +42,16 @@
 				{/forminput}
 			</div>
 
+			{if $gBitSystem->isFeatureActive( 'pigeonholes_allow_forbid_insertion') }
+				<div class="row">
+					{formlabel label="Forbid Insertion" for="pigeonhole-no-insert"}
+					{forminput}
+						<input type="checkbox" name="pigeonhole[prefs][no_insert]" id="pigeonhole-no-insert" {if $gContent->mPrefs.no_insert}checked{/if} />
+						{formhelp note="Forbids inserting new content into this category. Useful for categories which are meant to hold other categories in a heirarchy where only leaf categories should hold content."}
+					{/forminput}
+				</div>
+			{/if}
+
 			{if $gBitSystem->isFeatureActive( 'pigeonholes_themes' )}
 				<div class="row">
 					{formlabel label="Theme" for="pigeonhole-style"}

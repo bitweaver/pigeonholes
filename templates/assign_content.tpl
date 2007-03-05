@@ -16,7 +16,7 @@
 					{forminput}
 						<select name="max_records">
 							<option value="10"  {if $smarty.request.max_records eq 10 or !$smarty.request.max_rows}selected="selected"{/if}>10</option>
-							{if !$gBitSystem->isFeatureActive('reverse_assign_table')}
+							{if !$gBitSystem->isFeatureActive('pigeonholes_reverse_assign_table')}
 							<option value="50"  {if $smarty.request.max_records eq 50}selected="selected"{/if}>50</option>
 							<option value="100" {if $smarty.request.max_records eq 100}selected="selected"{/if}>100</option>
 							<option value="200" {if $smarty.request.max_records eq 200}selected="selected"{/if}>200</option>
@@ -75,7 +75,7 @@
 					{formfeedback warning="Using this insertion method will reset any custom sorting you have done so far."}
 				{/if}
 
-				{if $gBitSystem->isFeatureActive('reverse_assign_table')}
+				{if $gBitSystem->isFeatureActive('pigeonholes_reverse_assign_table')}
 				{foreach from=$assignableContent item=item}
 					<dl>
 						<dt>{counter name=dogEatsPigeon}</dt>
@@ -162,14 +162,20 @@
 				{/if}
 
 				{if $assignableContent}
+					<div class="row">
+						{if $smarty.request.include == 'members'}
+							<input type="checkbox" name="insert_content_and_next" />Go To Next Page After Insert
+						{/if}
+					</div>
 					<div class="row submit">
 						<input type="submit" name="insert_content" value="Insert Content into Categories" />
-						<input type="hidden" name="list_page" value="{math equation="x + 1" x=$listInfo.current_page}" />
+						<input type="hidden" name="list_page" value="{$listInfo.current_page}" />
 						<input type="hidden" name="find" value="{$listInfo.find}" />
-						<input type="submit" name="insert_content_and_next" value="Insert Content into Categories and Go To Next Page" />
 					</div>
 				{/if}
-				{pagination}
+				{if $smarty.request.include == 'members'}
+					{pagination max_records=$smarty.request.max_records include=$smarty.request.include content_type=$contentSelect root_structure_id=$smarty.request.root_structure_id}
+				{/if}
 			{/form}
 
 		{/if}

@@ -1,5 +1,5 @@
 <?php
-// $Header: /cvsroot/bitweaver/_bit_pigeonholes/admin/admin_pigeonholes_inc.php,v 1.15 2007/03/04 14:03:40 nickpalmer Exp $
+// $Header: /cvsroot/bitweaver/_bit_pigeonholes/admin/admin_pigeonholes_inc.php,v 1.16 2007/03/05 02:19:54 nickpalmer Exp $
 
 $pigeonholeDisplaySettings = array(
 	'pigeonholes_display_path' => array(
@@ -30,9 +30,13 @@ $pigeonholeDisplaySettings = array(
 		'label' => 'Group gating',
 		'note' => 'Limit category access to specific groups. Group settings are inhertied by child categories.',
 	),
-	'reverse_assign_table' => array(
+	'pigeonholes_reverse_assign_table' => array(
 		'label' => 'Assign Categories in Rows',
 		'note' => 'The assign categories page will have categories in rows instead of columns and content in columns instead of rows. This is better if you have lots of categories that do not fit on a single page easily.',
+	),
+	'pigeonholes_allow_forbid_insertion' => array(
+		'label' => 'Allow Forbid Insertion',
+		'note' => 'Allows pigeonholes to be set to forbid insertion of new members. This is good for heirarchical categories where only leaf categories should have members.'
 	),
 );
 $gBitSmarty->assign( 'pigeonholeDisplaySettings', $pigeonholeDisplaySettings );
