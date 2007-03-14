@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_pigeonholes/Pigeonholes.php,v 1.83 2007/03/09 03:57:16 nickpalmer Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_pigeonholes/Pigeonholes.php,v 1.84 2007/03/14 14:32:03 squareing Exp $
  *
  * +----------------------------------------------------------------------+
  * | Copyright ( c ) 2004, bitweaver.org
@@ -17,7 +17,7 @@
  * Pigeonholes class
  *
  * @author   xing <xing@synapse.plus.com>
- * @version  $Revision: 1.83 $
+ * @version  $Revision: 1.84 $
  * @package  pigeonholes
  */
 
@@ -110,8 +110,7 @@ class Pigeonholes extends LibertyContent {
 		global $gBitUser, $gLibertySystem, $gBitSystem;
 		$ret = FALSE;
 
-		$where = '';
-		$join = '';
+		$select = $where = $join = '';
 		$bindVars = array();
 		if( @BitBase::verifyId( $this->mContentId ) || @BitBase::verifyId( $pListHash['content_id'] ) ) {
 			$where = " WHERE pig.`content_id` = ? ";
@@ -127,8 +126,13 @@ class Pigeonholes extends LibertyContent {
 		if( !empty( $pListHash['title'] ) && is_string( $pListHash['title'] ) ) {
 			$where .= empty( $where ) ? ' WHERE ' : ' AND ';
 			$where .= " pig.`content_id` = lc2.`content_id` AND UPPER( lc2.`title` ) = ?";
-			$join = ", `".BIT_DB_PREFIX."liberty_content` lc2";
+			$join  .= ", `".BIT_DB_PREFIX."liberty_content` lc2";
 			$bindVars[] = strtoupper( $pListHash['title'] );
+		}
+
+		if( $gBitSystem->isPackageActive( 'wiki' )) {
+			$select .=", wp.`description`";
+			$join   .= " LEFT OUTER JOIN `".BIT_DB_PREFIX."wiki_pages` wp ON ( wp.`content_id` = lc.`content_id` ) ";
 		}
 
 		$order = "ORDER BY lc.`content_type_guid`, lc.`title` ASC";
@@ -138,14 +142,12 @@ class Pigeonholes extends LibertyContent {
 			SELECT pigm.*,
 			lc.`content_id`, lc.`last_modified`, lc.`user_id`, lc.`title`, lc.`content_type_guid`, lc.`created`,
 			tct.`content_description`,
-			uu.`login`, uu.`real_name`,
-			wp.`description`
+			uu.`login`, uu.`real_name` $select
 			FROM `".BIT_DB_PREFIX."pigeonhole_members` pigm
 				INNER JOIN `".BIT_DB_PREFIX."pigeonholes` pig ON ( pig.`content_id` = pigm.`parent_id` )
 				INNER JOIN `".BIT_DB_PREFIX."liberty_content` lc ON ( lc.`content_id` = pigm.`content_id` )
 				INNER JOIN `".BIT_DB_PREFIX."liberty_content_types` tct ON ( lc.`content_type_guid` = tct.`content_type_guid` )
 				INNER JOIN `".BIT_DB_PREFIX."users_users` uu ON ( uu.`user_id` = lc.`user_id` )
-				LEFT OUTER JOIN `".BIT_DB_PREFIX."wiki_pages` wp ON ( wp.`content_id` = lc.`content_id` )
 			$join $where $order";
 		$result = $this->mDb->query( $query, $bindVars, @BitBase::verifyId( $pListHash['max_records'] ) ? $pListHash['max_records'] : NULL );
 		$contentTypes = $gLibertySystem->mContentTypes;
