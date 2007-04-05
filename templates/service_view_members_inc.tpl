@@ -43,7 +43,11 @@
 					{/foreach}
 
 					{if $more eq 1}
-						<a href="{$smarty.const.PIGEONHOLES_PKG_URL}view.php?structure_id={$pigeonItem.structure_id}">[ &hellip; ]</a>
+						{if $gBitSystem->isFeatureActive('pretty_urls_extended')}
+							<a href="{$smarty.const.PIGEONHOLES_PKG_URL}view/structure/{$pigeonItem.structure_id}">[ &hellip; ]</a>
+						{else}
+							<a href="{$smarty.const.PIGEONHOLES_PKG_URL}view.php?structure_id={$pigeonItem.structure_id}">[ &hellip; ]</a>
+						{/if}
 					{/if}
 				</p>
 				{* reset the ctg2 value *}

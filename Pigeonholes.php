@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_pigeonholes/Pigeonholes.php,v 1.84 2007/03/14 14:32:03 squareing Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_pigeonholes/Pigeonholes.php,v 1.85 2007/04/05 22:16:33 nickpalmer Exp $
  *
  * +----------------------------------------------------------------------+
  * | Copyright ( c ) 2004, bitweaver.org
@@ -17,14 +17,14 @@
  * Pigeonholes class
  *
  * @author   xing <xing@synapse.plus.com>
- * @version  $Revision: 1.84 $
+ * @version  $Revision: 1.85 $
  * @package  pigeonholes
  */
 
 /**
  * required setup
  */
-require_once( LIBERTY_PKG_PATH.'LibertyAttachable.php' );
+require_once( LIBERTY_PKG_PATH.'LibertyContent.php' );
 require_once( LIBERTY_PKG_PATH.'LibertyStructure.php' );
 
 /**
@@ -159,9 +159,11 @@ class Pigeonholes extends LibertyContent {
 					include_once( $gBitSystem->mPackages[$type['handler_package']]['path'].$type['handler_file'] );
 					$type['content_object'] = new $type['handler_class']();
 				}
-				$aux['display_link'] = $type['content_object']->getDisplayLink( $aux['title'], $aux );
-				$aux['title'] = $type['content_object']->getTitle( $aux );
-				$ret[] = $aux;
+				if ($type['content_object']->isViewable($aux['content_id'])) {
+					$aux['display_link'] = $type['content_object']->getDisplayLink( $aux['title'], $aux );
+					$aux['title'] = $type['content_object']->getTitle( $aux );
+					$ret[] = $aux;
+				}
 			}
 		}
 		return( !empty( $this->mErrors ) ? $this->mErrors : $ret );
@@ -363,10 +365,11 @@ class Pigeonholes extends LibertyContent {
 	* @return the link to display the page.
 	*/
 	function getDisplayPath( $pPath ) {
+		global $gBitSystem;
 		$ret = '';
 		if( !empty( $pPath ) && is_array( $pPath ) ) {
 			foreach( $pPath as $node ) {
-				$ret .= ( @BitBase::verifyId( $node['parent_id'] ) ? ' &raquo; ' : '' ).'<a title="'.htmlspecialchars( $node['title'] ).'" href="'.PIGEONHOLES_PKG_URL.'view.php?structure_id='.$node['structure_id'].'">'.htmlspecialchars( $node['title'] ).'</a>';
+				$ret .= ( @BitBase::verifyId( $node['parent_id'] ) ? ' &raquo; ' : '' ).'<a title="'.htmlspecialchars( $node['title'] ).'" href="'.PIGEONHOLES_PKG_URL.($gBitSystem->isFeatureActive('pretty_urls_extended') ? 'view/structure/' : 'view.php?structure_id=').$node['structure_id'].'">'.htmlspecialchars( $node['title'] ).'</a>';
 			}
 		}
 		return $ret;
@@ -563,7 +566,7 @@ class Pigeonholes extends LibertyContent {
 	* @access public
 	**/
 	function store( &$pParamHash ) {
-		if( $this->verify( $pParamHash ) && LibertyAttachable::store( $pParamHash ) ) {
+		if( $this->verify( $pParamHash ) && LibertyContent::store( $pParamHash ) ) {
 			$table = BIT_DB_PREFIX."pigeonholes";
 			$this->mDb->StartTrans();
 
@@ -575,7 +578,7 @@ class Pigeonholes extends LibertyContent {
 				}
 				$pParamHash['structure_location_id'] = $this->mStructureId;
 			} else {
-				// update the pigeonhole_store and structure_store content_id with the one from LibertyAttachable::store()
+				// update the pigeonhole_store and structure_store content_id with the one from LibertyContent::store()
 				$pParamHash['structure_store']['content_id'] = $pParamHash['content_id'];
 				$pParamHash['pigeonhole_store']['content_id'] = $pParamHash['content_id'];
 
@@ -824,7 +827,7 @@ class Pigeonholes extends LibertyContent {
 
 				// remove all entries from content tables
 				$this->mContentId = $id['content_id'];
-				if( LibertyAttachable::expunge() ) {
+				if( LibertyContent::expunge() ) {
 					$ret = TRUE;
 					$this->mDb->CompleteTrans();
 				} else {

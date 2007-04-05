@@ -1,6 +1,6 @@
 <?php
 /**
- * $Header: /cvsroot/bitweaver/_bit_pigeonholes/view.php,v 1.15 2006/06/20 10:24:11 bitweaver Exp $
+ * $Header: /cvsroot/bitweaver/_bit_pigeonholes/view.php,v 1.16 2007/04/05 22:16:33 nickpalmer Exp $
  *
  * Copyright ( c ) 2004 bitweaver.org
  * Copyright ( c ) 2003 tikwiki.org
@@ -8,7 +8,7 @@
  * All Rights Reserved. See copyright.txt for details and a complete list of authors.
  * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details
  *
- * $Id: view.php,v 1.15 2006/06/20 10:24:11 bitweaver Exp $
+ * $Id: view.php,v 1.16 2007/04/05 22:16:33 nickpalmer Exp $
  * @package pigeonholes
  * @subpackage functions
  */
@@ -22,6 +22,11 @@ $gBitSystem->verifyPackage( 'pigeonholes' );
 $gBitSystem->verifyPermission( 'p_pigeonholes_view' );
 
 include_once( PIGEONHOLES_PKG_PATH.'lookup_pigeonholes_inc.php' );
+
+/* If we came in via structure_id redirect to content_id */
+if (isset($_REQUEST['structure_id'])) {
+	header("Location:".$gContent->getDisplayUrl());
+}
 
 $gBitSmarty->assign_by_ref( 'memberFeedback', $memberFeedback = array() );
 
