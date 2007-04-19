@@ -1,6 +1,6 @@
-{* $Header: /cvsroot/bitweaver/_bit_pigeonholes/modules/mod_whats_related.tpl,v 1.5 2006/04/14 20:25:52 squareing Exp $ *}
+{* $Header: /cvsroot/bitweaver/_bit_pigeonholes/modules/mod_whats_related.tpl,v 1.6 2007/04/19 06:31:47 laetzer Exp $ *}
 {strip}
-{if $gBitSystem->isFeatureActive( 'pigeonholes_display_members' ) and $modRelatedPigeon}
+{if $modRelatedPigeon}
 	{bitmodule title="$moduleTitle" name="whats_related"}
 		{foreach from=$modRelatedPigeon item=pigeonItem}
 			<h4>{$pigeonItem.title|escape}</h4>
