@@ -7,7 +7,7 @@
 	{if $gBitUser->hasPermission( 'p_pigeonholes_view' )}
 		<li><a class="item" href="{$smarty.const.PIGEONHOLES_PKG_URL}list.php">{biticon ipackage="icons" iname="format-justify-fill" iexplain="List Categories" iforce="icon"} {tr}List Categories{/tr}</a></li>
 		{if $gContent->mStructureId and $gContent->mType.content_type_guid == $smarty.const.PIGEONHOLES_CONTENT_TYPE_GUID}
-			<li><a class="item" href="{$smarty.const.PIGEONHOLES_PKG_URL}{if $gBitSystem->isFeatureActive('pretty_urls_extended')}view/strcture/{else}view.php?structure_id={/if}{$gContent->mStructureId}">{biticon ipackage=liberty iname=spacer iexplain="" iforce="icon"} {tr}View Category{/tr}</a></li>
+			<li><a class="item" href="{$smarty.const.PIGEONHOLES_PKG_URL}{if $gBitSystem->isFeatureActive('pretty_urls_extended')}view/structure/{else}view.php?structure_id={/if}{$gContent->mStructureId}">{biticon ipackage=liberty iname=spacer iexplain="" iforce="icon"} {tr}View Category{/tr}</a></li>
 			{if $gBitUser->hasPermission( 'p_pigeonholes_edit' )}
 				<li><a class="head" href="{$smarty.const.PIGEONHOLES_PKG_URL}edit_pigeonholes.php?structure_id={$gContent->mInfo.structure_id}&amp;action=edit">{biticon ipackage="icons" iname="accessories-text-editor" iexplain="Edit Category" iforce="icon"} {tr}Edit Category{/tr}</a></li>
 				<li><a class="item" href="{$smarty.const.PIGEONHOLES_PKG_URL}edit_pigeonholes.php?structure_id={$gContent->mInfo.root_structure_id}&amp;action=create">{biticon ipackage="icons" iname="insert-object" iexplain="Insert Category" iforce="icon"} {tr}Insert Category{/tr}</a></li>
