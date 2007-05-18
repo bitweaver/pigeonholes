@@ -1,7 +1,14 @@
 {strip}
 {if $gBitSystem->getConfig('pigeonholes_list_style') == "dynamic" && !$no_details}
 
-	<h3 class="highlight"><a href="{$smarty.const.PIGEONHOLES_PKG_URL}{if $gBitSystem->isFeatureActive('pretty_urls_extended')}view/structure/{else}view.php?structure_id={/if}{$subtree[ix].structure_id}">{$subtree[ix].title|escape}</a></h3>
+	<h3 class="highlight"><a href="{$smarty.const.PIGEONHOLES_PKG_URL}{
+			if $gBitSystem->isFeatureActive('pretty_urls')
+				}structure/{
+			elseif $gBitSystem->isFeatureActive('pretty_urls_extended')
+				}view/structure/{
+			else
+				}view.php?structure_id={
+			/if}{$subtree[ix].structure_id}">{$subtree[ix].title|escape}</a></h3>
 
 	{foreach from=$pigeonList item=pigeonItem}
 		{if $pigeonItem.structure_id eq $subtree[ix].structure_id}
@@ -63,7 +70,14 @@
 	{/if}
 
 	{if $current}<strong>{/if}
-		<a href="{$smarty.const.PIGEONHOLES_PKG_URL}{if $gBitSystem->isFeatureActive('pretty_urls_extended')}view/structure/{else}view.php?structure_id={/if}{$subtree[ix].structure_id}#members">{$subtree[ix].title|escape}</a>
+		<a href="{$smarty.const.PIGEONHOLES_PKG_URL}{
+			if $gBitSystem->isFeatureActive('pretty_urls')
+				}structure/{
+			elseif $gBitSystem->isFeatureActive('pretty_urls_extended')
+				}view/structure/{
+			else
+				}view.php?structure_id={
+			/if}{$subtree[ix].structure_id}#members">{$subtree[ix].title|escape}</a>
 	{if $current}</strong>{/if}
 	{biticon ipackage=liberty iname=spacer iforce=icon}
 
