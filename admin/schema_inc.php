@@ -39,9 +39,7 @@ $gBitInstaller->registerPreferences( PIGEONHOLES_PKG_NAME, array(
 	array( PIGEONHOLES_PKG_NAME, 'pigeonholes_display_members','y' ),
 	array( PIGEONHOLES_PKG_NAME, 'pigeonholes_limit_member_number','100' ),
 	array( PIGEONHOLES_PKG_NAME, 'pigeonholes_list_style','table' ),
-	//array( PIGEONHOLES_PKG_NAME, 'pigeonholes_themes','y' ),
-	//array( PIGEONHOLES_PKG_NAME, 'pigeonholes_permissions','y' ),
-	//array( PIGEONHOLES_PKG_NAME, 'pigeonholes_groups','y' ),
+	array( PIGEONHOLES_PKG_NAME, 'pigeonholes_menu_text', 'Categories' ),
 ) );
 
 // ### Default UserPermissions
