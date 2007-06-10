@@ -1,13 +1,13 @@
 <?php
 /**
- * $Header: /cvsroot/bitweaver/_bit_pigeonholes/modules/mod_category_suckerfish.php,v 1.2 2007/06/08 00:30:09 nickpalmer Exp $
+ * $Header: /cvsroot/bitweaver/_bit_pigeonholes/modules/mod_category_suckerfish.php,v 1.3 2007/06/10 19:23:06 nickpalmer Exp $
  *
  * Copyright (c) 2007 bitweaver.org
  *
  * All Rights Reserved. See copyright.txt for details and a complete list of authors.
  * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details
  *
- * $Id: mod_category_suckerfish.php,v 1.2 2007/06/08 00:30:09 nickpalmer Exp $
+ * $Id: mod_category_suckerfish.php,v 1.3 2007/06/10 19:23:06 nickpalmer Exp $
  * @package pigeonholes
  * @subpackage modules
  */
@@ -16,9 +16,8 @@ global $gBitSmarty, $gQueryUserId, $gBitThemes, $module_rows, $moduleParams, $gB
 
 $module_rows = $moduleParams['module_rows'];
 $module_params = $moduleParams['module_params'];
-$module_title = $moduleParams['module_title'];
 
-$gBitSmarty->assign( 'moduleTitle', isset($module_title) ? $module_title: 'Categories');
+$gBitSmarty->assign( 'moduleTitle', isset($moduleParams['title']) ? $moduleParams['title']: 'Categories');
 
 $ns = array();
 if($gBitSystem->isPackageActive('pigeonholes')) {
