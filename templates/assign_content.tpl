@@ -154,7 +154,11 @@
 				{foreach from=$pigeonList item=pigeon}
 					<dl>
 						<dt>{counter name=dogEatsPigeon}</dt>
-						<dd>{$pigeon.display_path}<br /><small>{$pigeon.data|escape}</small></dd>
+						<dd>{$pigeon.display_path}
+							{if !empty($pigeon.parsed_data) && $gBitSystem->isFeatureActive('pigeonholes_display_description')}
+								<br /><small>{$pigeon.parsed_data}</small>
+							{/if}
+						</dd>
 					</dl>
 				{/foreach}
 				{/if}

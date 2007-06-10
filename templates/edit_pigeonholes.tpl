@@ -34,13 +34,11 @@
 				{/forminput}
 			</div>
 
-			<div class="row">
-				{formlabel label="Description" for="pigeonhole-desc"}
-				{forminput}
-					<textarea id="pigeonhole-desc" name="pigeonhole[edit]" rows="3" cols="50">{$pigeonInfo.data|escape}</textarea>
-					{formhelp note="A description of the category. This will be visible when users view this particular category."}
-				{/forminput}
-			</div>
+			{if $gBitSystem->isFeatureActive('pigeonholes_display_description')}
+				<div class="row">
+					{textarea id="pigeonhole-desc" name="pigeonhole[edit]" note="A description of the category. This will be visible when users view this particular category." label="Description"}{$pigeonInfo.data}{/textarea}
+				</div>
+			{/if}
 
 			{if $gBitSystem->isFeatureActive( 'pigeonholes_allow_forbid_insertion') }
 				<div class="row">

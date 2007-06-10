@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_pigeonholes/Pigeonholes.php,v 1.85 2007/04/05 22:16:33 nickpalmer Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_pigeonholes/Pigeonholes.php,v 1.86 2007/06/10 12:35:50 nickpalmer Exp $
  *
  * +----------------------------------------------------------------------+
  * | Copyright ( c ) 2004, bitweaver.org
@@ -17,14 +17,14 @@
  * Pigeonholes class
  *
  * @author   xing <xing@synapse.plus.com>
- * @version  $Revision: 1.85 $
+ * @version  $Revision: 1.86 $
  * @package  pigeonholes
  */
 
 /**
  * required setup
  */
-require_once( LIBERTY_PKG_PATH.'LibertyContent.php' );
+require_once( LIBERTY_PKG_PATH.'LibertyAttachable.php' );
 require_once( LIBERTY_PKG_PATH.'LibertyStructure.php' );
 
 /**
@@ -32,7 +32,7 @@ require_once( LIBERTY_PKG_PATH.'LibertyStructure.php' );
  *
  * @package  pigeonholes
  */
-class Pigeonholes extends LibertyContent {
+class Pigeonholes extends LibertyAttachable {
 	/**
 	* initiate class
 	* @param $pContentId content id of the pigeonhole - use either one of the ids.
@@ -41,7 +41,7 @@ class Pigeonholes extends LibertyContent {
 	* @access public
 	**/
 	function Pigeonholes( $pStructureId=NULL, $pContentId=NULL ) {
-		LibertyContent::LibertyContent();
+		LibertyAttachable::LibertyAttachable();
 		$this->registerContentType( PIGEONHOLES_CONTENT_TYPE_GUID, array(
 			'content_type_guid' => PIGEONHOLES_CONTENT_TYPE_GUID,
 			'content_description' => 'Pigeonhole',
@@ -66,7 +66,8 @@ class Pigeonholes extends LibertyContent {
 			global $gBitSystem;
 			$lookupColumn = ( @BitBase::verifyId( $this->mContentId ) ? 'lc.`content_id`' : 'ls.`structure_id`' );
 			$lookupId = ( @BitBase::verifyId( $this->mContentId ) ? $this->mContentId : $this->mStructureId );
-			$query = "SELECT pig.*, ls.`root_structure_id`, ls.`parent_id`, lc.`title`, lc.`data`, lc.`user_id`, lc.`content_type_guid`,
+			$query = "SELECT pig.*, ls.`root_structure_id`, ls.`parent_id`, lc.`title`, lc.`data`, 
+				lc.`user_id`, lc.`content_type_guid`, lc.`format_guid`,
 				uue.`login` AS modifier_user, uue.`real_name` AS modifier_real_name,
 				uuc.`login` AS creator_user, uuc.`real_name` AS creator_real_name
 				FROM `".BIT_DB_PREFIX."pigeonholes` pig
@@ -87,6 +88,9 @@ class Pigeonholes extends LibertyContent {
 				$this->mInfo['editor'] = ( isset( $row['modifier_real_name'] ) ? $row['modifier_real_name'] : $row['modifier_user'] );
 				$this->mInfo['display_link'] = $this->getDisplayLink();
 				$this->mInfo['display_url'] = $this->getDisplayUrl();
+				if (!empty($row['data'])) {
+				    $this->mInfo['parsed_data'] = $this->parseData($row['data'],$row['format_guid']);
+				}
 			}
 
 			// if the content for the pigeonhole is requested, get it
@@ -452,7 +456,7 @@ class Pigeonholes extends LibertyContent {
 			$order .= " ORDER BY ls.`root_structure_id`, ls.`structure_id` ASC";
 		}
 
-		$query = "SELECT pig.*, ls.`root_structure_id`, ls.`parent_id`, lc.`title`, lc.`data`, lc.`user_id`, lc.`content_type_guid`,
+		$query = "SELECT pig.*, ls.`root_structure_id`, ls.`parent_id`, lc.`title`, lc.`data`, lc.`user_id`, lc.`content_type_guid`, lc.`format_guid`,
 			uue.`login` AS modifier_user, uue.`real_name` AS modifier_real_name,
 			uuc.`login` AS creator_user, uuc.`real_name` AS creator_real_name $select
 			FROM `".BIT_DB_PREFIX."pigeonholes` pig
@@ -470,8 +474,10 @@ class Pigeonholes extends LibertyContent {
 			$aux['real_name'] = ( isset( $aux['creator_real_name'] ) ? $aux['creator_real_name'] : $aux['creator_user'] );
 			$aux['display_name'] = BitUser::getTitle( $aux );
 			$aux['editor'] = ( isset( $aux['modifier_real_name'] ) ? $aux['modifier_real_name'] : $aux['modifier_user'] );
-			$aux['display_link'] = Pigeonholes::getDisplayLink( $aux['title'], $aux );
-
+			$aux['display_link'] = Pigeonholes::getDisplayLink( $aux['title'], $aux );			
+			if (!empty($pListHash['parse_data']) && !empty($aux['data'])) {
+			    $aux['parsed_data'] = $this->parseData($aux['data'], $aux['format_guid']);
+			}
 			if( !empty( $pListHash['force_extras'] ) || ( !empty( $pListHash['load_extras'] ) && $aux['structure_id'] == @$pListHash['structure_id'] ) ) {
 				$aux['path'] = $this->getPigeonholePath( $aux['structure_id'] );
 				$aux['display_path'] = Pigeonholes::getDisplayPath( $aux['path'] );
@@ -566,7 +572,7 @@ class Pigeonholes extends LibertyContent {
 	* @access public
 	**/
 	function store( &$pParamHash ) {
-		if( $this->verify( $pParamHash ) && LibertyContent::store( $pParamHash ) ) {
+		if( $this->verify( $pParamHash ) && LibertyAttachable::store( $pParamHash ) ) {
 			$table = BIT_DB_PREFIX."pigeonholes";
 			$this->mDb->StartTrans();
 
@@ -578,7 +584,7 @@ class Pigeonholes extends LibertyContent {
 				}
 				$pParamHash['structure_location_id'] = $this->mStructureId;
 			} else {
-				// update the pigeonhole_store and structure_store content_id with the one from LibertyContent::store()
+				// update the pigeonhole_store and structure_store content_id with the one from LibertyAttachable::store()
 				$pParamHash['structure_store']['content_id'] = $pParamHash['content_id'];
 				$pParamHash['pigeonhole_store']['content_id'] = $pParamHash['content_id'];
 
@@ -827,7 +833,7 @@ class Pigeonholes extends LibertyContent {
 
 				// remove all entries from content tables
 				$this->mContentId = $id['content_id'];
-				if( LibertyContent::expunge() ) {
+				if( LibertyAttachable::expunge() ) {
 					$ret = TRUE;
 					$this->mDb->CompleteTrans();
 				} else {

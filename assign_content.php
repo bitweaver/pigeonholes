@@ -1,6 +1,6 @@
 <?php
 /**
- * $Header: /cvsroot/bitweaver/_bit_pigeonholes/assign_content.php,v 1.11 2007/04/05 22:16:33 nickpalmer Exp $
+ * $Header: /cvsroot/bitweaver/_bit_pigeonholes/assign_content.php,v 1.12 2007/06/10 12:35:51 nickpalmer Exp $
  *
  * Copyright ( c ) 2004 bitweaver.org
  * Copyright ( c ) 2003 tikwiki.org
@@ -8,7 +8,7 @@
  * All Rights Reserved. See copyright.txt for details and a complete list of authors.
  * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details
  *
- * $Id: assign_content.php,v 1.11 2007/04/05 22:16:33 nickpalmer Exp $
+ * $Id: assign_content.php,v 1.12 2007/06/10 12:35:51 nickpalmer Exp $
  * @package pigeonholes
  * @subpackage functions
  */
@@ -107,6 +107,7 @@ $gBitSmarty->assign_by_ref( 'listInfo', $listHash['listInfo'] );
 $listHash = array(
 	'load_only_root' => TRUE,
 	'max_records' => -1,
+	'parse_data' => TRUE,
 );
 $pigeonRootData = $gContent->getList( $listHash );
 $pigeonRoots[0] = 'All';
@@ -120,6 +121,7 @@ $listHash = array(
 	'force_extras' => TRUE,
 	'max_records' => -1,
 	'sort_mode' => 'ls.`parent_id_asc`',
+	'parse_data' => TRUE,
 );
 
 if ($gBitSystem->isFeatureActive('pigeonholes_allow_forbid_insertion')) {

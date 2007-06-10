@@ -4,8 +4,10 @@
 		<a name="members"></a>
 		<h2>{$gContent->getTitle()}</h2>
 		<p>
-			{$pigeonItem.data|escape}
-			<br />
+			{if !empty($pigeonItem.parsed_data) && $gBitSystem->isFeatureActive('pigeonholes_display_description')}
+				{$pigeonItem.parsed_data}
+				<br />
+			{/if}
 			<small>{tr}This category contains {$pigeonItem.members_count} item(s){/tr}</small>
 		</p>
 		{* calculate column width *}

@@ -5,10 +5,11 @@
 			<h2>{tr}Categories{/tr}</h2>
 			{foreach from=$pigeonData item=pigeonItem}
 				{$pigeonItem.display_path}
-				{if $pigeonItem.data and $gBitSystem->isFeatureActive( 'pigeonholes_display_description' )}
-					: {$pigeonItem.data|escape}
+				{if $gBitSystem->isFeatureActive( 'pigeonholes_display_description' )}
+					: {$pigeonItem.parsed_data} <br />
+				{else}
+					&nbsp; &bull; &nbsp;
 				{/if}
-				&nbsp; &bull; &nbsp;
 			{/foreach}
 		{else}
 			<h2>{tr}Related Items{/tr}</h2>
@@ -16,8 +17,8 @@
 				<h3>{$pigeonItem.display_path}</h3>
 
 				<p>
-					{if $pigeonItem.data and $gBitSystem->isFeatureActive( 'pigeonholes_display_description' )}
-						{$pigeonItem.data|escape}<br />
+					{if $pigeonItem.parsed_data and $gBitSystem->isFeatureActive( 'pigeonholes_display_description' )}
+						{$pigeonItem.parsed_data}<br />
 					{/if}
 
 					{* reset vars *}

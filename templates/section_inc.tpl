@@ -14,7 +14,9 @@
 		{if $pigeonItem.structure_id eq $subtree[ix].structure_id}
 
 			{if $pigeonItem.members}
-				{$pigeonItem.data|escape}
+				{if $gBitSystem->isFeatureActive('pigeonholes_display_description')}
+					{$pigeonItem.parsed_data}
+				{/if}
 				<ul style="display:{if $gContent->mStructureId eq $subtree[ix].structure_id or $smarty.request.expand_all}block{else}none{/if}; padding:2em;" class="data">
 					{foreach from=$pigeonItem.members item=pigeonMember}
 						{assign var=ctg1 value=$pigeonMember.content_type_guid}
@@ -84,7 +86,7 @@
 	{if !$no_details}
 		{foreach from=$pigeonList item=pigeonItem}
 			{if $pigeonItem.structure_id eq $subtree[ix].structure_id}
-				<br />{$pigeonItem.data|escape} <small> [ {tr}{$pigeonItem.members_count|default:0} Item(s){/tr} ] </small>
+				<br />{$pigeonItem.parsed_data} <small> [ {tr}{$pigeonItem.members_count|default:0} Item(s){/tr} ] </small>
 			{/if}
 		{/foreach}
 	{/if}
