@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_pigeonholes/Pigeonholes.php,v 1.87 2007/06/10 14:30:35 squareing Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_pigeonholes/Pigeonholes.php,v 1.88 2007/06/10 16:43:17 nickpalmer Exp $
  *
  * +----------------------------------------------------------------------+
  * | Copyright ( c ) 2004, bitweaver.org
@@ -17,7 +17,7 @@
  * Pigeonholes class
  *
  * @author   xing <xing@synapse.plus.com>
- * @version  $Revision: 1.87 $
+ * @version  $Revision: 1.88 $
  * @package  pigeonholes
  */
 
@@ -90,6 +90,8 @@ class Pigeonholes extends LibertyAttachable {
 				$this->mInfo['display_url'] = $this->getDisplayUrl();
 				$this->mInfo['parsed_data'] = $this->parseData( $row );
 			}
+
+			LibertyAttachable::load();
 
 			// if the content for the pigeonhole is requested, get it
 			if( $pExtras ) {
