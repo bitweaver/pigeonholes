@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_pigeonholes/Pigeonholes.php,v 1.86 2007/06/10 12:35:50 nickpalmer Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_pigeonholes/Pigeonholes.php,v 1.87 2007/06/10 14:30:35 squareing Exp $
  *
  * +----------------------------------------------------------------------+
  * | Copyright ( c ) 2004, bitweaver.org
@@ -17,7 +17,7 @@
  * Pigeonholes class
  *
  * @author   xing <xing@synapse.plus.com>
- * @version  $Revision: 1.86 $
+ * @version  $Revision: 1.87 $
  * @package  pigeonholes
  */
 
@@ -88,9 +88,7 @@ class Pigeonholes extends LibertyAttachable {
 				$this->mInfo['editor'] = ( isset( $row['modifier_real_name'] ) ? $row['modifier_real_name'] : $row['modifier_user'] );
 				$this->mInfo['display_link'] = $this->getDisplayLink();
 				$this->mInfo['display_url'] = $this->getDisplayUrl();
-				if (!empty($row['data'])) {
-				    $this->mInfo['parsed_data'] = $this->parseData($row['data'],$row['format_guid']);
-				}
+				$this->mInfo['parsed_data'] = $this->parseData( $row );
 			}
 
 			// if the content for the pigeonhole is requested, get it
