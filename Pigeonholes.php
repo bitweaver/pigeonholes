@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_pigeonholes/Pigeonholes.php,v 1.88 2007/06/10 16:43:17 nickpalmer Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_pigeonholes/Pigeonholes.php,v 1.89 2007/06/16 20:55:25 squareing Exp $
  *
  * +----------------------------------------------------------------------+
  * | Copyright ( c ) 2004, bitweaver.org
@@ -17,7 +17,7 @@
  * Pigeonholes class
  *
  * @author   xing <xing@synapse.plus.com>
- * @version  $Revision: 1.88 $
+ * @version  $Revision: 1.89 $
  * @package  pigeonholes
  */
 
@@ -922,7 +922,7 @@ function pigeonholes_pathlist_sorter( $aa, $ab ) {
 // ============= SERVICE FUNCTIONS =============
 
 function pigeonholes_content_display( &$pObject ) {
-	global $gBitSystem, $gBitSmarty, $gBitUser, $gPreviewStyle;
+	global $gBitSystem, $gBitSmarty, $gBitUser, $gBitThemes;
 	if( $gBitSystem->isFeatureActive( 'pigeonholes_display_members' ) || $gBitSystem->isFeatureActive( 'pigeonholes_display_path' ) ) {
 		$pigeonholes = new Pigeonholes();
 		if( $gBitUser->hasPermission( 'p_pigeonholes_view' ) ) {
@@ -934,10 +934,7 @@ function pigeonholes_content_display( &$pObject ) {
 					$pigeonData[] = $pigeonholes->mInfo;
 					// set the theme chosen for this page - virtually random if page is part of multiple themes
 					if( $gBitSystem->isFeatureActive( 'pigeonholes_themes' ) ) {
-						$pigeonholes->loadPreferences();
-						if( $g = $pigeonholes->getPreference( 'style' ) ) {
-							$gPreviewStyle = $g;
-						}
+						$gBitThemes->setStyle( $pigeonholes->getPreference( 'style' ));
 					}
 					// we need to check all pigeonholes in the path, load the prefs and work out if the user is allowed to view the page
 					if( !$pigeonholes->checkPathPermissions( $pigeonholes->getField( 'path' ) ) ) {
