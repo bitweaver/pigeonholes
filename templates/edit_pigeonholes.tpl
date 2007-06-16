@@ -109,14 +109,16 @@
 					{/legend}
 				{/jstab}
 
-				{jstab title="Attachments"}
-					<div class=row>
-					{legend legend="Attachments"}
-						{include file="bitpackage:liberty/edit_storage.tpl"}
+				{if $gBitUser->hasPermission('p_liberty_attach_attachments') }
+					{jstab title="Attachments"}
+						<div class=row>
+						{legend legend="Attachments"}
+							{include file="bitpackage:liberty/edit_storage.tpl"}
 
-					{/legend}
-					</div>
-				{/jstab}			
+						{/legend}
+						</div>
+					{/jstab}
+				{/if}			
 			{/jstabs}
 		{/form}
 
