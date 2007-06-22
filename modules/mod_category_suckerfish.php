@@ -1,17 +1,20 @@
 <?php
 /**
- * $Header: /cvsroot/bitweaver/_bit_pigeonholes/modules/mod_category_suckerfish.php,v 1.3 2007/06/10 19:23:06 nickpalmer Exp $
+ * $Header: /cvsroot/bitweaver/_bit_pigeonholes/modules/mod_category_suckerfish.php,v 1.4 2007/06/22 10:16:25 lsces Exp $
  *
  * Copyright (c) 2007 bitweaver.org
  *
  * All Rights Reserved. See copyright.txt for details and a complete list of authors.
  * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details
  *
- * $Id: mod_category_suckerfish.php,v 1.3 2007/06/10 19:23:06 nickpalmer Exp $
+ * $Id: mod_category_suckerfish.php,v 1.4 2007/06/22 10:16:25 lsces Exp $
  * @package pigeonholes
  * @subpackage modules
  */
 
+/**
+ * Initial Setup
+ */
 global $gBitSmarty, $gQueryUserId, $gBitThemes, $module_rows, $moduleParams, $gBitSystem;
 
 $module_rows = $moduleParams['module_rows'];
