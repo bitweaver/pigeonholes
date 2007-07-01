@@ -45,9 +45,9 @@
 
 						{if $gBitSystem->isFeatureActive( 'pigeonholes_allow_forbid_insertion') }
 							<div class="row">
-								{formlabel label="Forbid Insertion" for="pigeonhole-no-insert"}
+								{formlabel label="Forbid Content Insertion" for="pigeonhole-no-insert"}
 								{forminput}
-									<input type="checkbox" name="pigeonhole[prefs][no_insert]" id="pigeonhole-no-insert" {if $gContent->mPrefs.no_insert}checked{/if} />
+									<input type="checkbox" name="pigeonhole[prefs][no_insert]" id="pigeonhole-no-insert" {if $gContent->mPrefs.no_insert}checked="checked"{/if} />
 									{formhelp note="Forbids inserting new content into this category. Useful for categories which are meant to hold other categories in a heirarchy where only leaf categories should hold content."}
 								{/forminput}
 							</div>
@@ -83,24 +83,6 @@
 							</div>
 						{/if}
 
-						{if !$gContent->mStructureId}
-							<div class="row">
-								{formlabel label="Content" for="pigeonhole-content"}
-								{forminput}
-									{html_options options=$contentTypes name=content_type_guid selected=$contentSelect}
-								{/forminput}
-
-								{forminput}
-									{html_options multiple="multiple" size="12" name="pigeonhole[members][]" id="pigeonhole-content" values=$contentList options=$contentList selected=$pigeonInfo.selected_members}
-								{/forminput}
-
-								{forminput}
-									<input type="text" size="30" name="find_objects" value="{$smarty.request.find_objects}" /> 
-									<input type="submit" value="{tr}Apply filter{/tr}" name="search_objects" />
-								{/forminput}
-							</div>
-						{/if}
-
 						{include file="bitpackage:liberty/edit_storage_list.tpl"}
 
 						<div class="row submit">
@@ -109,16 +91,15 @@
 					{/legend}
 				{/jstab}
 
-				{if $gBitUser->hasPermission('p_liberty_attach_attachments') }
+				{if $gBitSystem->isFeatureActive('pigeonholes_display_description') && $gBitUser->hasPermission('p_liberty_attach_attachments') }
 					{jstab title="Attachments"}
 						<div class=row>
-						{legend legend="Attachments"}
-							{include file="bitpackage:liberty/edit_storage.tpl"}
-
-						{/legend}
+							{legend legend="Attachments"}
+								{include file="bitpackage:liberty/edit_storage.tpl"}
+							{/legend}
 						</div>
 					{/jstab}
-				{/if}			
+				{/if}
 			{/jstabs}
 		{/form}
 
