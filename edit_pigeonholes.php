@@ -1,6 +1,6 @@
 <?php
 /**
- * $Header: /cvsroot/bitweaver/_bit_pigeonholes/edit_pigeonholes.php,v 1.24 2007/06/10 16:43:17 nickpalmer Exp $
+ * $Header: /cvsroot/bitweaver/_bit_pigeonholes/edit_pigeonholes.php,v 1.25 2007/07/01 16:43:10 squareing Exp $
  *
  * Copyright ( c ) 2004 bitweaver.org
  * Copyright ( c ) 2003 tikwiki.org
@@ -8,7 +8,7 @@
  * All Rights Reserved. See copyright.txt for details and a complete list of authors.
  * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details
  *
- * $Id: edit_pigeonholes.php,v 1.24 2007/06/10 16:43:17 nickpalmer Exp $
+ * $Id: edit_pigeonholes.php,v 1.25 2007/07/01 16:43:10 squareing Exp $
  * @package pigeonholes
  * @subpackage functions
  */
@@ -61,27 +61,11 @@ if( !empty( $_REQUEST['pigeonhole_store'] ) ) {
 	}
 }
 
-// if we are just changing the content that is being displayed, we treat it like a preview.
-if( !empty( $_REQUEST['search_objects'] ) ) {
-	$pigeonInfo['parent_id'] = !empty( $_REQUEST['pigeonhole']['parent_id'] ) ? $_REQUEST['pigeonhole']['parent_id'] : NULL;
-	$pigeonInfo['title'] = !empty( $_REQUEST['pigeonhole']['title'] ) ? $_REQUEST['pigeonhole']['title'] : NULL;
-	$pigeonInfo['data'] = !empty( $_REQUEST['pigeonhole']['edit'] ) ? $_REQUEST['pigeonhole']['edit'] : NULL;
-	$pigeonInfo['selected_members'] = !empty( $_REQUEST['pigeonhole']['members'] ) ? $_REQUEST['pigeonhole']['members'] : NULL;
-	$gBitSmarty->assign( 'pigeonInfo', !empty( $pigeonInfo ) ? $pigeonInfo : NULL );
-} elseif( !empty( $_REQUEST['action'] ) || isset( $_REQUEST["confirm"] ) ) {
+if( !empty( $_REQUEST['action'] ) || isset( $_REQUEST["confirm"] ) ) {
 	// if we need to edit, show the information
 	if( $_REQUEST['action'] == 'edit' ) {
 		$pigeonInfo = $gContent->mInfo;
 		$gContent->loadPreferences();
-
-		// create usable array for selected items in content listing
-		if( !empty( $pigeonInfo['members'] ) ) {
-			foreach( $pigeonInfo['members'] as $member ) {
-				if( $pigeonInfo['content_id'] == $member['parent_id'] ) {
-					$pigeonInfo['selected_members'][] = $member['content_id'];
-				}
-			}
-		}
 	}
 
 	if( $_REQUEST['action'] == 'edit' || $_REQUEST['action'] == 'create' ) {
@@ -148,15 +132,6 @@ if ( $gBitSystem->isFeatureActive( 'pigeonholes_groups' ) ) {
 	}
 	$gBitSmarty->assign( 'groups', $groups );
 }
-
-// get content
-include_once( LIBERTY_PKG_PATH.'get_content_list_inc.php' );
-foreach( $contentList['data'] as $cItem ) {
-	$cList[$contentTypes[$cItem['content_type_guid']]][$cItem['content_id']] = $cItem['title'].' [id: '.$cItem['content_id'].']';
-}
-$gBitSmarty->assign( 'contentList', $cList );
-$gBitSmarty->assign( 'contentTypes', $contentTypes );
-$gBitSmarty->assign( 'contentSelect', $contentSelect );
 
 $listHash = array(
 	'root_structure_id' => !empty( $gContent->mInfo['root_structure_id'] ) ? $gContent->mInfo['root_structure_id'] : NULL,
