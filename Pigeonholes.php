@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_pigeonholes/Pigeonholes.php,v 1.89 2007/06/16 20:55:25 squareing Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_pigeonholes/Pigeonholes.php,v 1.90 2007/07/07 15:04:12 squareing Exp $
  *
  * +----------------------------------------------------------------------+
  * | Copyright ( c ) 2004, bitweaver.org
@@ -17,7 +17,7 @@
  * Pigeonholes class
  *
  * @author   xing <xing@synapse.plus.com>
- * @version  $Revision: 1.89 $
+ * @version  $Revision: 1.90 $
  * @package  pigeonholes
  */
 
@@ -66,7 +66,7 @@ class Pigeonholes extends LibertyAttachable {
 			global $gBitSystem;
 			$lookupColumn = ( @BitBase::verifyId( $this->mContentId ) ? 'lc.`content_id`' : 'ls.`structure_id`' );
 			$lookupId = ( @BitBase::verifyId( $this->mContentId ) ? $this->mContentId : $this->mStructureId );
-			$query = "SELECT pig.*, ls.`root_structure_id`, ls.`parent_id`, lc.`title`, lc.`data`, 
+			$query = "SELECT pig.*, ls.`root_structure_id`, ls.`parent_id`, lc.`title`, lc.`data`,
 				lc.`user_id`, lc.`content_type_guid`, lc.`format_guid`,
 				uue.`login` AS modifier_user, uue.`real_name` AS modifier_real_name,
 				uuc.`login` AS creator_user, uuc.`real_name` AS creator_real_name
@@ -145,12 +145,12 @@ class Pigeonholes extends LibertyAttachable {
 		$query = "
 			SELECT pigm.*,
 			lc.`content_id`, lc.`last_modified`, lc.`user_id`, lc.`title`, lc.`content_type_guid`, lc.`created`,
-			tct.`content_description`,
+			lct.`content_description`,
 			uu.`login`, uu.`real_name` $select
 			FROM `".BIT_DB_PREFIX."pigeonhole_members` pigm
 				INNER JOIN `".BIT_DB_PREFIX."pigeonholes` pig ON ( pig.`content_id` = pigm.`parent_id` )
 				INNER JOIN `".BIT_DB_PREFIX."liberty_content` lc ON ( lc.`content_id` = pigm.`content_id` )
-				INNER JOIN `".BIT_DB_PREFIX."liberty_content_types` tct ON ( lc.`content_type_guid` = tct.`content_type_guid` )
+				INNER JOIN `".BIT_DB_PREFIX."liberty_content_types` lct ON ( lc.`content_type_guid` = lct.`content_type_guid` )
 				INNER JOIN `".BIT_DB_PREFIX."users_users` uu ON ( uu.`user_id` = lc.`user_id` )
 			$join $where $order";
 		$result = $this->mDb->query( $query, $bindVars, @BitBase::verifyId( $pListHash['max_records'] ) ? $pListHash['max_records'] : NULL );
@@ -253,13 +253,13 @@ class Pigeonholes extends LibertyAttachable {
 			}
 		}
 
-		LibertyContent::postGetList( $pListHash );		
+		LibertyContent::postGetList( $pListHash );
 		return( !empty( $ret ) ? $ret : NULL );
 	}
 
 	/**
 	 * get an array of paths for all pigeonholes. used for pages where data can be inserted into pigeonholes
-	 * 
+	 *
 	 * @param numeric $pContentId content id of pigeonhole.
 	 * @param numeric $pTruncate Setting this to a number will do some smart truncations depending on how many parents there are
 	 *                           setting it to 60 will allow 30 chars for all parents combined and 30 for the actual title
@@ -271,7 +271,7 @@ class Pigeonholes extends LibertyAttachable {
 	  	global $gBitSystem;
 	  	$where = $join = '';
 
-		if ($gBitSystem->isFeatureActive('pigeonholes_allow_forbid_insertion')) {		        
+		if ($gBitSystem->isFeatureActive('pigeonholes_allow_forbid_insertion')) {
 		  	$where .= empty( $where ) ? ' WHERE ' : ' AND ';
 			$where .= ' lcp.`pref_value` IS NULL OR lcp.`pref_value` != \'on\' ';
 			$join .= ' LEFT JOIN `'.BIT_DB_PREFIX.'liberty_content_prefs` lcp ON (pig.`content_id` = lcp.`content_id` AND lcp.`pref_name` = \'no_insert\') ';
@@ -425,7 +425,7 @@ class Pigeonholes extends LibertyAttachable {
 			$bindVars[] = $pListHash['title'];
 		}
 
-		if ($gBitSystem->isFeatureActive('pigeonholes_allow_forbid_insertion') && !empty( $pListHash['insertable'] ) ) {		        
+		if ($gBitSystem->isFeatureActive('pigeonholes_allow_forbid_insertion') && !empty( $pListHash['insertable'] ) ) {
 		  	$where .= empty( $where ) ? ' WHERE ' : ' AND ';
 			$where .= ' lcp.`pref_value` IS NULL OR lcp.`pref_value` != \'on\' ';
 			$join .= ' LEFT JOIN `'.BIT_DB_PREFIX.'liberty_content_prefs` lcp ON (lc.`content_id` = lcp.`content_id` AND lcp.`pref_name` = \'no_insert\') ';
@@ -474,7 +474,7 @@ class Pigeonholes extends LibertyAttachable {
 			$aux['real_name'] = ( isset( $aux['creator_real_name'] ) ? $aux['creator_real_name'] : $aux['creator_user'] );
 			$aux['display_name'] = BitUser::getTitle( $aux );
 			$aux['editor'] = ( isset( $aux['modifier_real_name'] ) ? $aux['modifier_real_name'] : $aux['modifier_user'] );
-			$aux['display_link'] = Pigeonholes::getDisplayLink( $aux['title'], $aux );			
+			$aux['display_link'] = Pigeonholes::getDisplayLink( $aux['title'], $aux );
 			if (!empty($pListHash['parse_data']) && !empty($aux['data'])) {
 			    $aux['parsed_data'] = $this->parseData($aux['data'], $aux['format_guid']);
 			}
@@ -484,7 +484,7 @@ class Pigeonholes extends LibertyAttachable {
 				if (empty($pListHash['content_type_guid'])) {
 				  $aux['members'] = $this->getMemberList( array( 'content_id' => $aux['content_id']) );
 				}
-				else { 
+				else {
 				  $aux['members'] = $this->getMemberList( array( 'content_id' => $aux['content_id'], 'content_type_guid' =>  $pListHash['content_type_guid']) );
 				}
 				$aux['members_count'] = count( $aux['members'] );
@@ -661,8 +661,6 @@ class Pigeonholes extends LibertyAttachable {
 			$pParamHash['edit'] = '';
 		} elseif( empty( $pParamHash['edit'] ) ) {
 			unset( $pParamHash['edit'] );
-		} else {
-			$pParamHash['edit'] = substr( $pParamHash['edit'], 0, 250 );
 		}
 
 		// pigeonhole member store
