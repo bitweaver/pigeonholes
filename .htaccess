@@ -5,6 +5,7 @@
 	RewriteCond	%{SCRIPT_FILENAME}/index.php    -f
 	RewriteRule	^(.*)$            - [L]
 	RewriteRule ^([0-9]+)(\&.*)?$  view.php?content_id=$1$2  [L]
+	RewriteRule ^structure/(.*)$  view.php?structure_id=$1  [L,QSA]
 
 	RewriteRule ^view/structure/(.*)$  view.php?structure_id=$1  [L,QSA]
 	RewriteRule ^view/(.*)$  view.php?content_id=$1  [L,QSA]
