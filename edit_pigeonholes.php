@@ -1,6 +1,6 @@
 <?php
 /**
- * $Header: /cvsroot/bitweaver/_bit_pigeonholes/edit_pigeonholes.php,v 1.26 2007/07/09 22:03:20 squareing Exp $
+ * $Header: /cvsroot/bitweaver/_bit_pigeonholes/edit_pigeonholes.php,v 1.27 2007/07/10 19:01:24 squareing Exp $
  *
  * Copyright ( c ) 2004 bitweaver.org
  * Copyright ( c ) 2003 tikwiki.org
@@ -8,7 +8,7 @@
  * All Rights Reserved. See copyright.txt for details and a complete list of authors.
  * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details
  *
- * $Id: edit_pigeonholes.php,v 1.26 2007/07/09 22:03:20 squareing Exp $
+ * $Id: edit_pigeonholes.php,v 1.27 2007/07/10 19:01:24 squareing Exp $
  * @package pigeonholes
  * @subpackage functions
  */
@@ -148,7 +148,7 @@ if ( $gBitSystem->isFeatureActive( 'pigeonholes_themes' ) ) {
 	$gBitSmarty->assign( 'styles', $styles );
 }
 
-$gBitSystem->loadAjax( 'prototype' );
+$gBitThemes->loadAjax( 'prototype' );
 
 // Display the template
 if ( !empty( $gStructure ) ) {
