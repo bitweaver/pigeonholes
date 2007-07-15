@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_pigeonholes/Pigeonholes.php,v 1.90 2007/07/07 15:04:12 squareing Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_pigeonholes/Pigeonholes.php,v 1.91 2007/07/15 20:30:16 squareing Exp $
  *
  * +----------------------------------------------------------------------+
  * | Copyright ( c ) 2004, bitweaver.org
@@ -17,7 +17,7 @@
  * Pigeonholes class
  *
  * @author   xing <xing@synapse.plus.com>
- * @version  $Revision: 1.90 $
+ * @version  $Revision: 1.91 $
  * @package  pigeonholes
  */
 
@@ -954,7 +954,7 @@ function pigeonholes_content_edit( $pObject=NULL ) {
 		$pigeonholes = new Pigeonholes();
 
 		// get pigeonholes path list
-		if( $pigeonPathList = $pigeonholes->getPigeonholesPathList( ( !empty( $pObject->mContentId ) ? $pObject->mContentId : NULL )) ) {
+		if( $pigeonPathList = $pigeonholes->getPigeonholesPathList(( !empty( $pObject->mContentId ) ? $pObject->mContentId : NULL ), ( $gBitSystem->isFeatureActive( 'pigeonholes_use_jstab' ) ? FALSE : 100 ))) {
 			$gBitSmarty->assign( 'pigeonPathList', $pigeonPathList );
 		}
 	}
