@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_pigeonholes/Pigeonholes.php,v 1.91 2007/07/15 20:30:16 squareing Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_pigeonholes/Pigeonholes.php,v 1.92 2007/07/16 11:15:38 squareing Exp $
  *
  * +----------------------------------------------------------------------+
  * | Copyright ( c ) 2004, bitweaver.org
@@ -17,7 +17,7 @@
  * Pigeonholes class
  *
  * @author   xing <xing@synapse.plus.com>
- * @version  $Revision: 1.91 $
+ * @version  $Revision: 1.92 $
  * @package  pigeonholes
  */
 
@@ -947,7 +947,7 @@ function pigeonholes_content_display( &$pObject ) {
 }
 
 function pigeonholes_content_edit( $pObject=NULL ) {
-	global $gBitSmarty, $gBitUser;
+	global $gBitSmarty, $gBitUser, $gBitSystem;
 	$pigeonPathList = array();
 
 	if( $gBitUser->hasPermission( 'p_pigeonholes_insert_member' ) ) {
