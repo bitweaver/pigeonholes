@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_pigeonholes/Pigeonholes.php,v 1.92 2007/07/16 11:15:38 squareing Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_pigeonholes/Pigeonholes.php,v 1.93 2007/07/16 15:27:21 squareing Exp $
  *
  * +----------------------------------------------------------------------+
  * | Copyright ( c ) 2004, bitweaver.org
@@ -17,7 +17,7 @@
  * Pigeonholes class
  *
  * @author   xing <xing@synapse.plus.com>
- * @version  $Revision: 1.92 $
+ * @version  $Revision: 1.93 $
  * @package  pigeonholes
  */
 
@@ -53,6 +53,11 @@ class Pigeonholes extends LibertyAttachable {
 		$this->mContentId = $pContentId;
 		$this->mStructureId = $pStructureId;
 		$this->mContentTypeGuid = PIGEONHOLES_CONTENT_TYPE_GUID;
+
+		// Permission setup
+		$this->mViewContentPerm  = 'p_pigeonholes_view';
+		$this->mEditContentPerm  = 'p_pigeonholes_edit';
+		$this->mAdminContentPerm = 'p_pigeonholes_edit'; // use edit until we find the need for an admin permission
 	}
 
 	/**

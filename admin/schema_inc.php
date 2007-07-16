@@ -47,6 +47,7 @@ $gBitInstaller->registerUserPermissions( PIGEONHOLES_PKG_NAME, array(
 	array( 'p_pigeonholes_view', 'Can view pigeonholes', 'basic', PIGEONHOLES_PKG_NAME ),
 	array( 'p_pigeonholes_insert_member', 'Can insert content into an existing pigeonhole', 'registered', PIGEONHOLES_PKG_NAME ),
 	array( 'p_pigeonholes_edit', 'Can edit pigeonholes', 'editors', PIGEONHOLES_PKG_NAME ),
+	//array( 'p_pigeonholes_admin', 'Can administer all aspects of pigeonholes', 'editors', PIGEONHOLES_PKG_NAME ),
 ) );
 
 ?>
