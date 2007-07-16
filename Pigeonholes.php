@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_pigeonholes/Pigeonholes.php,v 1.93 2007/07/16 15:27:21 squareing Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_pigeonholes/Pigeonholes.php,v 1.94 2007/07/16 17:07:59 squareing Exp $
  *
  * +----------------------------------------------------------------------+
  * | Copyright ( c ) 2004, bitweaver.org
@@ -17,7 +17,7 @@
  * Pigeonholes class
  *
  * @author   xing <xing@synapse.plus.com>
- * @version  $Revision: 1.93 $
+ * @version  $Revision: 1.94 $
  * @package  pigeonholes
  */
 
@@ -66,7 +66,7 @@ class Pigeonholes extends LibertyAttachable {
 	* @return bool TRUE on success, FALSE if it's not valid
 	* @access public
 	**/
-	function load( $pExtras=FALSE ) {
+	function load( $pExtras=FALSE, $pLoadAttachable=TRUE ) {
 		if( @BitBase::verifyId( $this->mContentId ) || @BitBase::verifyId( $this->mStructureId ) ) {
 			global $gBitSystem;
 			$lookupColumn = ( @BitBase::verifyId( $this->mContentId ) ? 'lc.`content_id`' : 'ls.`structure_id`' );
@@ -96,7 +96,9 @@ class Pigeonholes extends LibertyAttachable {
 				$this->mInfo['parsed_data'] = $this->parseData( $row );
 			}
 
-			LibertyAttachable::load();
+			if( $pLoadAttachable ) {
+				LibertyAttachable::load();
+			}
 
 			// if the content for the pigeonhole is requested, get it
 			if( $pExtras ) {
@@ -932,7 +934,7 @@ function pigeonholes_content_display( &$pObject ) {
 			if( $pigeons = $pigeonholes->getPigeonholesFromContentId( $pObject->mContentId ) ) {
 				foreach( $pigeons as $pigeon ) {
 					$pigeonholes->mContentId = $pigeon['content_id'];
-					$pigeonholes->load( TRUE );
+					$pigeonholes->load( TRUE, FALSE );
 					//$pigeonholes->loadPreferences();
 					$pigeonData[] = $pigeonholes->mInfo;
 					// set the theme chosen for this page - virtually random if page is part of multiple themes
