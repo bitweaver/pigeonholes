@@ -75,9 +75,9 @@
 
 						{if $gBitSystem->isFeatureActive( 'pigeonholes_groups' )}
 							<div class="row">
-								{formlabel label="Group" for="group"}
+								{formlabel label="Group" for="group_id"}
 								{forminput}
-									{html_options name="pigeonhole[prefs][group]" id="group" options=$groups selected=`$gContent->mPrefs.group_id`}
+									{html_options name="pigeonhole[prefs][group_id]" id="group_id" options=$groups selected=`$gContent->mPrefs.group_id`}
 									{formhelp note="Users of only this group can view the content of this category." warning="Setting is inherited from parent category."}
 								{/forminput}
 							</div>

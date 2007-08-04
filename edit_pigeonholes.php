@@ -1,6 +1,6 @@
 <?php
 /**
- * $Header: /cvsroot/bitweaver/_bit_pigeonholes/edit_pigeonholes.php,v 1.27 2007/07/10 19:01:24 squareing Exp $
+ * $Header: /cvsroot/bitweaver/_bit_pigeonholes/edit_pigeonholes.php,v 1.28 2007/08/04 18:27:42 squareing Exp $
  *
  * Copyright ( c ) 2004 bitweaver.org
  * Copyright ( c ) 2003 tikwiki.org
@@ -8,7 +8,7 @@
  * All Rights Reserved. See copyright.txt for details and a complete list of authors.
  * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details
  *
- * $Id: edit_pigeonholes.php,v 1.27 2007/07/10 19:01:24 squareing Exp $
+ * $Id: edit_pigeonholes.php,v 1.28 2007/08/04 18:27:42 squareing Exp $
  * @package pigeonholes
  * @subpackage functions
  */
@@ -39,10 +39,8 @@ if( !empty( $_REQUEST["structure_id"] ) && ( empty( $_REQUEST['action'] ) || $_R
 global $gStructure;
 // store the form if we need to
 if( !empty( $_REQUEST['pigeonhole_store'] ) ) {
-	if( ( empty( $_REQUEST['pigeonhole']['title'] ) ) ) {
-		$gBitSmarty->assign( 'msg', tra( "You must specify a title." ) );
-		$gBitSystem->display( 'error.tpl' );
-		die;
+	if(( empty( $_REQUEST['pigeonhole']['title'] ))) {
+		$gBitSystem->fatalError( tra( "You must specify a title." ));
 	}
 
 	// we need to get the root structure id
@@ -51,13 +49,10 @@ if( !empty( $_REQUEST['pigeonhole_store'] ) ) {
 	$pigeonStore = new Pigeonholes();
 	$pigeonStore->mContentId = !empty( $_REQUEST['content_id'] ) ? $_REQUEST['content_id'] : NULL;
 	$pigeonStore->load();
-	if( $pigeonStore->store( $_REQUEST['pigeonhole'] ) ) {
+	if( $pigeonStore->store( $_REQUEST['pigeonhole'] )) {
 		header( "Location: ".$_SERVER['PHP_SELF'].'?structure_id='.$pigeonStore->mStructureId.( !empty( $_REQUEST['action'] ) ? '&action='.$_REQUEST['action'] : '' )."&success=".urlencode( tra( "The category was successfully stored" ) ) );
 	} else {
-		vd( $gContent->mErrors );
-		$gBitSmarty->assign( 'msg', tra( "There was a problem trying to store the pigeonhole." ) );
-		$gBitSystem->display( 'error.tpl' );
-		die;
+		$feedback['error'] = $gContent->mErrors;
 	}
 }
 
@@ -75,10 +70,9 @@ if( !empty( $_REQUEST['action'] ) || isset( $_REQUEST["confirm"] ) ) {
 	if( $_REQUEST["action"] == 'remove' || isset( $_REQUEST["confirm"] ) ) {
 		if( isset( $_REQUEST["confirm"] ) ) {
 			if( $gContent->expunge( $_REQUEST["structure_id"] ) ) {
-				header( "Location: ".$_SERVER['PHP_SELF'].'?structure_id='.$gContent->mInfo["parent_id"] );
-				die;
+				bit_redirect( $_SERVER['PHP_SELF'].'?structure_id='.$gContent->mInfo["parent_id"] );
 			} else {
-				vd( $gContent->mErrors );
+				$feedback['error'] = $gContent->mErrors;
 			}
 		}
 		$gBitSystem->setBrowserTitle( 'Confirm removal of '.$gContent->mInfo['title'] );
@@ -124,11 +118,17 @@ if ( $gBitSystem->isFeatureActive( 'pigeonholes_permissions' ) ) {
 }
 
 // get available groups ready that we can assign the pigoenhole to one of them
-$gBitUser->mGroups;
 if ( $gBitSystem->isFeatureActive( 'pigeonholes_groups' ) ) {
-	$groups[''] = tra( 'None' );
-	foreach( $gBitUser->mGroups as $group_id => $group ) {
-		$groups[$group_id] = $group['group_name'];
+	$listHash = array(
+		'only_root_groups' => TRUE,
+		'sort_mode' => !empty( $_REQUEST['sort_mode'] ) ? $_REQUEST['sort_mode'] : 'group_name_asc'
+	);
+	$allGroups = $gBitUser->getAllGroups( $listHash );
+
+	// create a usable array for group selection
+	$groups[0] = tra( 'None' );
+	foreach( $allGroups as $group ) {
+		$groups[$group['group_id']] = $group['group_name'];
 	}
 	$gBitSmarty->assign( 'groups', $groups );
 }
@@ -148,7 +148,8 @@ if ( $gBitSystem->isFeatureActive( 'pigeonholes_themes' ) ) {
 	$gBitSmarty->assign( 'styles', $styles );
 }
 
-$gBitThemes->loadAjax( 'prototype' );
+// not sure what this is here for
+//$gBitThemes->loadAjax( 'prototype' );
 
 // Display the template
 if ( !empty( $gStructure ) ) {

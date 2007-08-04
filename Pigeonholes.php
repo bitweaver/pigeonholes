@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_pigeonholes/Pigeonholes.php,v 1.94 2007/07/16 17:07:59 squareing Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_pigeonholes/Pigeonholes.php,v 1.95 2007/08/04 18:27:42 squareing Exp $
  *
  * +----------------------------------------------------------------------+
  * | Copyright ( c ) 2004, bitweaver.org
@@ -17,7 +17,7 @@
  * Pigeonholes class
  *
  * @author   xing <xing@synapse.plus.com>
- * @version  $Revision: 1.94 $
+ * @version  $Revision: 1.95 $
  * @package  pigeonholes
  */
 
@@ -372,7 +372,7 @@ class Pigeonholes extends LibertyAttachable {
 
 	/**
 	* Converts a structure path into valid html links
-	* @param $pPath path given by getPigenholePath()
+	* @param $pPath path given by getPigeonholePath()
 	* @return the link to display the page.
 	*/
 	function getDisplayPath( $pPath ) {
@@ -523,7 +523,7 @@ class Pigeonholes extends LibertyAttachable {
 	**/
 	function checkPathPermissions( $pPath ) {
 		global $gBitUser, $gBitSystem;
-		if( $gBitSystem->getConfig( 'pigeonholes_permissions' ) || $gBitSystem->getConfig( 'pigeonholes_groups' ) ) {
+		if( !empty( $pPath ) && is_array( $pPath )) {
 			foreach( $pPath as $path ) {
 				$contentIds[] = $path['content_id'];
 			}
@@ -928,23 +928,42 @@ function pigeonholes_pathlist_sorter( $aa, $ab ) {
 
 function pigeonholes_content_display( &$pObject ) {
 	global $gBitSystem, $gBitSmarty, $gBitUser, $gBitThemes;
-	if( $gBitSystem->isFeatureActive( 'pigeonholes_display_members' ) || $gBitSystem->isFeatureActive( 'pigeonholes_display_path' ) ) {
-		$pigeonholes = new Pigeonholes();
-		if( $gBitUser->hasPermission( 'p_pigeonholes_view' ) ) {
-			if( $pigeons = $pigeonholes->getPigeonholesFromContentId( $pObject->mContentId ) ) {
-				foreach( $pigeons as $pigeon ) {
+	$pigeonholes = new Pigeonholes();
+
+	// first we need to check permissions
+	if( $gBitSystem->isFeatureActive( 'pigeonhole_permissions' ) || $gBitSystem->isFeatureActive( 'pigeonholes_groups' )) {
+		if( $pigeons = $pigeonholes->getPigeonholesFromContentId( $pObject->mContentId )) {
+			foreach( $pigeons as $pigeon ) {
+				// we will loop through here until we get one pigeonhole that allows access
+				if( empty( $access_granted )) {
+					if( $pigeonholes->checkPathPermissions( $pigeonholes->getPigeonholePath( $pigeon['structure_id'] ))) {
+						$access_granted = TRUE;
+					} else {
+						$access_granted = FALSE;
+					}
+				}
+			}
+		}
+
+		// we need to check all pigeonholes in the path, load the prefs and work out if the user is allowed to view the page
+		if( isset( $access_granted ) && $access_granted === FALSE ) {
+			$msg = tra( "This content is part of a category to which you have no access to. Please log in or request the appropriate permission from the site administrator." );
+			$gBitSystem->fatalPermission( NULL, $msg );
+		}
+	}
+
+	if( $gBitSystem->isFeatureActive( 'pigeonholes_display_members' ) || $gBitSystem->isFeatureActive( 'pigeonholes_display_path' )) {
+		if( $gBitUser->hasPermission( 'p_pigeonholes_view' )) {
+			if( $pigeons = $pigeonholes->getPigeonholesFromContentId( $pObject->mContentId )) {
+				foreach( $pigeons as $key => $pigeon ) {
 					$pigeonholes->mContentId = $pigeon['content_id'];
 					$pigeonholes->load( TRUE, FALSE );
-					//$pigeonholes->loadPreferences();
 					$pigeonData[] = $pigeonholes->mInfo;
+
 					// set the theme chosen for this page - virtually random if page is part of multiple themes
-					if( $gBitSystem->isFeatureActive( 'pigeonholes_themes' ) ) {
+					if( $gBitSystem->isFeatureActive( 'pigeonholes_themes' )) {
+						// loadPreferences is called by getPreference if needed
 						$gBitThemes->setStyle( $pigeonholes->getPreference( 'style' ));
-					}
-					// we need to check all pigeonholes in the path, load the prefs and work out if the user is allowed to view the page
-					if( !$pigeonholes->checkPathPermissions( $pigeonholes->getField( 'path' ) ) ) {
-						$msg = tra( "This content is part of a category to which you have no access to. Please log in or request the appropriate permission from the site administrator." );
-						$gBitSystem->fatalPermission( NULL, $msg );
 					}
 				}
 				$gBitSmarty->assign( 'pigeonData', !empty( $pigeonData ) ? $pigeonData : FALSE );
