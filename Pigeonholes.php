@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_pigeonholes/Pigeonholes.php,v 1.97 2007/08/23 13:20:46 squareing Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_pigeonholes/Pigeonholes.php,v 1.98 2007/08/23 22:05:55 squareing Exp $
  *
  * +----------------------------------------------------------------------+
  * | Copyright ( c ) 2004, bitweaver.org
@@ -17,7 +17,7 @@
  * Pigeonholes class
  *
  * @author   xing <xing@synapse.plus.com>
- * @version  $Revision: 1.97 $
+ * @version  $Revision: 1.98 $
  * @package  pigeonholes
  */
 
@@ -403,7 +403,7 @@ class Pigeonholes extends LibertyAttachable {
 	* @access public
 	**/
 	function getList( &$pListHash ) {
-		global $gBitSystem, $gBitUser;
+		global $gBitSystem, $gBitUser, $gBitDbType;
 		LibertyContent::prepGetList( $pListHash );
 
 		$ret = $bindVars = array();
@@ -465,7 +465,11 @@ class Pigeonholes extends LibertyAttachable {
 
 		$query = "SELECT pig.*, ls.`root_structure_id`, ls.`parent_id`, lc.`title`, lc.`data`, lc.`user_id`, lc.`content_type_guid`, lc.`format_guid`,
 			uue.`login` AS modifier_user, uue.`real_name` AS modifier_real_name,
-			uuc.`login` AS creator_user, uuc.`real_name` AS creator_real_name $select
+			uuc.`login` AS creator_user, uuc.`real_name` AS creator_real_name $select, (
+				SELECT COUNT( pm.`content_id` )
+				FROM `".BIT_DB_PREFIX."pigeonhole_members` pm
+				WHERE pm.`parent_id`=pig.`content_id`
+			) AS members_count
 			FROM `".BIT_DB_PREFIX."pigeonholes` pig
 				INNER JOIN `".BIT_DB_PREFIX."liberty_content` lc ON ( lc.`content_id` = pig.`content_id` )
 				LEFT JOIN `".BIT_DB_PREFIX."users_users` uue ON ( uue.`user_id` = lc.`modifier_user_id` )
@@ -488,13 +492,12 @@ class Pigeonholes extends LibertyAttachable {
 			if( !empty( $pListHash['force_extras'] ) || ( !empty( $pListHash['load_extras'] ) && $aux['structure_id'] == @$pListHash['structure_id'] ) ) {
 				$aux['path'] = $this->getPigeonholePath( $aux['structure_id'] );
 				$aux['display_path'] = Pigeonholes::getDisplayPath( $aux['path'] );
-				if (empty($pListHash['content_type_guid'])) {
-				  $aux['members'] = $this->getMemberList( array( 'content_id' => $aux['content_id']) );
+				if( empty( $pListHash['content_type_guid'] )) {
+				  $aux['members'] = $this->getMemberList( array( 'content_id' => $aux['content_id'] ));
+				} else {
+				  $aux['members'] = $this->getMemberList( array( 'content_id' => $aux['content_id'], 'content_type_guid' =>  $pListHash['content_type_guid'] ));
 				}
-				else {
-				  $aux['members'] = $this->getMemberList( array( 'content_id' => $aux['content_id'], 'content_type_guid' =>  $pListHash['content_type_guid']) );
-				}
-				$aux['members_count'] = count( $aux['members'] );
+				//$aux['members_count'] = count( $aux['members'] );
 				if( $gBitSystem->getConfig( 'pigeonholes_list_style' ) == 'table' ) {
 					$this->alphabetiseMembers( $aux['members'] );
 				}
