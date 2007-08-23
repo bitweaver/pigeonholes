@@ -1,7 +1,7 @@
 <?php
 /**
  * @author   xing <xing@synapse.plus.com>
- * @version  $Revision: 1.17 $
+ * @version  $Revision: 1.18 $
  * @package  Pigeonholes
  * @subpackage functions
  */
@@ -35,7 +35,7 @@ if( $gBitSystem->isPackageActive( 'pigeonholes' )) {
 		'content_edit_'.$tpl.'_tpl' => 'bitpackage:pigeonholes/service_edit_'.$tpl.'_inc.tpl',
 		'content_view_tpl'          => 'bitpackage:pigeonholes/service_view_members_inc.tpl',
 		'content_nav_tpl'           => 'bitpackage:pigeonholes/service_nav_path_inc.tpl',
-		'content_list_tpl'          => 'bitpackage:pigeonholes/service_list_inc.tpl',
+		'content_list_options_tpl'  => 'bitpackage:pigeonholes/service_list_options_inc.tpl',
 	));
 
 	if( $gBitUser->hasPermission( 'p_pigeonholes_view' )) {
