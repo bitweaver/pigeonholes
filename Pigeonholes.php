@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_pigeonholes/Pigeonholes.php,v 1.95 2007/08/04 18:27:42 squareing Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_pigeonholes/Pigeonholes.php,v 1.96 2007/08/23 07:31:27 squareing Exp $
  *
  * +----------------------------------------------------------------------+
  * | Copyright ( c ) 2004, bitweaver.org
@@ -17,7 +17,7 @@
  * Pigeonholes class
  *
  * @author   xing <xing@synapse.plus.com>
- * @version  $Revision: 1.95 $
+ * @version  $Revision: 1.96 $
  * @package  pigeonholes
  */
 
@@ -1070,33 +1070,48 @@ function pigeonholes_content_store( $pObject, $pParamHash ) {
 }
 
 /**
+ * When the list function is called and the template, a filter option will appear based on categories
+ * 
+ * @param array $pObject Current object
+ * @param array $pParamHash Parameter hash - only works if $_REQUEST[pigeonholes][filter] is passed back to the list sql funciton
+ * @access public
+ * @return void
+ */
+function pigeonholes_content_list( &$pObject, $pParamHash = NULL ) {
+	global $gBitSystem, $gBitSmarty;
+	if( $gBitSystem->isFeatureActive( 'pigeonholes_list_filter' )) {
+		$pigeonholes = new Pigeonholes();
+		$pigeonList = $pigeonholes->getPigeonholesPathList();
+		foreach( $pigeonList as $content_id => $path ) {
+			$list[$content_id] = $pigeonholes->getDisplayPath( $path );
+		}
+		$gBitSmarty->assign( 'pigeonList', $list );
+	}
+}
+
+/**
  * filter the search with pigeonholes
  * @param $pParamHash['pigeonholes']['filter'] - a pigeonhole or an array of pigeonhole content_id
  **/
 function pigeonholes_content_list_sql( &$pObject, $pParamHash = NULL ) {
 	global $gBitSystem;
 	$ret = array();
-	if( /*$gBitSystem->isFeatureActive( 'pigeonholes_categorize_'.$pObject->getContentType() ) && */ !empty( $pParamHash['pigeonholes']['filter'] ) ) {
-		if ( is_array( $pParamHash['pigeonholes']['filter'] ) ) {
-			$ret['join_sql'] = "LEFT JOIN `".BIT_DB_PREFIX."pigeonhole_members` pm ON (lc .`content_id`= pm.`content_id`)";
-			$ret['where_sql'] = ' AND pm.`parent_id` in ('.implode( ',', array_fill(0, count( $pParamHash['pigeonholes']['filter']  ), '?' ) ).')';
-			$ret['bind_vars'] = $pParamHash['pigeonholes']['filter'];
-		} else {
-			$ret['join_sql'] = "LEFT JOIN `".BIT_DB_PREFIX."pigeonhole_members` pm ON (lc .`content_id`= pm.`content_id`)";
-			$ret['where_sql'] = " AND pm.`parent_id`=? ";
-			$ret['bind_vars'][] = $pParamHash['pigeonholes']['filter'];
-		}
+
+	if( !empty( $pParamHash['pigeonholes']['filter'] )) {
+		$pParamHash['liberty_categories'] = $pParamHash['pigeonholes']['filter'];
 	}
-	if( !empty( $pParamHash['liberty_categories'] ) ) {
-			$ret['join_sql'] = "LEFT JOIN `".BIT_DB_PREFIX."pigeonhole_members` pm ON (lc .`content_id`= pm.`content_id`)";
-		if ( is_array( $pParamHash['liberty_categories'] ) ) {
-			$ret['where_sql'] = ' AND pm.`parent_id` in ('.implode( ',', array_fill(0, count( $pParamHash['liberty_categories']  ), '?' ) ).')';
+
+	if( !empty( $pParamHash['liberty_categories'] )) {
+		$ret['join_sql'] = "LEFT JOIN `".BIT_DB_PREFIX."pigeonhole_members` pm ON (lc .`content_id`= pm.`content_id`)";
+		if( is_array( $pParamHash['liberty_categories'] )) {
+			$ret['where_sql'] = ' AND pm.`parent_id` in ('.implode( ',', array_fill( 0, count( $pParamHash['liberty_categories']  ), '?' )).')';
 			$ret['bind_vars'] = $pParamHash['liberty_categories'];
 		} else {
 			$ret['where_sql'] = " AND pm.`parent_id`=? ";
 			$ret['bind_vars'][] = $pParamHash['liberty_categories'];
 		}
 	}
+
 	return $ret;
 }
 ?>
