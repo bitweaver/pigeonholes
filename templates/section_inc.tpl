@@ -1,4 +1,6 @@
 {strip}
+{assign var=sid value=$subtree[ix].structure_id}
+
 {if $gBitSystem->getConfig('pigeonholes_list_style') == "dynamic" && !$no_details}
 
 	<h3 class="highlight"><a href="{$smarty.const.PIGEONHOLES_PKG_URL}{
@@ -10,45 +12,41 @@
 				}view.php?structure_id={
 			/if}{$subtree[ix].structure_id}">{$subtree[ix].title|escape}</a></h3>
 
-	{foreach from=$pigeonList item=pigeonItem}
-		{if $pigeonItem.structure_id eq $subtree[ix].structure_id}
+	{if $pigeonList.$sid.members}
+		{if $gBitSystem->isFeatureActive('pigeonholes_display_description')}
+			{$pigeonList.$sid.parsed_data}
+		{/if}
 
-			{if $pigeonItem.members}
-				{if $gBitSystem->isFeatureActive('pigeonholes_display_description')}
-					{$pigeonItem.parsed_data}
-				{/if}
-				<ul style="display:{if $gContent->mStructureId eq $subtree[ix].structure_id or $smarty.request.expand_all}block{else}none{/if}; padding:2em;" class="data">
-					{foreach from=$pigeonItem.members item=pigeonMember}
-						{assign var=ctg1 value=$pigeonMember.content_type_guid}
+		<ul style="display:{if $gContent->mStructureId eq $subtree[ix].structure_id or $smarty.request.expand_all}block{else}none{/if}; padding:2em;" class="data">
+			{foreach from=$pigeonList.$sid.members item=pigeonMember}
+				{assign var=ctg1 value=$pigeonMember.content_type_guid}
 
-						{* close off the content type <ul> *}
-						{if $ctg1 ne $ctg2 and $ctg2}
-								</ul>
-							</li>
-						{/if}
-
-						{* open the content type <ul> *}
-						{if $ctg1 ne $ctg2}
-							<li>{$gLibertySystem->mContentTypes.$ctg1.content_description}
-								<ul>
-						{/if}
-
-						<li>
-							<a href="{$smarty.const.BIT_ROOT_URL}index.php?content_id={$pigeonMember.content_id}">{$pigeonMember.title|escape}</a>
-							{if $gBitUser->hasPermission( 'p_pigeonholes_edit' )}
-								&nbsp; {smartlink ititle="Remove Item" ibiticon="icons/edit-delete" expand_all=$smarty.request.expand_all action=dismember structure_id=$pigeonItem.structure_id parent_id=$pigeonMember.content_id content_id=$pigeonItem.content_id}
-							{/if}
-						</li>
-
-						{assign var=ctg2 value=$pigeonMember.content_type_guid}
-					{/foreach}
-
+				{* close off the content type <ul> *}
+				{if $ctg1 ne $ctg2 and $ctg2}
 						</ul>
 					</li>
+				{/if}
+
+				{* open the content type <ul> *}
+				{if $ctg1 ne $ctg2}
+					<li>{$gLibertySystem->mContentTypes.$ctg1.content_description}
+						<ul>
+				{/if}
+
+				<li>
+					<a href="{$smarty.const.BIT_ROOT_URL}index.php?content_id={$pigeonMember.content_id}">{$pigeonMember.title|escape}</a>
+					{if $gBitUser->hasPermission( 'p_pigeonholes_edit' )}
+						&nbsp; {smartlink ititle="Remove Item" ibiticon="icons/edit-delete" expand_all=$smarty.request.expand_all action=dismember structure_id=$sid parent_id=$pigeonMember.content_id content_id=$pigeonItem.content_id}
+					{/if}
+				</li>
+
+				{assign var=ctg2 value=$pigeonMember.content_type_guid}
+			{/foreach}
+
 				</ul>
-			{/if}
-		{/if}
-	{/foreach}
+			</li>
+		</ul>
+	{/if}
 
 	{if $gContent->mInfo.structure_id eq $subtree[ix].structure_id}
 		{formfeedback hash=$memberFeedback}
@@ -80,15 +78,11 @@
 			else
 				}view.php?structure_id={
 			/if}{$subtree[ix].structure_id}#members">{$subtree[ix].title|escape}</a>
-	{if $current}</strong>{/if}
+	{if $current}</strong>{/if} <small> ({$pigeonList.$sid.members_count|default:0}) </small>
 	{biticon ipackage=liberty iname=spacer iforce=icon}
 
 	{if !$no_details}
-		{foreach from=$pigeonList item=pigeonItem}
-			{if $pigeonItem.structure_id eq $subtree[ix].structure_id}
-				<br />{$pigeonItem.parsed_data} <small> [ {tr}{$pigeonItem.members_count|default:0} Item(s){/tr} ] </small>
-			{/if}
-		{/foreach}
+		<br />{$pigeonList.$sid.parsed_data}
 	{/if}
 
 {/if}
