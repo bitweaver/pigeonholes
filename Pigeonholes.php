@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_pigeonholes/Pigeonholes.php,v 1.96 2007/08/23 07:31:27 squareing Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_pigeonholes/Pigeonholes.php,v 1.97 2007/08/23 13:20:46 squareing Exp $
  *
  * +----------------------------------------------------------------------+
  * | Copyright ( c ) 2004, bitweaver.org
@@ -17,7 +17,7 @@
  * Pigeonholes class
  *
  * @author   xing <xing@synapse.plus.com>
- * @version  $Revision: 1.96 $
+ * @version  $Revision: 1.97 $
  * @package  pigeonholes
  */
 
@@ -326,7 +326,7 @@ class Pigeonholes extends LibertyAttachable {
 			}
 		}
 
-		return( !empty( $ret ) ? $ret : FALSE );
+		return( !empty( $ret ) ? $ret : array() );
 	}
 
 	/**
@@ -1082,6 +1082,7 @@ function pigeonholes_content_list( &$pObject, $pParamHash = NULL ) {
 	if( $gBitSystem->isFeatureActive( 'pigeonholes_list_filter' )) {
 		$pigeonholes = new Pigeonholes();
 		$pigeonList = $pigeonholes->getPigeonholesPathList();
+		$list = array();
 		foreach( $pigeonList as $content_id => $path ) {
 			$list[$content_id] = $pigeonholes->getDisplayPath( $path );
 		}
