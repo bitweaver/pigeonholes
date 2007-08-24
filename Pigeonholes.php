@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_pigeonholes/Pigeonholes.php,v 1.98 2007/08/23 22:05:55 squareing Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_pigeonholes/Pigeonholes.php,v 1.99 2007/08/24 07:46:36 squareing Exp $
  *
  * +----------------------------------------------------------------------+
  * | Copyright ( c ) 2004, bitweaver.org
@@ -17,7 +17,7 @@
  * Pigeonholes class
  *
  * @author   xing <xing@synapse.plus.com>
- * @version  $Revision: 1.98 $
+ * @version  $Revision: 1.99 $
  * @package  pigeonholes
  */
 
@@ -380,7 +380,8 @@ class Pigeonholes extends LibertyAttachable {
 		$ret = '';
 		if( !empty( $pPath ) && is_array( $pPath ) ) {
 			foreach( $pPath as $node ) {
-				$ret .= ( @BitBase::verifyId( $node['parent_id'] ) ? ' &raquo; ' : '' ).'<a title="'.htmlspecialchars( $node['title'] ).'" href="'.PIGEONHOLES_PKG_URL.($gBitSystem->isFeatureActive('pretty_urls_extended') ? 'view/structure/' : 'view.php?structure_id=').$node['structure_id'].'">'.htmlspecialchars( $node['title'] ).'</a>';
+				$title = htmlspecialchars( $node['title'] );
+				$ret .= ( @BitBase::verifyId( $node['parent_id'] ) ? ' &raquo; ' : '' ).'<a title="'.$title.'" href="'.$this->getDisplayUrl( $node['content_id'] ).'">'.$title.'</a>';
 			}
 		}
 		return $ret;
