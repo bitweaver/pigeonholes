@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_pigeonholes/Pigeonholes.php,v 1.100 2007/08/24 14:35:23 squareing Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_pigeonholes/Pigeonholes.php,v 1.101 2007/08/24 19:34:38 squareing Exp $
  *
  * +----------------------------------------------------------------------+
  * | Copyright ( c ) 2004, bitweaver.org
@@ -17,7 +17,7 @@
  * Pigeonholes class
  *
  * @author   xing <xing@synapse.plus.com>
- * @version  $Revision: 1.100 $
+ * @version  $Revision: 1.101 $
  * @package  pigeonholes
  */
 
@@ -1093,8 +1093,8 @@ function pigeonholes_content_list( &$pObject, $pParamHash = NULL ) {
 		);
 		$pigeonList = $pigeonholes->getList( $listHash );
 		$list = array();
-		foreach( $pigeonList as $content_id => $pigeon ) {
-			$list[$content_id] = $pigeon['display_link'];
+		foreach( $pigeonList as $pigeon ) {
+			$list[$pigeon['content_id']] = $pigeon['display_link'];
 		}
 		$gBitSmarty->assign( 'pigeonList', $list );
 	}
@@ -1113,7 +1113,7 @@ function pigeonholes_content_list_sql( &$pObject, $pParamHash = NULL ) {
 	}
 
 	if( !empty( $pParamHash['liberty_categories'] )) {
-		$ret['join_sql'] = "LEFT JOIN `".BIT_DB_PREFIX."pigeonhole_members` pm ON (lc .`content_id`= pm.`content_id`)";
+		$ret['join_sql'] = "LEFT OUTER JOIN `".BIT_DB_PREFIX."pigeonhole_members` pm ON (lc.`content_id`=pm.`content_id`)";
 		if( is_array( $pParamHash['liberty_categories'] )) {
 			$ret['where_sql'] = ' AND pm.`parent_id` in ('.implode( ',', array_fill( 0, count( $pParamHash['liberty_categories']  ), '?' )).')';
 			$ret['bind_vars'] = $pParamHash['liberty_categories'];
