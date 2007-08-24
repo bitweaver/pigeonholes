@@ -23,7 +23,7 @@
 						<ul>
 							{foreach from=$members item=member}
 								<li>
-									{$member.display_link} &nbsp; <small>{tr}{$member.content_description}{/tr}</small>
+									{$member.display_link}{if $gBitSystem->isFeatureActive( 'pigeonholes_display_content_type' )} &nbsp; <small>{tr}{$member.content_description}{/tr}</small>{/if}
 								</li>
 							{/foreach}
 						</ul>
