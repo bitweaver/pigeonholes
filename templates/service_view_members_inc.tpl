@@ -25,22 +25,22 @@
 					{counter start=0 assign=member_count}
 					{assign var=more value=0}
 
-					{foreach from=$pigeonItem.members item=member}
-							{assign var=ctg1 value=$member.content_type_guid}
+					{foreach from=$pigeonItem.members item=member name=members}
+						{assign var=ctg1 value=$member.content_type_guid}
 
-							{if $ctg1 ne $ctg2}{if $ctg2}<br />{/if}{$gLibertySystem->mContentTypes.$ctg1.content_description}:&nbsp;{/if}
+						{if $ctg1 ne $ctg2 && $gBitSystem->isFeatureActive( 'pigeonholes_display_content_type' )}{if $ctg2}<br />{/if}{$gLibertySystem->mContentTypes.$ctg1.content_description}:&nbsp;{/if}
 
-							{if !$gBitSystem->getConfig('pigeonholes_limit_member_number') or $member_count lt $gBitSystem->getConfig('pigeonholes_limit_member_number')}
-								{if $serviceHash.content_id == $member.content_id}<strong>{/if}
-									{$member.display_link}
+						{if !$gBitSystem->getConfig('pigeonholes_limit_member_number') or $member_count lt $gBitSystem->getConfig('pigeonholes_limit_member_number')}
+							{if $serviceHash.content_id == $member.content_id}<strong>{/if}
+								{$member.display_link}
 								{if $serviceHash.content_id == $member.content_id}</strong>{/if}
-								&nbsp; &bull; &nbsp;
-							{else}
-								{assign var=more value=1}
-							{/if}
+							{if !$smarty.foreach.members.last}&nbsp; &bull; &nbsp;{/if}
+						{else}
+							{assign var=more value=1}
+						{/if}
 
-							{counter assign=member_count}
-							{assign var=ctg2 value=$member.content_type_guid}
+						{counter assign=member_count}
+						{assign var=ctg2 value=$member.content_type_guid}
 					{/foreach}
 
 					{if $more eq 1}
