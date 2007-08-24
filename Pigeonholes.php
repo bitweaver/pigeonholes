@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_pigeonholes/Pigeonholes.php,v 1.99 2007/08/24 07:46:36 squareing Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_pigeonholes/Pigeonholes.php,v 1.100 2007/08/24 14:35:23 squareing Exp $
  *
  * +----------------------------------------------------------------------+
  * | Copyright ( c ) 2004, bitweaver.org
@@ -17,7 +17,7 @@
  * Pigeonholes class
  *
  * @author   xing <xing@synapse.plus.com>
- * @version  $Revision: 1.99 $
+ * @version  $Revision: 1.100 $
  * @package  pigeonholes
  */
 
@@ -433,11 +433,11 @@ class Pigeonholes extends LibertyAttachable {
 			$bindVars[] = $pListHash['title'];
 		}
 
-		if ($gBitSystem->isFeatureActive('pigeonholes_allow_forbid_insertion') && !empty( $pListHash['insertable'] ) ) {
+		if( $gBitSystem->isFeatureActive( 'pigeonholes_allow_forbid_insertion' ) && !empty( $pListHash['insertable'] )) {
 		  	$where .= empty( $where ) ? ' WHERE ' : ' AND ';
 			$where .= ' lcp.`pref_value` IS NULL OR lcp.`pref_value` != \'on\' ';
 			$join .= ' LEFT JOIN `'.BIT_DB_PREFIX.'liberty_content_prefs` lcp ON (lc.`content_id` = lcp.`content_id` AND lcp.`pref_name` = \'no_insert\') ';
-			$select .= ' , lcp.`pref_value` as no_insert ';
+			$select .= ' , lcp.`pref_value` AS no_insert ';
 		}
 
 		if( isset( $pListHash['parent_id'] ) ) {
@@ -1085,10 +1085,16 @@ function pigeonholes_content_list( &$pObject, $pParamHash = NULL ) {
 	global $gBitSystem, $gBitSmarty;
 	if( $gBitSystem->isFeatureActive( 'pigeonholes_list_filter' )) {
 		$pigeonholes = new Pigeonholes();
-		$pigeonList = $pigeonholes->getPigeonholesPathList();
+		$listHash = array(
+			'sort_mode' => array(
+				'root_structure_id_asc', 'title_asc'
+			),
+			'insertable' => TRUE,
+		);
+		$pigeonList = $pigeonholes->getList( $listHash );
 		$list = array();
-		foreach( $pigeonList as $content_id => $path ) {
-			$list[$content_id] = $pigeonholes->getDisplayPath( $path );
+		foreach( $pigeonList as $content_id => $pigeon ) {
+			$list[$content_id] = $pigeon['display_link'];
 		}
 		$gBitSmarty->assign( 'pigeonList', $list );
 	}
