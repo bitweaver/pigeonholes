@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_pigeonholes/Pigeonholes.php,v 1.104 2007/08/25 10:30:49 squareing Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_pigeonholes/Pigeonholes.php,v 1.105 2007/08/25 10:35:56 squareing Exp $
  *
  * +----------------------------------------------------------------------+
  * | Copyright ( c ) 2004, bitweaver.org
@@ -17,7 +17,7 @@
  * Pigeonholes class
  *
  * @author   xing <xing@synapse.plus.com>
- * @version  $Revision: 1.104 $
+ * @version  $Revision: 1.105 $
  * @package  pigeonholes
  */
 
@@ -1184,7 +1184,7 @@ function pigeonholes_content_list_sql( &$pObject, $pParamHash = NULL ) {
 
 		if( !empty( $pParamHash['liberty_categories'] )) {
 			if( !is_array( $pParamHash['liberty_categories'] )) {
-				$pParamHash['liberty_categories'][] = $pParamHash['liberty_categories'];
+				$pParamHash['liberty_categories'] = array( $pParamHash['liberty_categories'] );
 			}
 
 			// if we want to allow items in subcategories, we get those and include them in the query
