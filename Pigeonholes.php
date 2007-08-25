@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_pigeonholes/Pigeonholes.php,v 1.103 2007/08/25 08:26:02 squareing Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_pigeonholes/Pigeonholes.php,v 1.104 2007/08/25 10:30:49 squareing Exp $
  *
  * +----------------------------------------------------------------------+
  * | Copyright ( c ) 2004, bitweaver.org
@@ -17,7 +17,7 @@
  * Pigeonholes class
  *
  * @author   xing <xing@synapse.plus.com>
- * @version  $Revision: 1.103 $
+ * @version  $Revision: 1.104 $
  * @package  pigeonholes
  */
 
@@ -910,6 +910,35 @@ class Pigeonholes extends LibertyAttachable {
 
 		return $ret;
 	}
+
+	function getSubPigeonholes( $pContentId = NULL, $pStructureId = NULL ) {
+		global $gStructure;
+		$ret = array();
+
+		if( empty( $gStructure )) {
+			$struct = new LibertyStructure();
+		} else {
+			$struct = &$gStructure;
+		}
+
+		if( @BitBase::verifyId( $pContentId ) && !@BitBase::verifyId( $pStructureId )) {
+			$pigeon = $struct->getNode( NULL, $pContentId );
+			$pStructureId = $pigeon['structure_id'];
+		}
+
+		if( @BitBase::verifyId( $pStructureId )) {
+			$tree = $struct->getSubTree( $pStructureId );
+
+			// weed out duplicates
+			foreach( $tree as $pigeon ) {
+				if( !in_array( $pigeon['content_id'], array_keys( $ret ))) {
+					$ret[$pigeon['content_id']] = $pigeon;
+				}
+			}
+		}
+
+		return $ret;
+	}
 }
 
 function pigeonholes_alphabetiser( $a, $b ) {
@@ -1146,18 +1175,34 @@ function pigeonholes_content_list_sql( &$pObject, $pParamHash = NULL ) {
 	global $gBitSystem;
 	$ret = array();
 
-	if( !empty( $pParamHash['pigeonholes']['filter'] )) {
-		$pParamHash['liberty_categories'] = $pParamHash['pigeonholes']['filter'];
-	}
+	if( !empty( $pParamHash['pigeonholes']['no_filter'] )) {
+		$_REQUEST['pigeonholes']['filter'] = array();
+	} else {
+		if( !empty( $pParamHash['pigeonholes']['filter'] )) {
+			$pParamHash['liberty_categories'] = $pParamHash['pigeonholes']['filter'];
+		}
 
-	if( !empty( $pParamHash['liberty_categories'] )) {
-		$ret['join_sql'] = "LEFT OUTER JOIN `".BIT_DB_PREFIX."pigeonhole_members` pm ON (lc.`content_id`=pm.`content_id`)";
-		if( is_array( $pParamHash['liberty_categories'] )) {
-			$ret['where_sql'] = ' AND pm.`parent_id` in ('.implode( ',', array_fill( 0, count( $pParamHash['liberty_categories']  ), '?' )).')';
-			$ret['bind_vars'] = $pParamHash['liberty_categories'];
-		} else {
-			$ret['where_sql'] = " AND pm.`parent_id`=? ";
-			$ret['bind_vars'][] = $pParamHash['liberty_categories'];
+		if( !empty( $pParamHash['liberty_categories'] )) {
+			if( !is_array( $pParamHash['liberty_categories'] )) {
+				$pParamHash['liberty_categories'][] = $pParamHash['liberty_categories'];
+			}
+
+			// if we want to allow items in subcategories, we get those and include them in the query
+			if( !empty( $pParamHash['pigeonholes']['sub_holes'] )) {
+				$pigeonholes = new Pigeonholes();
+				$contentIds = array();
+				foreach( $pParamHash['liberty_categories'] as $pigeonhole ) {
+					$pigeons = $pigeonholes->getSubPigeonholes( $pigeonhole );
+					$contentIds = array_merge( $contentIds, array_keys( $pigeons ));
+				}
+				$contentIds = array_unique( array_merge( $pParamHash['liberty_categories'], $contentIds ));
+			} else {
+				$contentIds = $pParamHash['liberty_categories'];
+			}
+
+			$ret['join_sql']  = "LEFT OUTER JOIN `".BIT_DB_PREFIX."pigeonhole_members` pm ON (lc.`content_id`=pm.`content_id`)";
+			$ret['where_sql'] = ' AND pm.`parent_id` in ('.implode( ',', array_fill( 0, count( $contentIds ), '?' )).')';
+			$ret['bind_vars'] = $_REQUEST['pigeonholes']['filter'] = $contentIds;
 		}
 	}
 
