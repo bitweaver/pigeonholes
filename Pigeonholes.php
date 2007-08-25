@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_pigeonholes/Pigeonholes.php,v 1.102 2007/08/25 08:20:46 squareing Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_pigeonholes/Pigeonholes.php,v 1.103 2007/08/25 08:26:02 squareing Exp $
  *
  * +----------------------------------------------------------------------+
  * | Copyright ( c ) 2004, bitweaver.org
@@ -17,7 +17,7 @@
  * Pigeonholes class
  *
  * @author   xing <xing@synapse.plus.com>
- * @version  $Revision: 1.102 $
+ * @version  $Revision: 1.103 $
  * @package  pigeonholes
  */
 
@@ -495,11 +495,12 @@ class Pigeonholes extends LibertyAttachable {
 			if( !empty( $pListHash['force_extras'] ) || ( !empty( $pListHash['load_extras'] ) && $aux['structure_id'] == @$pListHash['structure_id'] ) ) {
 				$aux['path'] = $this->getPigeonholePath( $aux['structure_id'] );
 				$aux['display_path'] = Pigeonholes::getDisplayPath( $aux['path'] );
-				if( empty( $pListHash['content_type_guid'] )) {
-				  $aux['members'] = $this->getMemberList( array( 'content_id' => $aux['content_id'] ));
-				} else {
-				  $aux['members'] = $this->getMemberList( array( 'content_id' => $aux['content_id'], 'content_type_guid' =>  $pListHash['content_type_guid'] ));
-				}
+				$aux['members'] = $this->getMemberList(
+					array(
+						'content_id' => $aux['content_id'],
+						'content_type_guid' => !empty( $pListHash['content_type_guid'] ) ? $pListHash['content_type_guid'] : NULL,
+					)
+				);
 				//$aux['members_count'] = count( $aux['members'] );
 				if( $gBitSystem->getConfig( 'pigeonholes_list_style' ) == 'table' ) {
 					$this->alphabetiseMembers( $aux['members'] );
