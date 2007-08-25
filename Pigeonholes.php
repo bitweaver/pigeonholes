@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_pigeonholes/Pigeonholes.php,v 1.101 2007/08/24 19:34:38 squareing Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_pigeonholes/Pigeonholes.php,v 1.102 2007/08/25 08:20:46 squareing Exp $
  *
  * +----------------------------------------------------------------------+
  * | Copyright ( c ) 2004, bitweaver.org
@@ -17,7 +17,7 @@
  * Pigeonholes class
  *
  * @author   xing <xing@synapse.plus.com>
- * @version  $Revision: 1.101 $
+ * @version  $Revision: 1.102 $
  * @package  pigeonholes
  */
 
@@ -170,7 +170,7 @@ class Pigeonholes extends LibertyAttachable {
 					include_once( $gBitSystem->mPackages[$type['handler_package']]['path'].$type['handler_file'] );
 					$type['content_object'] = new $type['handler_class']();
 				}
-				if ($type['content_object']->isViewable($aux['content_id'])) {
+				if( $type['content_object']->isViewable( $aux['content_id'] )) {
 					$aux['display_link'] = $type['content_object']->getDisplayLink( $aux['title'], $aux );
 					$aux['title'] = $type['content_object']->getTitle( $aux );
 					$ret[] = $aux;
@@ -487,9 +487,11 @@ class Pigeonholes extends LibertyAttachable {
 			$aux['display_name'] = BitUser::getTitle( $aux );
 			$aux['editor'] = ( isset( $aux['modifier_real_name'] ) ? $aux['modifier_real_name'] : $aux['modifier_user'] );
 			$aux['display_link'] = Pigeonholes::getDisplayLink( $aux['title'], $aux );
-			if (!empty($pListHash['parse_data']) && !empty($aux['data'])) {
-			    $aux['parsed_data'] = $this->parseData($aux['data'], $aux['format_guid']);
+
+			if( !empty( $pListHash['parse_data'] ) && !empty( $aux['data'] )) {
+			    $aux['parsed_data'] = $this->parseData( $aux['data'], $aux['format_guid'] );
 			}
+
 			if( !empty( $pListHash['force_extras'] ) || ( !empty( $pListHash['load_extras'] ) && $aux['structure_id'] == @$pListHash['structure_id'] ) ) {
 				$aux['path'] = $this->getPigeonholePath( $aux['structure_id'] );
 				$aux['display_path'] = Pigeonholes::getDisplayPath( $aux['path'] );
@@ -930,6 +932,13 @@ function pigeonholes_pathlist_sorter( $aa, $ab ) {
 
 // ============= SERVICE FUNCTIONS =============
 
+/**
+ * pigeonholes_content_display 
+ * 
+ * @param array $pObject 
+ * @access public
+ * @return TRUE on success, FALSE on failure - mErrors will contain reason for failure
+ */
 function pigeonholes_content_display( &$pObject ) {
 	global $gBitSystem, $gBitSmarty, $gBitUser, $gBitThemes;
 	$pigeonholes = new Pigeonholes();
@@ -976,6 +985,13 @@ function pigeonholes_content_display( &$pObject ) {
 	}
 }
 
+/**
+ * pigeonholes_content_edit 
+ * 
+ * @param array $pObject 
+ * @access public
+ * @return TRUE on success, FALSE on failure - mErrors will contain reason for failure
+ */
 function pigeonholes_content_edit( $pObject=NULL ) {
 	global $gBitSmarty, $gBitUser, $gBitSystem;
 	$pigeonPathList = array();
@@ -990,11 +1006,24 @@ function pigeonholes_content_edit( $pObject=NULL ) {
 	}
 }
 
+/**
+ * pigeonholes_content_expunge 
+ * 
+ * @param array $pObject 
+ * @access public
+ * @return TRUE on success, FALSE on failure - mErrors will contain reason for failure
+ */
 function pigeonholes_content_expunge( $pObject=NULL ) {
 	$pigeonholes = new Pigeonholes();
 	$pigeonholes->expungePigeonholeMember( array( 'member_id' => $pObject->mContentId ) );
 }
 
+/**
+ * pigeonholes_content_preview 
+ * 
+ * @access public
+ * @return TRUE on success, FALSE on failure - mErrors will contain reason for failure
+ */
 function pigeonholes_content_preview() {
 	global $gBitSmarty, $gBitUser;
 	$pigeonPathList = array();
@@ -1016,6 +1045,14 @@ function pigeonholes_content_preview() {
 	}
 }
 
+/**
+ * pigeonholes_content_store 
+ * 
+ * @param array $pObject 
+ * @param array $pParamHash 
+ * @access public
+ * @return TRUE on success, FALSE on failure - mErrors will contain reason for failure
+ */
 function pigeonholes_content_store( $pObject, $pParamHash ) {
 	global $gBitSmarty, $gBitUser;
 	if( $gBitUser->hasPermission( 'p_pigeonholes_insert_member' ) ) {
