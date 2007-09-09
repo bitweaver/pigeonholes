@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_pigeonholes/Pigeonholes.php,v 1.106 2007/08/25 11:10:16 squareing Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_pigeonholes/Pigeonholes.php,v 1.107 2007/09/09 15:52:18 squareing Exp $
  *
  * +----------------------------------------------------------------------+
  * | Copyright ( c ) 2004, bitweaver.org
@@ -17,7 +17,7 @@
  * Pigeonholes class
  *
  * @author   xing <xing@synapse.plus.com>
- * @version  $Revision: 1.106 $
+ * @version  $Revision: 1.107 $
  * @package  pigeonholes
  */
 
@@ -274,16 +274,15 @@ class Pigeonholes extends LibertyAttachable {
 	 * @return TRUE on success, FALSE if there is no pigeonhole
 	 * @TODO We need to sort the returned values that successive pigoenholes are grouped together.
 	 */
-	function getPigeonholesPathList( $pContentId=NULL, $pTruncate = FALSE ) {
+	function getPigeonholesPathList( $pContentId=NULL, $pTruncate = FALSE, $pShowAll = FALSE ) {
 	  	global $gBitSystem;
 	  	$where = $join = '';
 
-		if ($gBitSystem->isFeatureActive('pigeonholes_allow_forbid_insertion')) {
+		if( $gBitSystem->isFeatureActive( 'pigeonholes_allow_forbid_insertion' ) && !$pShowAll ) {
 		  	$where .= empty( $where ) ? ' WHERE ' : ' AND ';
 			$where .= ' lcp.`pref_value` IS NULL OR lcp.`pref_value` != \'on\' ';
 			$join .= ' LEFT JOIN `'.BIT_DB_PREFIX.'liberty_content_prefs` lcp ON (pig.`content_id` = lcp.`content_id` AND lcp.`pref_name` = \'no_insert\') ';
 		}
-
 
 		$query = "SELECT pig.`content_id`, pig.`structure_id`
 			FROM `".BIT_DB_PREFIX."pigeonholes` pig
@@ -948,9 +947,9 @@ function pigeonholes_alphabetiser( $a, $b ) {
 function pigeonholes_pathlist_sorter( $aa, $ab ) {
 	foreach( $aa as $key => $a ) {
 		if( !empty( $ab[$key] ) ) {
-			if( $a['structure_id'] < $ab[$key]['structure_id'] ) {
+			if( $a['pos'] < $ab[$key]['pos'] ) {
 				return -1;
-			} elseif( $a['structure_id'] > $ab[$key]['structure_id'] ) {
+			} elseif( $a['pos'] > $ab[$key]['pos'] ) {
 				return 1;
 			}
 		} else {
