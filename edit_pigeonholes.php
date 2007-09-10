@@ -1,6 +1,6 @@
 <?php
 /**
- * $Header: /cvsroot/bitweaver/_bit_pigeonholes/edit_pigeonholes.php,v 1.28 2007/08/04 18:27:42 squareing Exp $
+ * $Header: /cvsroot/bitweaver/_bit_pigeonholes/edit_pigeonholes.php,v 1.29 2007/09/10 19:25:29 squareing Exp $
  *
  * Copyright ( c ) 2004 bitweaver.org
  * Copyright ( c ) 2003 tikwiki.org
@@ -8,7 +8,7 @@
  * All Rights Reserved. See copyright.txt for details and a complete list of authors.
  * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details
  *
- * $Id: edit_pigeonholes.php,v 1.28 2007/08/04 18:27:42 squareing Exp $
+ * $Id: edit_pigeonholes.php,v 1.29 2007/09/10 19:25:29 squareing Exp $
  * @package pigeonholes
  * @subpackage functions
  */
@@ -27,6 +27,7 @@ include_once( PIGEONHOLES_PKG_PATH.'lookup_pigeonholes_inc.php' );
 // include edit structure file only when structure_id is known
 if( !empty( $_REQUEST["structure_id"] ) && ( empty( $_REQUEST['action'] ) || $_REQUEST['action'] != 'remove' ) ) {
 	$verifyStructurePermission = 'p_pigeonholes_edit';
+	$noAjaxContent = TRUE;
 	include_once( LIBERTY_PKG_PATH.'edit_structure_inc.php' );
 
 	// get all the nodes in this structure
@@ -46,8 +47,7 @@ if( !empty( $_REQUEST['pigeonhole_store'] ) ) {
 	// we need to get the root structure id
 	$_REQUEST['pigeonhole']['root_structure_id'] = !empty( $rootStructure->mStructureId ) ?  $rootStructure->mStructureId : NULL;
 	// store the pigeonhole
-	$pigeonStore = new Pigeonholes();
-	$pigeonStore->mContentId = !empty( $_REQUEST['content_id'] ) ? $_REQUEST['content_id'] : NULL;
+	$pigeonStore = new Pigeonholes( NULL, !empty( $_REQUEST['pigeonhole_content_id'] ) ? $_REQUEST['pigeonhole_content_id'] : NULL );
 	$pigeonStore->load();
 	if( $pigeonStore->store( $_REQUEST['pigeonhole'] )) {
 		header( "Location: ".$_SERVER['PHP_SELF'].'?structure_id='.$pigeonStore->mStructureId.( !empty( $_REQUEST['action'] ) ? '&action='.$_REQUEST['action'] : '' )."&success=".urlencode( tra( "The category was successfully stored" ) ) );
@@ -87,8 +87,8 @@ if( !empty( $_REQUEST['action'] ) || isset( $_REQUEST["confirm"] ) ) {
 		$gBitSystem->confirmDialog( $formHash, $msgHash );
 	}
 
-	if( $_REQUEST['action'] == 'dismember' && !empty( $_REQUEST['content_id'] ) && !empty( $_REQUEST['parent_id'] ) ) {
-		if( $gContent->expungePigeonholeMember( array( 'parent_id' => $_REQUEST['content_id'], 'member_id' => $_REQUEST['parent_id'] ) ) ) {
+	if( $_REQUEST['action'] == 'dismember' && !empty( $_REQUEST['pigeonhole_content_id'] ) && !empty( $_REQUEST['parent_id'] ) ) {
+		if( $gContent->expungePigeonholeMember( array( 'parent_id' => $_REQUEST['pigeonhole_content_id'], 'member_id' => $_REQUEST['parent_id'] ) ) ) {
 			$feedback['success'] = tra( 'The item was successfully removed' );
 		} else {
 			$feedback['error'] = tra( 'The item could not be removed' );

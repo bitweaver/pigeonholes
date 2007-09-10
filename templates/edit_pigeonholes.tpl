@@ -13,7 +13,7 @@
 					{legend legend="Create / Edit Category"}
 						{if $gContent->mStructureId}
 							<input type="hidden" name="structure_id" value="{$gContent->mStructureId}" />
-							<input type="hidden" name="content_id" value="{$pigeonInfo.content_id}" />
+							<input type="hidden" name="pigeonhole_content_id" value="{$pigeonInfo.content_id}" />
 							<input type="hidden" name="action" value="{$smarty.request.action}" />
 
 							<div class="row">
