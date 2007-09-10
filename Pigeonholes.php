@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_pigeonholes/Pigeonholes.php,v 1.107 2007/09/09 15:52:18 squareing Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_pigeonholes/Pigeonholes.php,v 1.108 2007/09/10 11:26:02 squareing Exp $
  *
  * +----------------------------------------------------------------------+
  * | Copyright ( c ) 2004, bitweaver.org
@@ -17,7 +17,7 @@
  * Pigeonholes class
  *
  * @author   xing <xing@synapse.plus.com>
- * @version  $Revision: 1.107 $
+ * @version  $Revision: 1.108 $
  * @package  pigeonholes
  */
 
@@ -1199,8 +1199,8 @@ function pigeonholes_content_list_sql( &$pObject, $pParamHash = NULL ) {
 				$contentIds = $pParamHash['liberty_categories'];
 			}
 
-			$ret['join_sql']  = "LEFT OUTER JOIN `".BIT_DB_PREFIX."pigeonhole_members` pm ON (lc.`content_id`=pm.`content_id`)";
-			$ret['where_sql'] = ' AND pm.`parent_id` in ('.implode( ',', array_fill( 0, count( $contentIds ), '?' )).')';
+			$ret['join_sql']  = "INNER JOIN `".BIT_DB_PREFIX."pigeonhole_members` pm ON (lc.`content_id`=pm.`content_id`)";
+			$ret['where_sql'] = 'AND pm.`parent_id` IN ('.implode( ',', array_fill( 0, count( $contentIds ), '?' )).')';
 			$ret['bind_vars'] = $_REQUEST['pigeonholes']['filter'] = $contentIds;
 		}
 	}
