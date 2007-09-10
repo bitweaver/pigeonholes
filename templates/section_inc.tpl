@@ -78,7 +78,7 @@
 			else
 				}view.php?structure_id={
 			/if}{$subtree[ix].structure_id}#members">{$subtree[ix].title|escape}</a>
-	{if $current}</strong>{/if} <small> ({$pigeonList.$sid.members_count|default:0}) </small>
+		{if $current}</strong>{/if}{if $pigeonList.$sid.members_count}<small> ({$pigeonList.$sid.members_count}) </small>{/if}
 	{biticon ipackage=liberty iname=spacer iforce=icon}
 
 	{if !$no_details}
