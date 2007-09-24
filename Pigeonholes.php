@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_pigeonholes/Pigeonholes.php,v 1.108 2007/09/10 11:26:02 squareing Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_pigeonholes/Pigeonholes.php,v 1.109 2007/09/24 11:54:52 squareing Exp $
  *
  * +----------------------------------------------------------------------+
  * | Copyright ( c ) 2004, bitweaver.org
@@ -17,7 +17,7 @@
  * Pigeonholes class
  *
  * @author   xing <xing@synapse.plus.com>
- * @version  $Revision: 1.108 $
+ * @version  $Revision: 1.109 $
  * @package  pigeonholes
  */
 
@@ -910,6 +910,14 @@ class Pigeonholes extends LibertyAttachable {
 		return $ret;
 	}
 
+	/**
+	 * Get all child pigeonholes starting from any parent
+	 * 
+	 * @param array $pContentId of the pigoenhole
+	 * @param array $pStructureId of the pigeonhole
+	 * @access public
+	 * @return array of child pigeonholes on success, empty array on failure
+	 */
 	function getSubPigeonholes( $pContentId = NULL, $pStructureId = NULL ) {
 		global $gStructure;
 		$ret = array();
