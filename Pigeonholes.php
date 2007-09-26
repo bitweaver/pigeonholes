@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_pigeonholes/Pigeonholes.php,v 1.109 2007/09/24 11:54:52 squareing Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_pigeonholes/Pigeonholes.php,v 1.110 2007/09/26 20:08:18 squareing Exp $
  *
  * +----------------------------------------------------------------------+
  * | Copyright ( c ) 2004, bitweaver.org
@@ -17,7 +17,7 @@
  * Pigeonholes class
  *
  * @author   xing <xing@synapse.plus.com>
- * @version  $Revision: 1.109 $
+ * @version  $Revision: 1.110 $
  * @package  pigeonholes
  */
 
@@ -225,7 +225,7 @@ class Pigeonholes extends LibertyAttachable {
 			$where $order";
 		$result = $this->mDb->query( $query, $bindVars, @BitBase::verifyId( $pListHash['max_records'] ) ? $pListHash['max_records'] : NULL , $pListHash['offset']);
 
-		$query = "SELECT count(lc.`content_id`)
+		$query = "SELECT COUNT(lc.`content_id`)
 			FROM `".BIT_DB_PREFIX."liberty_content` lc
 			LEFT JOIN `".BIT_DB_PREFIX."pigeonhole_members` pigm ON ( pigm.`content_id` = lc.`content_id` )
 			LEFT JOIN `".BIT_DB_PREFIX."users_users` uu ON ( uu.`user_id` = lc.`user_id` )
@@ -433,7 +433,7 @@ class Pigeonholes extends LibertyAttachable {
 		}
 
 		if( $gBitSystem->isFeatureActive( 'pigeonholes_allow_forbid_insertion' ) && !empty( $pListHash['insertable'] )) {
-		  	$where .= empty( $where ) ? ' WHERE ' : ' AND ';
+			$where .= empty( $where ) ? ' WHERE ' : ' AND ';
 			$where .= ' lcp.`pref_value` IS NULL OR lcp.`pref_value` != \'on\' ';
 			$join .= ' LEFT JOIN `'.BIT_DB_PREFIX.'liberty_content_prefs` lcp ON (lc.`content_id` = lcp.`content_id` AND lcp.`pref_name` = \'no_insert\') ';
 			$select .= ' , lcp.`pref_value` AS no_insert ';
@@ -448,7 +448,7 @@ class Pigeonholes extends LibertyAttachable {
 		if( !empty( $pListHash['parent_content_id'] ) ) {
 			$join .= 'INNER JOIN `'.BIT_DB_PREFIX.'liberty_structures` lsf ON (ls.`parent_id` = lsf.`structure_id`';
 			if ( !empty( $pListHash['load_also_root'] ) ) {
-			 	$join .= ' OR ls.`structure_id`= lsf.`structure_id`';
+				$join .= ' OR ls.`structure_id`= lsf.`structure_id`';
 			}
 			$join .= ')';
 			$where .= empty( $where ) ? ' WHERE ' : ' AND ';
@@ -463,13 +463,20 @@ class Pigeonholes extends LibertyAttachable {
 			$order .= " ORDER BY ls.`root_structure_id`, ls.`structure_id` ASC";
 		}
 
-		$query = "SELECT pig.*, ls.`root_structure_id`, ls.`parent_id`, lc.`title`, lc.`data`, lc.`user_id`, lc.`content_type_guid`, lc.`format_guid`,
-			uue.`login` AS modifier_user, uue.`real_name` AS modifier_real_name,
-			uuc.`login` AS creator_user, uuc.`real_name` AS creator_real_name $select, (
+		// only use subselect for old crappy mysql
+		if( $gBitDbType != 'mysql' ) {
+			$subselect = ", (
 				SELECT COUNT( pm.`content_id` )
 				FROM `".BIT_DB_PREFIX."pigeonhole_members` pm
 				WHERE pm.`parent_id`=pig.`content_id`
-			) AS members_count
+			) AS members_count";
+		} else {
+			$subselect = "";
+		}
+
+		$query = "SELECT pig.*, ls.`root_structure_id`, ls.`parent_id`, lc.`title`, lc.`data`, lc.`user_id`, lc.`content_type_guid`, lc.`format_guid`,
+			uue.`login` AS modifier_user, uue.`real_name` AS modifier_real_name,
+			uuc.`login` AS creator_user, uuc.`real_name` AS creator_real_name $select $subselect
 			FROM `".BIT_DB_PREFIX."pigeonholes` pig
 				INNER JOIN `".BIT_DB_PREFIX."liberty_content` lc ON ( lc.`content_id` = pig.`content_id` )
 				LEFT JOIN `".BIT_DB_PREFIX."users_users` uue ON ( uue.`user_id` = lc.`modifier_user_id` )
@@ -480,21 +487,25 @@ class Pigeonholes extends LibertyAttachable {
 		$result = $this->mDb->query( $query, $bindVars, $pListHash['max_records'], $pListHash['offset'] );
 
 		while( $aux = $result->fetchRow() ) {
-			$content_ids[] = $aux['content_id'];
-			$aux['user'] = $aux['creator_user'];
-			$aux['real_name'] = ( isset( $aux['creator_real_name'] ) ? $aux['creator_real_name'] : $aux['creator_user'] );
+			//$content_ids[]        = $aux['content_id'];
+			$aux['user']         = $aux['creator_user'];
+			$aux['real_name']    = ( isset( $aux['creator_real_name'] ) ? $aux['creator_real_name'] : $aux['creator_user'] );
 			$aux['display_name'] = BitUser::getTitle( $aux );
-			$aux['editor'] = ( isset( $aux['modifier_real_name'] ) ? $aux['modifier_real_name'] : $aux['modifier_user'] );
+			$aux['editor']       = ( isset( $aux['modifier_real_name'] ) ? $aux['modifier_real_name'] : $aux['modifier_user'] );
 			$aux['display_link'] = Pigeonholes::getDisplayLink( $aux['title'], $aux );
+			// get member count for mysql - haha
+			if( $gBitDbType == 'mysql' ) {
+				$aux['members_count'] = $this->mDb->getOne( "SELECT COUNT( pm.`content_id` ) FROM `".BIT_DB_PREFIX."pigeonhole_members` pm WHERE pm.`parent_id`=?", array( $aux['content_id'] ));
+			}
 
 			if( !empty( $pListHash['parse_data'] ) && !empty( $aux['data'] )) {
-			    $aux['parsed_data'] = $this->parseData( $aux['data'], $aux['format_guid'] );
+				$aux['parsed_data'] = $this->parseData( $aux['data'], $aux['format_guid'] );
 			}
 
 			if( !empty( $pListHash['force_extras'] ) || ( !empty( $pListHash['load_extras'] ) && $aux['structure_id'] == @$pListHash['structure_id'] ) ) {
-				$aux['path'] = $this->getPigeonholePath( $aux['structure_id'] );
+				$aux['path']         = $this->getPigeonholePath( $aux['structure_id'] );
 				$aux['display_path'] = Pigeonholes::getDisplayPath( $aux['path'] );
-				$aux['members'] = $this->getMemberList(
+				$aux['members']      = $this->getMemberList(
 					array(
 						'content_id' => $aux['content_id'],
 						'content_type_guid' => !empty( $pListHash['content_type_guid'] ) ? $pListHash['content_type_guid'] : NULL,
