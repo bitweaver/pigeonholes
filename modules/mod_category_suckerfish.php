@@ -1,13 +1,13 @@
 <?php
 /**
- * $Header: /cvsroot/bitweaver/_bit_pigeonholes/modules/mod_category_suckerfish.php,v 1.4 2007/06/22 10:16:25 lsces Exp $
+ * $Header: /cvsroot/bitweaver/_bit_pigeonholes/modules/mod_category_suckerfish.php,v 1.5 2007/09/27 10:53:32 nickpalmer Exp $
  *
  * Copyright (c) 2007 bitweaver.org
  *
  * All Rights Reserved. See copyright.txt for details and a complete list of authors.
  * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details
  *
- * $Id: mod_category_suckerfish.php,v 1.4 2007/06/22 10:16:25 lsces Exp $
+ * $Id: mod_category_suckerfish.php,v 1.5 2007/09/27 10:53:32 nickpalmer Exp $
  * @package pigeonholes
  * @subpackage modules
  */
@@ -15,7 +15,7 @@
 /**
  * Initial Setup
  */
-global $gBitSmarty, $gQueryUserId, $gBitThemes, $module_rows, $moduleParams, $gBitSystem;
+global $gBitSmarty, $gQueryUserId, $gBitThemes, $module_rows, $moduleParams, $gBitSystem, $module_params;
 
 $module_rows = $moduleParams['module_rows'];
 $module_params = $moduleParams['module_params'];
@@ -34,8 +34,12 @@ if($gBitSystem->isPackageActive('pigeonholes')) {
 	if (!empty($module_params['root_structure_id'])) {
 	  $listHash['root_structure_id'] = $module_params['root_structure_id'];
 	}
-
-	$l = $p->getList($listHash);
+	if (!empty($module_params['structure_id'])) {
+	  $l = array(array('structure_id' => $module_params['structure_id']));
+	}
+	else {
+		$l = $p->getList($listHash);
+	}
 	foreach ($l as $e) {
 		$d = $s->getSubTree( $e['structure_id'] );
 		$d_o = array();
@@ -67,8 +71,8 @@ if($gBitSystem->isPackageActive('pigeonholes')) {
 
 if (!defined('MENU_LEVELS_DEFINED')) {
 	function menuLevels($levels, $l) {
-		global $gContent, $module_rows;
-		if (!$l) {
+		global $gContent, $module_rows, $module_params;
+		if (!$l && empty($module_params['no_menu'])) {
 			$ret = '<ul class="menu ver">';
 		}
 		else {
