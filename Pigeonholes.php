@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_pigeonholes/Pigeonholes.php,v 1.110 2007/09/26 20:08:18 squareing Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_pigeonholes/Pigeonholes.php,v 1.111 2007/10/01 15:40:12 spiderr Exp $
  *
  * +----------------------------------------------------------------------+
  * | Copyright ( c ) 2004, bitweaver.org
@@ -17,7 +17,7 @@
  * Pigeonholes class
  *
  * @author   xing <xing@synapse.plus.com>
- * @version  $Revision: 1.110 $
+ * @version  $Revision: 1.111 $
  * @package  pigeonholes
  */
 
@@ -141,24 +141,20 @@ class Pigeonholes extends LibertyAttachable {
 			$bindVars[] = strtoupper( $pListHash['title'] );
 		}
 
-		if( $gBitSystem->isPackageActive( 'wiki' )) {
-			$select .=", wp.`description`";
-			$join   .= " LEFT OUTER JOIN `".BIT_DB_PREFIX."wiki_pages` wp ON ( wp.`content_id` = lc.`content_id` ) ";
-		}
-
 		$order = "ORDER BY lc.`content_type_guid`, lc.`title` ASC";
 
 		$ret = array();
 		$query = "
 			SELECT pigm.*,
 			lc.`content_id`, lc.`last_modified`, lc.`user_id`, lc.`title`, lc.`content_type_guid`, lc.`created`,
-			lct.`content_description`,
+			lct.`content_description`, lcds.`data` AS `summary`,
 			uu.`login`, uu.`real_name` $select
 			FROM `".BIT_DB_PREFIX."pigeonhole_members` pigm
 				INNER JOIN `".BIT_DB_PREFIX."pigeonholes` pig ON ( pig.`content_id` = pigm.`parent_id` )
 				INNER JOIN `".BIT_DB_PREFIX."liberty_content` lc ON ( lc.`content_id` = pigm.`content_id` )
 				INNER JOIN `".BIT_DB_PREFIX."liberty_content_types` lct ON ( lc.`content_type_guid` = lct.`content_type_guid` )
 				INNER JOIN `".BIT_DB_PREFIX."users_users` uu ON ( uu.`user_id` = lc.`user_id` )
+				LEFT OUTER JOIN `".BIT_DB_PREFIX."liberty_content_data` lcds ON ( lcds.`content_id` = lc.`content_id` AND lcds.`data_type`='summary' ) 
 			$join $where $order";
 		$result = $this->mDb->query( $query, $bindVars, @BitBase::verifyId( $pListHash['max_records'] ) ? $pListHash['max_records'] : NULL );
 		$contentTypes = $gLibertySystem->mContentTypes;
