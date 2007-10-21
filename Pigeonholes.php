@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_pigeonholes/Pigeonholes.php,v 1.113 2007/10/21 06:35:46 squareing Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_pigeonholes/Pigeonholes.php,v 1.114 2007/10/21 06:36:33 squareing Exp $
  *
  * +----------------------------------------------------------------------+
  * | Copyright ( c ) 2004, bitweaver.org
@@ -17,7 +17,7 @@
  * Pigeonholes class
  *
  * @author   xing <xing@synapse.plus.com>
- * @version  $Revision: 1.113 $
+ * @version  $Revision: 1.114 $
  * @package  pigeonholes
  */
 
@@ -189,8 +189,6 @@ class Pigeonholes extends LibertyAttachable {
 
 		LibertyContent::postGetList($pListHash);
 
-		vd($pListHash);
-		vd(count($ret));
 		return( !empty( $this->mErrors ) ? $this->mErrors : $ret );
 	}
 
