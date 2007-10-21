@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_pigeonholes/Pigeonholes.php,v 1.115 2007/10/21 08:34:35 squareing Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_pigeonholes/Pigeonholes.php,v 1.116 2007/10/21 08:37:16 squareing Exp $
  *
  * +----------------------------------------------------------------------+
  * | Copyright ( c ) 2004, bitweaver.org
@@ -17,7 +17,7 @@
  * Pigeonholes class
  *
  * @author   xing <xing@synapse.plus.com>
- * @version  $Revision: 1.115 $
+ * @version  $Revision: 1.116 $
  * @package  pigeonholes
  */
 
@@ -171,12 +171,10 @@ class Pigeonholes extends LibertyAttachable {
 					$type['content_object'] = new $type['handler_class']();
 				}
 				if( $type['content_object']->isViewable( $aux['content_id'] )) {
-					$aux['display_url']  = $type['content_object']->getDisplayUrl( NULL, $aux );
-					$aux['display_link'] = $type['content_object']->getDisplayLink( $aux['title'], $aux );
-					$aux['title'] = $type['content_object']->getTitle( $aux );
-					if( $gBitSystem->isFeatureActive( 'pigeonholes_member_thumb' ) && !empty( $aux['storage_path'] )) {
-						$aux['thumbnail_url'] = liberty_fetch_thumbnails( $aux['storage_path'] );
-					}
+					$aux['display_url']   = $type['content_object']->getDisplayUrl( NULL, $aux );
+					$aux['display_link']  = $type['content_object']->getDisplayLink( $aux['title'], $aux );
+					$aux['title']         = $type['content_object']->getTitle( $aux );
+					$aux['thumbnail_url'] = liberty_fetch_thumbnails( $aux['storage_path'], NULL, NULL, FALSE );
 					$ret[] = $aux;
 				}
 			}
