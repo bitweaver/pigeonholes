@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_pigeonholes/Pigeonholes.php,v 1.112 2007/10/20 22:53:39 nickpalmer Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_pigeonholes/Pigeonholes.php,v 1.113 2007/10/21 06:35:46 squareing Exp $
  *
  * +----------------------------------------------------------------------+
  * | Copyright ( c ) 2004, bitweaver.org
@@ -17,7 +17,7 @@
  * Pigeonholes class
  *
  * @author   xing <xing@synapse.plus.com>
- * @version  $Revision: 1.112 $
+ * @version  $Revision: 1.113 $
  * @package  pigeonholes
  */
 
@@ -121,7 +121,6 @@ class Pigeonholes extends LibertyAttachable {
 	function getMemberList( &$pListHash ) {
 		global $gBitUser, $gLibertySystem, $gBitSystem;
 		$ret = FALSE;
-		bt();
 		LibertyContent::prepGetList( $pListHash );
 
 		$select = $where = $join = '';
