@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_pigeonholes/Pigeonholes.php,v 1.114 2007/10/21 06:36:33 squareing Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_pigeonholes/Pigeonholes.php,v 1.115 2007/10/21 08:34:35 squareing Exp $
  *
  * +----------------------------------------------------------------------+
  * | Copyright ( c ) 2004, bitweaver.org
@@ -17,7 +17,7 @@
  * Pigeonholes class
  *
  * @author   xing <xing@synapse.plus.com>
- * @version  $Revision: 1.114 $
+ * @version  $Revision: 1.115 $
  * @package  pigeonholes
  */
 
@@ -150,13 +150,15 @@ class Pigeonholes extends LibertyAttachable {
 			SELECT pigm.*,
 			lc.`content_id`, lc.`last_modified`, lc.`user_id`, lc.`title`, lc.`content_type_guid`, lc.`created`,
 			lct.`content_description`, lcds.`data` AS `summary`,
-			uu.`login`, uu.`real_name` $select
+			uu.`login`, uu.`real_name`, lf.`storage_path` $select
 			FROM `".BIT_DB_PREFIX."pigeonhole_members` pigm
 				INNER JOIN `".BIT_DB_PREFIX."pigeonholes` pig ON ( pig.`content_id` = pigm.`parent_id` )
 				INNER JOIN `".BIT_DB_PREFIX."liberty_content` lc ON ( lc.`content_id` = pigm.`content_id` )
 				INNER JOIN `".BIT_DB_PREFIX."liberty_content_types` lct ON ( lc.`content_type_guid` = lct.`content_type_guid` )
 				INNER JOIN `".BIT_DB_PREFIX."users_users` uu ON ( uu.`user_id` = lc.`user_id` )
-				LEFT OUTER JOIN `".BIT_DB_PREFIX."liberty_content_data` lcds ON ( lcds.`content_id` = lc.`content_id` AND lcds.`data_type`='summary' ) 
+				LEFT OUTER JOIN `".BIT_DB_PREFIX."liberty_content_data` lcds ON ( lcds.`content_id` = lc.`content_id` AND lcds.`data_type` = 'summary' ) 
+				LEFT OUTER JOIN `".BIT_DB_PREFIX."liberty_attachments` latt ON ( latt.`content_id` = lc.`content_id` AND latt.`is_primary` = 'y' ) 
+				LEFT OUTER JOIN `".BIT_DB_PREFIX."liberty_files` lf ON ( lf.`file_id` = latt.`foreign_id` ) 
 			$join $where $order";
 		$result = $this->mDb->query( $query, $bindVars, @BitBase::verifyId( $pListHash['max_records'] ) ? $pListHash['max_records'] : NULL, @BitBase::verifyId( $pListHash['offset'] ) ? $pListHash['offset'] : NULL );
 		$contentTypes = $gLibertySystem->mContentTypes;
@@ -169,8 +171,12 @@ class Pigeonholes extends LibertyAttachable {
 					$type['content_object'] = new $type['handler_class']();
 				}
 				if( $type['content_object']->isViewable( $aux['content_id'] )) {
+					$aux['display_url']  = $type['content_object']->getDisplayUrl( NULL, $aux );
 					$aux['display_link'] = $type['content_object']->getDisplayLink( $aux['title'], $aux );
 					$aux['title'] = $type['content_object']->getTitle( $aux );
+					if( $gBitSystem->isFeatureActive( 'pigeonholes_member_thumb' ) && !empty( $aux['storage_path'] )) {
+						$aux['thumbnail_url'] = liberty_fetch_thumbnails( $aux['storage_path'] );
+					}
 					$ret[] = $aux;
 				}
 			}
@@ -287,11 +293,11 @@ class Pigeonholes extends LibertyAttachable {
 	 * @TODO We need to sort the returned values that successive pigoenholes are grouped together.
 	 */
 	function getPigeonholesPathList( $pContentId=NULL, $pTruncate = FALSE, $pShowAll = FALSE ) {
-	  	global $gBitSystem;
-	  	$where = $join = '';
+		global $gBitSystem;
+		$where = $join = '';
 
 		if( $gBitSystem->isFeatureActive( 'pigeonholes_allow_forbid_insertion' ) && !$pShowAll ) {
-		  	$where .= empty( $where ) ? ' WHERE ' : ' AND ';
+			$where .= empty( $where ) ? ' WHERE ' : ' AND ';
 			$where .= ' lcp.`pref_value` IS NULL OR lcp.`pref_value` != \'on\' ';
 			$join .= ' LEFT JOIN `'.BIT_DB_PREFIX.'liberty_content_prefs` lcp ON (pig.`content_id` = lcp.`content_id` AND lcp.`pref_name` = \'no_insert\') ';
 		}
@@ -519,17 +525,15 @@ class Pigeonholes extends LibertyAttachable {
 				$aux['display_path'] = Pigeonholes::getDisplayPath( $aux['path'] );
 				// Move all the members data into the right place
 				$memberListHash =
-					array(
-						'content_id' => $aux['content_id'],
+					array (
+						'content_id'        => $aux['content_id'],
 						'content_type_guid' => !empty( $pListHash['content_type_guid'] ) ? $pListHash['content_type_guid'] : NULL,
-						'max_records' => !empty( $pListHash['members_max_records'] ) ? $pListHash['members_max_records'] : NULL,
-						'list_page' => !empty( $pListHash['members_list_page'] ) ? $pListHash['members_list_page'] : NULL,
-						'sort_mode' => !empty( $pListHash['members_sort_mode'] ) ? $pListHash['members_sort_mode'] : NULL,
-						'find' => !empty( $pListHash['members_find'] ) ? $pListHash['members_find'] : NULL,
-						);
-				$aux['members']      = $this->getMemberList(
-					$memberListHash
-				);
+						'max_records'       => !empty( $pListHash['members_max_records'] ) ? $pListHash['members_max_records'] : NULL,
+						'list_page'         => !empty( $pListHash['members_list_page'] ) ? $pListHash['members_list_page'] : NULL,
+						'sort_mode'         => !empty( $pListHash['members_sort_mode'] ) ? $pListHash['members_sort_mode'] : NULL,
+						'find'              => !empty( $pListHash['members_find'] ) ? $pListHash['members_find'] : NULL,
+					);
+				$aux['members']      = $this->getMemberList( $memberListHash );
 				$aux['listInfo'] = $memberListHash['listInfo'];
 
 				//$aux['members_count'] = count( $aux['members'] );
@@ -588,7 +592,7 @@ class Pigeonholes extends LibertyAttachable {
 		global $gBitSystem;
 		if( !empty( $pMememberHash ) ) {
 			usort( $pMememberHash, "pigeonholes_alphabetiser" );
-			$per_column = ceil( count( $pMememberHash ) / $gBitSystem->getConfig( 'pigeonhole_display_columns', 3 ) );
+			$per_column = ceil( count( $pMememberHash ) / $gBitSystem->getConfig( 'pigeonholes_display_columns', 3 ) );
 			$i = 1;
 			$j = 1;
 			foreach( $pMememberHash as $member ) {

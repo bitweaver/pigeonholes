@@ -1,10 +1,30 @@
-{* $Header: /cvsroot/bitweaver/_bit_pigeonholes/templates/admin_pigeonholes.tpl,v 1.8 2006/06/11 11:02:05 squareing Exp $ *}
+{* $Header: /cvsroot/bitweaver/_bit_pigeonholes/templates/admin_pigeonholes.tpl,v 1.9 2007/10/21 08:34:36 squareing Exp $ *}
 {strip}
 {form}
 	<input type="hidden" name="page" value="{$page}" />
 
-	{legend legend="Pigeonhole Display Settings"}
+	{legend legend="Display Settings"}
 		{foreach from=$pigeonholeDisplaySettings key=feature item=output}
+			<div class="row">
+				{formlabel label=`$output.label` for=$feature}
+				{forminput}
+					{html_checkboxes name="$feature" values="y" checked=$gBitSystem->getConfig($feature) labels=false id=$feature}
+					{formhelp note=`$output.note` page=`$output.page`}
+				{/forminput}
+			</div>
+		{/foreach}
+
+		<div class="row">
+			{formlabel label="Number of Members" for="member_number"}
+			{forminput}
+				{html_options name="pigeonholes_limit_member_number" options=$memberLimit values=$memberLimit selected=$gBitSystem->getConfig('pigeonholes_limit_member_number') id=member_number}
+				{formhelp note="Here you can specify what number of members are displayed at the bottom of a page."}
+			{/forminput}
+		</div>
+	{/legend}
+
+	{legend legend="Listing Settings"}
+		{foreach from=$pigeonholeListSettings key=feature item=output}
 			<div class="row">
 				{formlabel label=`$output.label` for=$feature}
 				{forminput}
@@ -23,16 +43,36 @@
 		</div>
 
 		<div class="row">
-			{formlabel label="Number of Members" for="member_number"}
+			{formlabel label="Member Thumbnail"}
 			{forminput}
-				{html_options name="pigeonholes_limit_member_number" options=$memberLimit values=$memberLimit selected=$gBitSystem->getConfig('pigeonholes_limit_member_number') id=member_number}
-				{formhelp note="Here you can specify what number of members are displayed at the bottom of a page."}
+				{html_options values=$imageSizes options=$imageSizes name="pigeonholes_member_thumb" selected=$gBitSystem->getConfig('pigeonholes_member_thumb')}
+				{formhelp note="This is the size of category members with a primary attachment."}
+			{/forminput}
+		</div>
+
+		<div class="row">
+			{formlabel label="Table Columns" for="pigeonholes_display_columns"}
+			{forminput}
+				{html_options name="pigeonholes_display_columns" options=$tableColumns values=$tableColumns selected=$gBitSystem->getConfig('pigeonholes_display_columns',3) id=pigeonholes_display_columns}
+				{formhelp note="Set the number of columns you want to display the table in."}
 			{/forminput}
 		</div>
 	{/legend}
 
 	{legend legend="Pigeonhole Edit Settings"}
 		{foreach from=$pigeonholeEditSettings key=feature item=output}
+			<div class="row">
+				{formlabel label=`$output.label` for=$feature}
+				{forminput}
+					{html_checkboxes name="$feature" values="y" checked=$gBitSystem->getConfig($feature) labels=false id=$feature}
+					{formhelp note=`$output.note` page=`$output.page`}
+				{/forminput}
+			</div>
+		{/foreach}
+	{/legend}
+
+	{legend legend="Pigeonhole Content Edit Settings"}
+		{foreach from=$pigeonholeContentEditSettings key=feature item=output}
 			<div class="row">
 				{formlabel label=`$output.label` for=$feature}
 				{forminput}
