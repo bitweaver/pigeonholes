@@ -1,5 +1,5 @@
 <?php
-// $Header: /cvsroot/bitweaver/_bit_pigeonholes/admin/admin_pigeonholes_inc.php,v 1.20 2007/10/21 08:34:35 squareing Exp $
+// $Header: /cvsroot/bitweaver/_bit_pigeonholes/admin/admin_pigeonholes_inc.php,v 1.21 2007/11/01 23:30:53 squareing Exp $
 
 $pigeonholeDisplaySettings = array(
 	'pigeonholes_display_path' => array(
@@ -91,7 +91,7 @@ $gBitSmarty->assign( 'memberLimit', $memberLimit );
 $gBitSmarty->assign( 'imageSizes', get_image_size_options() );
 
 if( !empty( $_REQUEST['pigeonhole_settings'] ) ) {
-	$pigeonholeSettings = array_merge( $pigeonholeDisplaySettings, $pigeonholeContentEditSettings );
+	$pigeonholeSettings = array_merge( $pigeonholeDisplaySettings, $pigeonholeListSettings, $pigeonholeEditSettings, $pigeonholeContentEditSettings );
 	foreach( array_keys( $pigeonholeSettings ) as $item ) {
 		simple_set_toggle( $item, PIGEONHOLES_PKG_NAME );
 	}
