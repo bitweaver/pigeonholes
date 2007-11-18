@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_pigeonholes/Pigeonholes.php,v 1.117 2007/10/23 15:17:49 gravyface Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_pigeonholes/Pigeonholes.php,v 1.118 2007/11/18 11:39:50 nickpalmer Exp $
  *
  * +----------------------------------------------------------------------+
  * | Copyright ( c ) 2004, bitweaver.org
@@ -17,7 +17,7 @@
  * Pigeonholes class
  *
  * @author   xing <xing@synapse.plus.com>
- * @version  $Revision: 1.117 $
+ * @version  $Revision: 1.118 $
  * @package  pigeonholes
  */
 
@@ -396,9 +396,10 @@ class Pigeonholes extends LibertyAttachable {
 		if( !empty( $pPath ) && is_array( $pPath ) ) {
 			foreach( $pPath as $node ) {
 				$title = htmlspecialchars( $node['title'] );
-				$ret .= ( @BitBase::verifyId( $node['parent_id'] ) ? ' &raquo; ' : '' ).'<a title="'.$title.'" href="'.$this->getDisplayUrl( $node['content_id'] ).'">'.$title.'</a>';
+				$ret .= ( @BitBase::verifyId( $node['parent_id'] ) ? '&nbsp;&raquo;&nbsp;' : '' ).'<a title="'.$title.'" href="'.$this->getDisplayUrl( $node['content_id'] ).'">'.preg_replace('/ /','&nbsp;',$title).'</a>';
 			}
 		}
+
 		return $ret;
 	}
 
@@ -761,7 +762,7 @@ class Pigeonholes extends LibertyAttachable {
 				$result = $this->mDb->associateInsert( BIT_DB_PREFIX."pigeonhole_members", $item );
 			}
 		} else {
-			vd( $this->mErrors );
+			error_log( "Error inserting pigeonhole: " . vc($this->mErrors));
 		}
 		return( count( $this->mErrors ) == 0 );
 	}
@@ -910,9 +911,10 @@ class Pigeonholes extends LibertyAttachable {
 		if( @BitBase::verifyId( $pContentId ) ) {
 			$rewrite_tag = $gBitSystem->isFeatureActive( 'pretty_urls_extended' ) ? 'view/' : '';
 			if( $gBitSystem->isFeatureActive( 'pretty_urls' ) || $gBitSystem->isFeatureActive( 'pretty_urls_extended' ) ) {
-				$ret = PIGEONHOLES_PKG_URL.$rewrite_tag.$pContentId;
+				// WARNING: DIRECTORY SPECIFIC CODE!!!
+				$ret = DIRECTORY_PKG_URL.$rewrite_tag."category/".$pContentId;
 			} else {
-				$ret = PIGEONHOLES_PKG_URL.'view.php?content_id='.$pContentId;
+				$ret = PIGEONHOELS_PKG_URL.'view.php?content_id='.$pContentId;
 			}
 		}
 		return $ret;
@@ -1243,6 +1245,33 @@ function pigeonholes_content_list_sql( &$pObject, $pParamHash = NULL ) {
 
 			$ret['join_sql']  = "INNER JOIN `".BIT_DB_PREFIX."pigeonhole_members` pm ON (lc.`content_id`=pm.`content_id`)";
 			$ret['where_sql'] = 'AND pm.`parent_id` IN ('.implode( ',', array_fill( 0, count( $contentIds ), '?' )).')';
+			$ret['bind_vars'] = $_REQUEST['pigeonholes']['filter'] = $contentIds;
+		}
+
+		if( !empty( $pParamHash['pigeonholes']['root_filter'] )) {
+			$pParamHash['liberty_root_categories'] = $pParamHash['pigeonholes']['root_filter'];
+		}
+
+		if( !empty( $pParamHash['liberty_root_categories'] )) {
+			if( !is_array( $pParamHash['liberty_root_categories'] )) {
+				$pParamHash['liberty_root_categories'] = array( $pParamHash['liberty_root_categories'] );
+			}
+
+			// if we want to allow items in subcategories, we get those and include them in the query
+			if( !empty( $pParamHash['pigeonholes']['root_sub_holes'] )) {
+				$pigeonholes = new Pigeonholes();
+				$contentIds = array();
+				foreach( $pParamHash['liberty_root_categories'] as $pigeonhole ) {
+					$pigeons = $pigeonholes->getSubPigeonholes( $pigeonhole );
+					$contentIds = array_merge( $contentIds, array_keys( $pigeons ));
+				}
+				$contentIds = array_unique( array_merge( $pParamHash['liberty_root_categories'], $contentIds ));
+			} else {
+				$contentIds = $pParamHash['liberty_root_categories'];
+			}
+
+			$ret['join_sql']  = "INNER JOIN `".BIT_DB_PREFIX."pigeonhole_members` rpm ON (rlc.`content_id`=rpm.`content_id`)";
+			$ret['where_sql'] = 'AND rpm.`parent_id` IN ('.implode( ',', array_fill( 0, count( $contentIds ), '?' )).')';
 			$ret['bind_vars'] = $_REQUEST['pigeonholes']['filter'] = $contentIds;
 		}
 	}
