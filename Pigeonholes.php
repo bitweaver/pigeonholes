@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_pigeonholes/Pigeonholes.php,v 1.118 2007/11/18 11:39:50 nickpalmer Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_pigeonholes/Pigeonholes.php,v 1.119 2007/11/19 14:46:18 wjames5 Exp $
  *
  * +----------------------------------------------------------------------+
  * | Copyright ( c ) 2004, bitweaver.org
@@ -17,7 +17,7 @@
  * Pigeonholes class
  *
  * @author   xing <xing@synapse.plus.com>
- * @version  $Revision: 1.118 $
+ * @version  $Revision: 1.119 $
  * @package  pigeonholes
  */
 
@@ -914,7 +914,7 @@ class Pigeonholes extends LibertyAttachable {
 				// WARNING: DIRECTORY SPECIFIC CODE!!!
 				$ret = DIRECTORY_PKG_URL.$rewrite_tag."category/".$pContentId;
 			} else {
-				$ret = PIGEONHOELS_PKG_URL.'view.php?content_id='.$pContentId;
+				$ret = PIGEONHOLES_PKG_URL.'view.php?content_id='.$pContentId;
 			}
 		}
 		return $ret;
