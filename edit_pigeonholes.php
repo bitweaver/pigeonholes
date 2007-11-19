@@ -1,6 +1,6 @@
 <?php
 /**
- * $Header: /cvsroot/bitweaver/_bit_pigeonholes/edit_pigeonholes.php,v 1.30 2007/10/10 18:07:17 wjames5 Exp $
+ * $Header: /cvsroot/bitweaver/_bit_pigeonholes/edit_pigeonholes.php,v 1.31 2007/11/19 10:52:42 nickpalmer Exp $
  *
  * Copyright ( c ) 2004 bitweaver.org
  * Copyright ( c ) 2003 tikwiki.org
@@ -8,7 +8,7 @@
  * All Rights Reserved. See copyright.txt for details and a complete list of authors.
  * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details
  *
- * $Id: edit_pigeonholes.php,v 1.30 2007/10/10 18:07:17 wjames5 Exp $
+ * $Id: edit_pigeonholes.php,v 1.31 2007/11/19 10:52:42 nickpalmer Exp $
  * @package pigeonholes
  * @subpackage functions
  */
@@ -88,10 +88,14 @@ if( !empty( $_REQUEST['action'] ) || isset( $_REQUEST["confirm"] ) ) {
 	}
 
 	if( $_REQUEST['action'] == 'dismember' && !empty( $_REQUEST['pigeonhole_content_id'] ) && !empty( $_REQUEST['parent_id'] ) ) {
-		if( $gContent->expungePigeonholeMember( array( 'parent_id' => $_REQUEST['pigeonhole_content_id'], 'member_id' => $_REQUEST['parent_id'] ) ) ) {
+		if( $gContent->expungePigeonholeMember( array( 'parent_id' => $_REQUEST['parent_id'], 'member_id' => $_REQUEST['pigeonhole_content_id'] ) ) ) {
 			$feedback['success'] = tra( 'The item was successfully removed' );
 		} else {
 			$feedback['error'] = tra( 'The item could not be removed' );
+		}
+		// Have we been asked to return somewhere else?
+		if (!empty($_REQUEST['return_uri'])) {
+			bit_redirect($_REQUEST['return_uri']);
 		}
 		// used to avoid displaying edit form
 		unset( $_REQUEST['action'] );

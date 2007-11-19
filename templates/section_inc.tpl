@@ -36,7 +36,7 @@
 				<li>
 					<a href="{$smarty.const.BIT_ROOT_URL}index.php?content_id={$pigeonMember.content_id}">{$pigeonMember.title|escape}</a>
 					{if $gBitUser->hasPermission( 'p_pigeonholes_edit' )}
-						&nbsp; {smartlink ititle="Remove Item" ibiticon="icons/edit-delete" expand_all=$smarty.request.expand_all action=dismember structure_id=$sid parent_id=$pigeonMember.content_id content_id=$pigeonItem.content_id}
+						&nbsp; {smartlink ititle="Remove From Category" ibiticon="icons/edit-delete" expand_all=$smarty.request.expand_all action=dismember structure_id=$sid parent_id=$pigeonMember.parent_id pigeonhole_content_id=$pigeonMember.content_id}
 					{/if}
 				</li>
 
