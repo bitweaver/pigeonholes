@@ -167,10 +167,11 @@
 
 				{if $assignableContent}
 					<div class="row">
-						{if $smarty.request.include == 'members'}
-							<input type="checkbox" name="insert_content_and_next" />Go To Next Page After Insert
+						{if $smarty.request.include == 'members' && $listInfo.current_page < $listInfo.total_pages}
+							<label><input type="checkbox" name="insert_content_and_next" /> {tr}Go To Next Page After Insert{/tr}</label>
 						{/if}
 					</div>
+
 					<div class="row submit">
 						<input type="submit" name="insert_content" value="Insert Content into Categories" />
 						<input type="hidden" name="list_page" value="{$listInfo.current_page}" />

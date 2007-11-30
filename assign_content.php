@@ -1,6 +1,6 @@
 <?php
 /**
- * $Header: /cvsroot/bitweaver/_bit_pigeonholes/assign_content.php,v 1.12 2007/06/10 12:35:51 nickpalmer Exp $
+ * $Header: /cvsroot/bitweaver/_bit_pigeonholes/assign_content.php,v 1.13 2007/11/30 09:07:25 squareing Exp $
  *
  * Copyright ( c ) 2004 bitweaver.org
  * Copyright ( c ) 2003 tikwiki.org
@@ -8,7 +8,7 @@
  * All Rights Reserved. See copyright.txt for details and a complete list of authors.
  * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details
  *
- * $Id: assign_content.php,v 1.12 2007/06/10 12:35:51 nickpalmer Exp $
+ * $Id: assign_content.php,v 1.13 2007/11/30 09:07:25 squareing Exp $
  * @package pigeonholes
  * @subpackage functions
  */
@@ -28,7 +28,7 @@ $gBitSmarty->assign_by_ref( 'feedback', $feedback );
 
 $contentTypes = array( '' => tra( 'All Content' ) );
 foreach( $gLibertySystem->mContentTypes as $cType ) {
-  	if ($cType['content_type_guid'] != PIGEONHOLES_CONTENT_TYPE_GUID) {
+	if( $cType['content_type_guid'] != PIGEONHOLES_CONTENT_TYPE_GUID ) {
 		$contentTypes[$cType['content_type_guid']] = $cType['content_description'];
 	}
 }
@@ -44,16 +44,15 @@ $listHash = array(
 );
 
 // We need to handle insert and next where we are NOT actually doing an insert
-if (!empty( $_REQUEST['insert_content']) || !empty( $_REQUEST['insert_content_and_next'])) {
-	$listHash['list_page'] = (empty($_REQUEST['list_page']) ? 2 : $_REQUEST['list_page'] + 1);
-}
-else {
-	$listHash['list_page'] = (empty($_REQUEST['list_page']) ? NULL : $_REQUEST['list_page']);
+if( !empty( $_REQUEST['insert_content'] ) || !empty( $_REQUEST['insert_content_and_next'] )) {
+	$listHash['list_page'] = ( empty( $_REQUEST['list_page'] ) ? 2 : $_REQUEST['list_page'] + 1 );
+} else {
+	$listHash['list_page'] = ( empty( $_REQUEST['list_page'] ) ? NULL : $_REQUEST['list_page'] );
 }
 
 $assignableContent = $gContent->getAssignableContent( $listHash );
 
-if( (!empty( $_REQUEST['insert_content'] ) || !empty( $_REQUEST['insert_content_and_next']))) {
+if(( !empty( $_REQUEST['insert_content'] ) || !empty( $_REQUEST['insert_content_and_next'] ))) {
 	// here we need to limit all killing to the selected structure
 	$deletableParentIds = array();
 	if( empty( $gStructure ) && @BitBase::verifyId( $_REQUEST['root_structure_id'] ) ) {
@@ -82,7 +81,7 @@ if( (!empty( $_REQUEST['insert_content'] ) || !empty( $_REQUEST['insert_content_
 		}
 	}
 
-	if( empty( $feedback['error'] ) && !empty($memberHash)) {
+	if( empty( $feedback['error'] ) && !empty( $memberHash )) {
 		foreach( $memberHash as $memberStore ) {
 			if( $gContent->insertPigeonholeMember( $memberStore ) ) {
 				$feedback['success'] = 'The content was successfully inserted into the respective categories.';
@@ -94,10 +93,10 @@ if( (!empty( $_REQUEST['insert_content'] ) || !empty( $_REQUEST['insert_content_
 
 	// we need to reload the assignableContent, since settings have changed
 	// reuse previous listhash since display settings aren't changed
-	if (!empty( $_REQUEST['insert_content_and_next'])) {
-	  	$listHash['offset'] = $listHash['listInfo']['offset'] + $listHash['listInfo']['max_records'];
-		unset($listHash['list_page']);
-		unset($listHash['listInfo']);
+	if( !empty( $_REQUEST['insert_content_and_next'] )) {
+		$listHash['offset'] = $listHash['listInfo']['offset'] + $listHash['listInfo']['max_records'];
+		unset( $listHash['list_page'] );
+		unset( $listHash['listInfo'] );
 	}
 	$assignableContent = $gContent->getAssignableContent( $listHash );
 }
@@ -124,7 +123,7 @@ $listHash = array(
 	'parse_data' => TRUE,
 );
 
-if ($gBitSystem->isFeatureActive('pigeonholes_allow_forbid_insertion')) {
+if( $gBitSystem->isFeatureActive( 'pigeonholes_allow_forbid_insertion' )) {
 	$listHash['insertable'] = TRUE;
 }
 
