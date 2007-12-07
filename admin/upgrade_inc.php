@@ -32,6 +32,9 @@ array( 'DATADICT' => array(
 		'bit_pigeonholes' => 'pigeonholes',
 		'bit_pigeonhole_members' => 'pigeonhole_members',
 	)),
+	array( 'RENAMESEQUENCE' => array(
+		"bit_pigeonholes_id_seq" => "pigeonholes_id_seq",
+	)),
 )),
 
 // add constraints for pgsql
