@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_pigeonholes/Pigeonholes.php,v 1.120 2007/11/19 14:53:01 nickpalmer Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_pigeonholes/Pigeonholes.php,v 1.121 2007/12/09 14:33:00 nickpalmer Exp $
  *
  * +----------------------------------------------------------------------+
  * | Copyright ( c ) 2004, bitweaver.org
@@ -17,7 +17,7 @@
  * Pigeonholes class
  *
  * @author   xing <xing@synapse.plus.com>
- * @version  $Revision: 1.120 $
+ * @version  $Revision: 1.121 $
  * @package  pigeonholes
  */
 
@@ -143,7 +143,25 @@ class Pigeonholes extends LibertyAttachable {
 			$bindVars[] = strtoupper( $pListHash['title'] );
 		}
 
-		$order = "ORDER BY lc.`content_type_guid`, lc.`title` ASC";
+		if( !empty( $pListHash['order'] ) ) {
+			$order = "ORDER BY ".$pListHash['order'];
+		}
+		else {
+			$order = "ORDER BY lc.`content_type_guid`, lc.`title` ASC";
+		}
+
+		if( !empty( $pListHash['select'] ) ) {
+			$select .= $pListHash['select'];
+		}
+
+		if( !empty( $pListHash['join'] ) ) {
+			$join .= $pListHash['join'];
+		}
+
+		if( !empty( $pListHash['where'] ) ) {
+			$where .= empty( $where ) ? ' WHERE ' : ' AND ';
+			$where .= $pListHash['where'];
+		}
 
 		$ret = array();
 		$query = "
@@ -531,6 +549,10 @@ class Pigeonholes extends LibertyAttachable {
 						'list_page'         => !empty( $pListHash['members_list_page'] ) ? $pListHash['members_list_page'] : NULL,
 						'sort_mode'         => !empty( $pListHash['members_sort_mode'] ) ? $pListHash['members_sort_mode'] : NULL,
 						'find'              => !empty( $pListHash['members_find'] ) ? $pListHash['members_find'] : NULL,
+						'order'              => !empty( $pListHash['members_order'] ) ? $pListHash['members_order'] : NULL,
+						'select'              => !empty( $pListHash['members_select'] ) ? $pListHash['members_select'] : NULL,
+						'join'              => !empty( $pListHash['members_join'] ) ? $pListHash['members_join'] : NULL,
+						'where'              => !empty( $pListHash['members_where'] ) ? $pListHash['members_where'] : NULL,
 					);
 				$aux['members']      = $this->getMemberList( $memberListHash );
 				$aux['listInfo'] = $memberListHash['listInfo'];
