@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_pigeonholes/Pigeonholes.php,v 1.121 2007/12/09 14:33:00 nickpalmer Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_pigeonholes/Pigeonholes.php,v 1.122 2007/12/11 19:12:00 squareing Exp $
  *
  * +----------------------------------------------------------------------+
  * | Copyright ( c ) 2004, bitweaver.org
@@ -17,7 +17,7 @@
  * Pigeonholes class
  *
  * @author   xing <xing@synapse.plus.com>
- * @version  $Revision: 1.121 $
+ * @version  $Revision: 1.122 $
  * @package  pigeonholes
  */
 
@@ -105,7 +105,7 @@ class Pigeonholes extends LibertyAttachable {
 				$this->mInfo['path'] = $this->getPigeonholePath();
 				$this->mInfo['display_path'] = $this->getDisplayPath( $this->mInfo['path'] );
 				$memberHash = array( 'max_records' => -1 );
-				$this->mInfo['members'] = $this->getMemberList($memberHash);
+				$this->mInfo['members'] = $this->getMemberList( $memberHash );
 				$this->mInfo['members_count'] = count( $this->mInfo['members'] );
 			}
 		}
@@ -145,8 +145,7 @@ class Pigeonholes extends LibertyAttachable {
 
 		if( !empty( $pListHash['order'] ) ) {
 			$order = "ORDER BY ".$pListHash['order'];
-		}
-		else {
+		} else {
 			$order = "ORDER BY lc.`content_type_guid`, lc.`title` ASC";
 		}
 
@@ -541,20 +540,19 @@ class Pigeonholes extends LibertyAttachable {
 				$aux['path']         = $this->getPigeonholePath( $aux['structure_id'] );
 				$aux['display_path'] = Pigeonholes::getDisplayPath( $aux['path'] );
 				// Move all the members data into the right place
-				$memberListHash =
-					array (
-						'content_id'        => $aux['content_id'],
-						'content_type_guid' => !empty( $pListHash['content_type_guid'] ) ? $pListHash['content_type_guid'] : NULL,
-						'max_records'       => !empty( $pListHash['members_max_records'] ) ? $pListHash['members_max_records'] : NULL,
-						'list_page'         => !empty( $pListHash['members_list_page'] ) ? $pListHash['members_list_page'] : NULL,
-						'sort_mode'         => !empty( $pListHash['members_sort_mode'] ) ? $pListHash['members_sort_mode'] : NULL,
-						'find'              => !empty( $pListHash['members_find'] ) ? $pListHash['members_find'] : NULL,
-						'order'              => !empty( $pListHash['members_order'] ) ? $pListHash['members_order'] : NULL,
-						'select'              => !empty( $pListHash['members_select'] ) ? $pListHash['members_select'] : NULL,
-						'join'              => !empty( $pListHash['members_join'] ) ? $pListHash['members_join'] : NULL,
-						'where'              => !empty( $pListHash['members_where'] ) ? $pListHash['members_where'] : NULL,
-					);
-				$aux['members']      = $this->getMemberList( $memberListHash );
+				$memberListHash = array (
+					'content_id'        => $aux['content_id'],
+					'content_type_guid' => !empty( $pListHash['content_type_guid'] )   ? $pListHash['content_type_guid']   : NULL,
+					'max_records'       => !empty( $pListHash['members_max_records'] ) ? $pListHash['members_max_records'] : NULL,
+					'list_page'         => !empty( $pListHash['members_list_page'] )   ? $pListHash['members_list_page']   : NULL,
+					'sort_mode'         => !empty( $pListHash['members_sort_mode'] )   ? $pListHash['members_sort_mode']   : NULL,
+					'find'              => !empty( $pListHash['members_find'] )        ? $pListHash['members_find']        : NULL,
+					'order'             => !empty( $pListHash['members_order'] )       ? $pListHash['members_order']       : NULL,
+					'select'            => !empty( $pListHash['members_select'] )      ? $pListHash['members_select']      : NULL,
+					'join'              => !empty( $pListHash['members_join'] )        ? $pListHash['members_join']        : NULL,
+					'where'             => !empty( $pListHash['members_where'] )       ? $pListHash['members_where']       : NULL,
+				);
+				$aux['members']  = $this->getMemberList( $memberListHash );
 				$aux['listInfo'] = $memberListHash['listInfo'];
 
 				//$aux['members_count'] = count( $aux['members'] );
