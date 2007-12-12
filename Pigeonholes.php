@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_pigeonholes/Pigeonholes.php,v 1.122 2007/12/11 19:12:00 squareing Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_pigeonholes/Pigeonholes.php,v 1.123 2007/12/12 11:58:23 nickpalmer Exp $
  *
  * +----------------------------------------------------------------------+
  * | Copyright ( c ) 2004, bitweaver.org
@@ -17,7 +17,7 @@
  * Pigeonholes class
  *
  * @author   xing <xing@synapse.plus.com>
- * @version  $Revision: 1.122 $
+ * @version  $Revision: 1.123 $
  * @package  pigeonholes
  */
 
@@ -37,10 +37,11 @@ class Pigeonholes extends LibertyAttachable {
 	* initiate class
 	* @param $pContentId content id of the pigeonhole - use either one of the ids.
 	* @param $pStructureId structure id of the pigeonhole - use either one of the ids.
+	* @param $pMembersList hash with optional values to tweak the getMemberList loading sql. Used keys are Order, Select, Join and Where.
 	* @return none
 	* @access public
 	**/
-	function Pigeonholes( $pStructureId=NULL, $pContentId=NULL ) {
+	function Pigeonholes( $pStructureId=NULL, $pContentId=NULL, $pMemberList=Null ) {
 		LibertyAttachable::LibertyAttachable();
 		$this->registerContentType( PIGEONHOLES_CONTENT_TYPE_GUID, array(
 			'content_type_guid' => PIGEONHOLES_CONTENT_TYPE_GUID,
@@ -58,6 +59,12 @@ class Pigeonholes extends LibertyAttachable {
 		$this->mViewContentPerm  = 'p_pigeonholes_view';
 		$this->mEditContentPerm  = 'p_pigeonholes_edit';
 		$this->mAdminContentPerm = 'p_pigeonholes_edit'; // use edit until we find the need for an admin permission
+
+		// Allow specially constructed pigeonholes to mess with the
+		// getMemberList SQL so that additional data can be added on.
+		// This can be used in packages which want a special view on
+		// a category.
+		$this->mMemberList = $pMemberList;
 	}
 
 	/**
@@ -143,24 +150,26 @@ class Pigeonholes extends LibertyAttachable {
 			$bindVars[] = strtoupper( $pListHash['title'] );
 		}
 
-		if( !empty( $pListHash['order'] ) ) {
-			$order = "ORDER BY ".$pListHash['order'];
+		// Do we have any special tweaks for the list?
+		if( !empty( $this->mMemberList['Order'] ) ) {
+			$order = "ORDER BY ".$this->mMemberList['Order'];
 		} else {
 			$order = "ORDER BY lc.`content_type_guid`, lc.`title` ASC";
 		}
 
-		if( !empty( $pListHash['select'] ) ) {
-			$select .= $pListHash['select'];
+		if( !empty( $this->mMemberList['Select'] ) ) {
+			$select .= $this->mMemberList['Select'];
 		}
 
-		if( !empty( $pListHash['join'] ) ) {
-			$join .= $pListHash['join'];
+		if( !empty( $this->mMemberList['Join'] ) ) {
+			$join .= $this->mMemberList['Join'];
 		}
 
-		if( !empty( $pListHash['where'] ) ) {
+		if( !empty( $this->mMemberList['Where'] ) ) {
 			$where .= empty( $where ) ? ' WHERE ' : ' AND ';
-			$where .= $pListHash['where'];
+			$where .= $this->mMemberList['Where'];
 		}
+
 
 		$ret = array();
 		$query = "
@@ -547,10 +556,6 @@ class Pigeonholes extends LibertyAttachable {
 					'list_page'         => !empty( $pListHash['members_list_page'] )   ? $pListHash['members_list_page']   : NULL,
 					'sort_mode'         => !empty( $pListHash['members_sort_mode'] )   ? $pListHash['members_sort_mode']   : NULL,
 					'find'              => !empty( $pListHash['members_find'] )        ? $pListHash['members_find']        : NULL,
-					'order'             => !empty( $pListHash['members_order'] )       ? $pListHash['members_order']       : NULL,
-					'select'            => !empty( $pListHash['members_select'] )      ? $pListHash['members_select']      : NULL,
-					'join'              => !empty( $pListHash['members_join'] )        ? $pListHash['members_join']        : NULL,
-					'where'             => !empty( $pListHash['members_where'] )       ? $pListHash['members_where']       : NULL,
 				);
 				$aux['members']  = $this->getMemberList( $memberListHash );
 				$aux['listInfo'] = $memberListHash['listInfo'];
