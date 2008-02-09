@@ -1,7 +1,7 @@
 {strip}
 {if $gBitUser->hasPermission( 'p_pigeonholes_insert_member' )}
 	<div class="row">
-		{formlabel label="Categorise" for="pigeonholes"}
+		{formlabel label="Categorize" for="pigeonholes"}
 		{if $pigeonPathList|@count ne 0}
 			{forminput}
 				{if $pigeonPathList|@count < $gBitSystem->getConfig( 'pigeonholes_scrolling_list_number' )}
