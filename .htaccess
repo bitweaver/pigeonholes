@@ -1,3 +1,5 @@
+# Uncomment this if you have problems with RewriteRule view. See 'PrettyUrls' on BitWeaver's wiki.
+# Options -MultiViews
 <IfModule mod_rewrite.c>
 	RewriteEngine  on
 #	RewriteBase	/pigeonholes/
