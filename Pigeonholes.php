@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_pigeonholes/Pigeonholes.php,v 1.124 2008/01/24 20:32:56 nickpalmer Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_pigeonholes/Pigeonholes.php,v 1.125 2008/06/13 13:48:29 squareing Exp $
  *
  * +----------------------------------------------------------------------+
  * | Copyright ( c ) 2004, bitweaver.org
@@ -17,14 +17,14 @@
  * Pigeonholes class
  *
  * @author   xing <xing@synapse.plus.com>
- * @version  $Revision: 1.124 $
+ * @version  $Revision: 1.125 $
  * @package  pigeonholes
  */
 
 /**
  * required setup
  */
-require_once( LIBERTY_PKG_PATH.'LibertyAttachable.php' );
+require_once( LIBERTY_PKG_PATH.'LibertyMime.php' );
 require_once( LIBERTY_PKG_PATH.'LibertyStructure.php' );
 
 /**
@@ -32,7 +32,7 @@ require_once( LIBERTY_PKG_PATH.'LibertyStructure.php' );
  *
  * @package  pigeonholes
  */
-class Pigeonholes extends LibertyAttachable {
+class Pigeonholes extends LibertyMime {
 	/**
 	* initiate class
 	* @param $pContentId content id of the pigeonhole - use either one of the ids.
@@ -42,7 +42,7 @@ class Pigeonholes extends LibertyAttachable {
 	* @access public
 	**/
 	function Pigeonholes( $pStructureId=NULL, $pContentId=NULL, $pMemberList=Null ) {
-		LibertyAttachable::LibertyAttachable();
+		LibertyMime::LibertyMime();
 		$this->registerContentType( PIGEONHOLES_CONTENT_TYPE_GUID, array(
 			'content_type_guid' => PIGEONHOLES_CONTENT_TYPE_GUID,
 			'content_description' => 'Pigeonhole',
@@ -104,7 +104,7 @@ class Pigeonholes extends LibertyAttachable {
 			}
 
 			if( $pLoadAttachable ) {
-				LibertyAttachable::load();
+				LibertyMime::load();
 			}
 
 			// if the content for the pigeonhole is requested, get it
@@ -646,7 +646,7 @@ class Pigeonholes extends LibertyAttachable {
 	**/
 	function store( &$pParamHash ) {
 		$this->mDb->StartTrans();
-		if( $this->verify( $pParamHash ) && LibertyAttachable::store( $pParamHash ) ) {
+		if( $this->verify( $pParamHash ) && LibertyMime::store( $pParamHash ) ) {
 			$table = BIT_DB_PREFIX."pigeonholes";
 
 			// this really confusing, strange order way of saving items is due to strange behaviour of GenID
@@ -657,7 +657,7 @@ class Pigeonholes extends LibertyAttachable {
 				}
 				$pParamHash['structure_location_id'] = $this->mStructureId;
 			} else {
-				// update the pigeonhole_store and structure_store content_id with the one from LibertyAttachable::store()
+				// update the pigeonhole_store and structure_store content_id with the one from LibertyMime::store()
 				$pParamHash['structure_store']['content_id'] = $pParamHash['content_id'];
 				$pParamHash['pigeonhole_store']['content_id'] = $pParamHash['content_id'];
 
@@ -904,7 +904,7 @@ class Pigeonholes extends LibertyAttachable {
 
 				// remove all entries from content tables
 				$this->mContentId = $id['content_id'];
-				if( LibertyAttachable::expunge() ) {
+				if( LibertyMime::expunge() ) {
 					$ret = TRUE;
 					$this->mDb->CompleteTrans();
 				} else {
