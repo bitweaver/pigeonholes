@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_pigeonholes/Pigeonholes.php,v 1.125 2008/06/13 13:48:29 squareing Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_pigeonholes/Pigeonholes.php,v 1.126 2008/06/23 21:56:13 squareing Exp $
  *
  * +----------------------------------------------------------------------+
  * | Copyright ( c ) 2004, bitweaver.org
@@ -17,7 +17,7 @@
  * Pigeonholes class
  *
  * @author   xing <xing@synapse.plus.com>
- * @version  $Revision: 1.125 $
+ * @version  $Revision: 1.126 $
  * @package  pigeonholes
  */
 
@@ -200,7 +200,10 @@ class Pigeonholes extends LibertyMime {
 					$aux['display_url']   = $type['content_object']->getDisplayUrl( NULL, $aux );
 					$aux['display_link']  = $type['content_object']->getDisplayLink( $aux['title'], $aux );
 					$aux['title']         = $type['content_object']->getTitle( $aux );
-					$aux['thumbnail_url'] = liberty_fetch_thumbnails( $aux['storage_path'], NULL, NULL, FALSE );
+					$aux['thumbnail_url'] = liberty_fetch_thumbnails( array(
+						'storage_path' => $aux['storage_path'],
+						'mime_image'   => FALSE
+					));
 					$ret[] = $aux;
 				}
 			}
