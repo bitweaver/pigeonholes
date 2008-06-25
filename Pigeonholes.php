@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_pigeonholes/Pigeonholes.php,v 1.126 2008/06/23 21:56:13 squareing Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_pigeonholes/Pigeonholes.php,v 1.127 2008/06/25 22:21:16 spiderr Exp $
  *
  * +----------------------------------------------------------------------+
  * | Copyright ( c ) 2004, bitweaver.org
@@ -17,7 +17,7 @@
  * Pigeonholes class
  *
  * @author   xing <xing@synapse.plus.com>
- * @version  $Revision: 1.126 $
+ * @version  $Revision: 1.127 $
  * @package  pigeonholes
  */
 
@@ -1199,7 +1199,7 @@ function pigeonholes_content_store( $pObject, $pParamHash ) {
 
 					if( !$pigeonholes->insertPigeonholeMember( $memberHash ) ) {
 						$gBitSmarty->assign( 'msg', tra( "There was a problem inserting the content into the pigeonholes." ) );
-						$gBitSystem->display( 'error.tpl' );
+						$gBitSystem->display( 'error.tpl' , NULL, array( 'display_mode' => 'display' ));
 						die;
 					}
 				}

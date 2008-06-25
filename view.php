@@ -1,6 +1,6 @@
 <?php
 /**
- * $Header: /cvsroot/bitweaver/_bit_pigeonholes/view.php,v 1.18 2007/06/10 12:35:51 nickpalmer Exp $
+ * $Header: /cvsroot/bitweaver/_bit_pigeonholes/view.php,v 1.19 2008/06/25 22:21:17 spiderr Exp $
  *
  * Copyright ( c ) 2004 bitweaver.org
  * Copyright ( c ) 2003 tikwiki.org
@@ -8,7 +8,7 @@
  * All Rights Reserved. See copyright.txt for details and a complete list of authors.
  * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details
  *
- * $Id: view.php,v 1.18 2007/06/10 12:35:51 nickpalmer Exp $
+ * $Id: view.php,v 1.19 2008/06/25 22:21:17 spiderr Exp $
  * @package pigeonholes
  * @subpackage functions
  */
@@ -74,5 +74,5 @@ if( $gContent->checkPathPermissions( $gContent->getField( 'path' ) ) ) {
 
 $gContent->addHit();
 // Display the template
-$gBitSystem->display( 'bitpackage:pigeonholes/view_structure.tpl', tra( 'View Pigeonhole' ) );
+$gBitSystem->display( 'bitpackage:pigeonholes/view_structure.tpl', tra( 'View Pigeonhole' ) , array( 'display_mode' => 'display' ));
 ?>

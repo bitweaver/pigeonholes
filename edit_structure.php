@@ -1,6 +1,6 @@
 <?php
 /**
- * $Header: /cvsroot/bitweaver/_bit_pigeonholes/edit_structure.php,v 1.4 2007/11/08 21:59:35 squareing Exp $
+ * $Header: /cvsroot/bitweaver/_bit_pigeonholes/edit_structure.php,v 1.5 2008/06/25 22:21:17 spiderr Exp $
  *
  * Copyright ( c ) 2004 bitweaver.org
  * Copyright ( c ) 2003 tikwiki.org
@@ -8,7 +8,7 @@
  * All Rights Reserved. See copyright.txt for details and a complete list of authors.
  * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details
  *
- * $Id: edit_structure.php,v 1.4 2007/11/08 21:59:35 squareing Exp $
+ * $Id: edit_structure.php,v 1.5 2008/06/25 22:21:17 spiderr Exp $
  * @package pigeonholes
  * @subpackage functions
  */
@@ -34,5 +34,5 @@ $verifyStructurePermission = 'p_pigeonholes_edit';
 include_once( LIBERTY_PKG_PATH.'edit_structure_inc.php' );
 
 // Display the template
-$gBitSystem->display( 'bitpackage:pigeonholes/edit_structure.tpl', $gStructure->mInfo["title"] );
+$gBitSystem->display( 'bitpackage:pigeonholes/edit_structure.tpl', $gStructure->mInfo["title"] , array( 'display_mode' => 'edit' ));
 ?>

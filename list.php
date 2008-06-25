@@ -3,7 +3,7 @@
  * $Header
  *
  * @author   xing <xing@synapse.plus.com>
- * @version  $Revision: 1.11 $
+ * @version  $Revision: 1.12 $
  * @package  pigeonholes
  * @subpackage functions
  */
@@ -40,5 +40,5 @@ if( !empty( $pigeonList ) ) {
 }
 $gBitSmarty->assign( 'listInfo', $listHash['listInfo'] );
 
-$gBitSystem->display( 'bitpackage:pigeonholes/list.tpl', tra( 'List Categories' ) );
+$gBitSystem->display( 'bitpackage:pigeonholes/list.tpl', tra( 'List Categories' ) , array( 'display_mode' => 'list' ));
 ?>

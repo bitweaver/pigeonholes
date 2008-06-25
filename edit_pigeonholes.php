@@ -1,6 +1,6 @@
 <?php
 /**
- * $Header: /cvsroot/bitweaver/_bit_pigeonholes/edit_pigeonholes.php,v 1.31 2007/11/19 10:52:42 nickpalmer Exp $
+ * $Header: /cvsroot/bitweaver/_bit_pigeonholes/edit_pigeonholes.php,v 1.32 2008/06/25 22:21:17 spiderr Exp $
  *
  * Copyright ( c ) 2004 bitweaver.org
  * Copyright ( c ) 2003 tikwiki.org
@@ -8,7 +8,7 @@
  * All Rights Reserved. See copyright.txt for details and a complete list of authors.
  * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details
  *
- * $Id: edit_pigeonholes.php,v 1.31 2007/11/19 10:52:42 nickpalmer Exp $
+ * $Id: edit_pigeonholes.php,v 1.32 2008/06/25 22:21:17 spiderr Exp $
  * @package pigeonholes
  * @subpackage functions
  */
@@ -154,8 +154,8 @@ if ( $gBitSystem->isFeatureActive( 'pigeonholes_themes' ) ) {
 
 // Display the template
 if ( !empty( $gStructure ) ) {
-	$gBitSystem->display( 'bitpackage:pigeonholes/edit_pigeonholes.tpl', !empty( $gStructure->mInfo['title'] ) ? tra( 'Edit Pigeonhole' ).': '.$gStructure->mInfo["title"] : tra( 'Create Pigeonhole' ) );
+	$gBitSystem->display( 'bitpackage:pigeonholes/edit_pigeonholes.tpl', !empty( $gStructure->mInfo['title'] ) ? tra( 'Edit Pigeonhole' ).': '.$gStructure->mInfo["title"] : tra( 'Create Pigeonhole' ) , array( 'display_mode' => 'edit' ));
 } else {
-	$gBitSystem->display( 'bitpackage:pigeonholes/edit_pigeonholes.tpl', tra( 'Create Pigeonhole' ) );
+	$gBitSystem->display( 'bitpackage:pigeonholes/edit_pigeonholes.tpl', tra( 'Create Pigeonhole' ) , array( 'display_mode' => 'edit' ));
 }
 ?>
