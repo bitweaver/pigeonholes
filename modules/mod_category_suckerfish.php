@@ -1,13 +1,13 @@
 <?php
 /**
- * $Header: /cvsroot/bitweaver/_bit_pigeonholes/modules/mod_category_suckerfish.php,v 1.5 2007/09/27 10:53:32 nickpalmer Exp $
+ * $Header: /cvsroot/bitweaver/_bit_pigeonholes/modules/mod_category_suckerfish.php,v 1.6 2008/07/10 12:12:57 squareing Exp $
  *
  * Copyright (c) 2007 bitweaver.org
  *
  * All Rights Reserved. See copyright.txt for details and a complete list of authors.
  * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details
  *
- * $Id: mod_category_suckerfish.php,v 1.5 2007/09/27 10:53:32 nickpalmer Exp $
+ * $Id: mod_category_suckerfish.php,v 1.6 2008/07/10 12:12:57 squareing Exp $
  * @package pigeonholes
  * @subpackage modules
  */
@@ -30,7 +30,7 @@ if($gBitSystem->isPackageActive('pigeonholes')) {
 	$s = new LibertyStructure();
 
 	// Prep get list screws with us.
-	$listHash = array('load_only_root'=> TRUE, 'sort_mode' => 'ls.structure_id_asc', 'offset' => 0, 'max_records' => '999999', 'find' => '');
+	$listHash = array('load_only_root'=> TRUE, 'sort_mode' => 'lc.title_asc', 'offset' => 0, 'max_records' => '999999', 'find' => '');
 	if (!empty($module_params['root_structure_id'])) {
 	  $listHash['root_structure_id'] = $module_params['root_structure_id'];
 	}
