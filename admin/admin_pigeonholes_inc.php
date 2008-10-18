@@ -1,5 +1,5 @@
 <?php
-// $Header: /cvsroot/bitweaver/_bit_pigeonholes/admin/admin_pigeonholes_inc.php,v 1.21 2007/11/01 23:30:53 squareing Exp $
+// $Header: /cvsroot/bitweaver/_bit_pigeonholes/admin/admin_pigeonholes_inc.php,v 1.22 2008/10/18 23:11:07 nickpalmer Exp $
 
 $pigeonholeDisplaySettings = array(
 	'pigeonholes_display_path' => array(
@@ -90,6 +90,14 @@ $gBitSmarty->assign( 'memberLimit', $memberLimit );
 // various image sizes
 $gBitSmarty->assign( 'imageSizes', get_image_size_options() );
 
+// Which kinds of content?
+$exclude = array( 'tikisticky', 'pigeonholes' );
+foreach( $gLibertySystem->mContentTypes as $cType ) {
+	if( !in_array( $cType['content_type_guid'], $exclude ) ) {
+		$formPigeonholeable['guids']['pigeonhole_no_'.$cType['content_type_guid']]  = $cType['content_description'];
+	}
+}
+
 if( !empty( $_REQUEST['pigeonhole_settings'] ) ) {
 	$pigeonholeSettings = array_merge( $pigeonholeDisplaySettings, $pigeonholeListSettings, $pigeonholeEditSettings, $pigeonholeContentEditSettings );
 	foreach( array_keys( $pigeonholeSettings ) as $item ) {
@@ -101,5 +109,20 @@ if( !empty( $_REQUEST['pigeonhole_settings'] ) ) {
 	simple_set_int( 'pigeonholes_scrolling_list_number', PIGEONHOLES_PKG_NAME );
 	simple_set_value( 'pigeonholes_member_thumb', PIGEONHOLES_PKG_NAME );
 	simple_set_value( 'pigeonholes_list_style', PIGEONHOLES_PKG_NAME );
+
+	foreach( array_keys( $formPigeonholeable['guids'] ) as $holeable ) {
+		$gBitSystem->storeConfig( $holeable, ( ( !empty( $_REQUEST['pigeonholeable_content'] ) && in_array( $holeable, $_REQUEST['pigeonholeable_content'] ) ) ? NULL : 'y' ), PIGEONHOLES_PKG_NAME );
+	}
+
 }
+
+// check the correct packages in the package selection
+foreach( $gLibertySystem->mContentTypes as $cType ) {
+	if( !$gBitSystem->isFeatureActive( 'pigeonhole_no_'.$cType['content_type_guid'] ) ) {
+		$formPigeonholeable['checked'][] = 'pigeonhole_no_'.$cType['content_type_guid'];
+	}
+}
+$gBitSmarty->assign( 'formPigeonholeable', $formPigeonholeable );
+
+
 ?>

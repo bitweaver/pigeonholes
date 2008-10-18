@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_pigeonholes/Pigeonholes.php,v 1.127 2008/06/25 22:21:16 spiderr Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_pigeonholes/Pigeonholes.php,v 1.128 2008/10/18 23:11:07 nickpalmer Exp $
  *
  * +----------------------------------------------------------------------+
  * | Copyright ( c ) 2004, bitweaver.org
@@ -17,7 +17,7 @@
  * Pigeonholes class
  *
  * @author   xing <xing@synapse.plus.com>
- * @version  $Revision: 1.127 $
+ * @version  $Revision: 1.128 $
  * @package  pigeonholes
  */
 
@@ -1094,13 +1094,19 @@ function pigeonholes_content_edit( $pObject=NULL ) {
 	global $gBitSmarty, $gBitUser, $gBitSystem;
 	$pigeonPathList = array();
 
-	if( $gBitUser->hasPermission( 'p_pigeonholes_insert_member' ) ) {
+	if( is_object($pObject) && isset($pObject->mContentTypeGuid) &&
+		!$gBitSystem->isFeatureActive('pigeonhole_no_'.$pObject->mContentTypeGuid) &&
+		$gBitUser->hasPermission( 'p_pigeonholes_insert_member' ) ) {
 		$pigeonholes = new Pigeonholes();
+
+		$gBitSmarty->assign('editPigeonholesEnabled', TRUE);
 
 		// get pigeonholes path list
 		if( $pigeonPathList = $pigeonholes->getPigeonholesPathList(( !empty( $pObject->mContentId ) ? $pObject->mContentId : NULL ), ( $gBitSystem->isFeatureActive( 'pigeonholes_use_jstab' ) ? FALSE : 100 ))) {
 			$gBitSmarty->assign( 'pigeonPathList', $pigeonPathList );
 		}
+	} else {
+		$gBitSmarty->assign('editPigeonholesEnabled', FALSE);
 	}
 }
 
@@ -1122,11 +1128,13 @@ function pigeonholes_content_expunge( $pObject=NULL ) {
  * @access public
  * @return TRUE on success, FALSE on failure - mErrors will contain reason for failure
  */
-function pigeonholes_content_preview() {
-	global $gBitSmarty, $gBitUser;
+function pigeonholes_content_preview( $pObject=NULL ) {
+	global $gBitSmarty, $gBitUser, $gBitSystem;
 	$pigeonPathList = array();
 
-	if( $gBitUser->hasPermission( 'p_pigeonholes_insert_member' ) ) {
+	if( is_object($pObject) && isset($pObject->mContentTypeGuid) &&
+		!$gBitSystem->isFeatureActive('pigeonhole_no_'.$pObject->mContentTypeGuid) &&
+		$gBitUser->hasPermission( 'p_pigeonholes_insert_member' ) ) {
 		$pigeonholes = new Pigeonholes();
 
 		// get pigeonholes path list
@@ -1152,8 +1160,10 @@ function pigeonholes_content_preview() {
  * @return TRUE on success, FALSE on failure - mErrors will contain reason for failure
  */
 function pigeonholes_content_store( $pObject, $pParamHash ) {
-	global $gBitSmarty, $gBitUser;
-	if( $gBitUser->hasPermission( 'p_pigeonholes_insert_member' ) ) {
+	global $gBitSmarty, $gBitUser, $gBitSystem;
+	if( is_object($pObject) && isset($pObject->mContentTypeGuid) &&
+		!$gBitSystem->isFeatureActive('pigeonhole_no_'.$pObject->mContentTypeGuid) &&
+		$gBitUser->hasPermission( 'p_pigeonholes_insert_member' ) ) {
 		if( !empty( $pParamHash['content_id'] ) ) {
 			if( is_object( $pObject ) && empty( $pParamHash['content_id'] ) ) {
 				$pParamHash['content_id'] = $pObject->mContentId;

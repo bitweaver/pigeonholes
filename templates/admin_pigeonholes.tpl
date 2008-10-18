@@ -1,4 +1,4 @@
-{* $Header: /cvsroot/bitweaver/_bit_pigeonholes/templates/admin_pigeonholes.tpl,v 1.9 2007/10/21 08:34:36 squareing Exp $ *}
+{* $Header: /cvsroot/bitweaver/_bit_pigeonholes/templates/admin_pigeonholes.tpl,v 1.10 2008/10/18 23:11:07 nickpalmer Exp $ *}
 {strip}
 {form}
 	<input type="hidden" name="page" value="{$page}" />
@@ -87,6 +87,17 @@
 			{forminput}
 				<input type="text" size="4" maxlength="4" name="pigeonholes_scrolling_list_number" id="pigeonholes_scrolling_list_number" value="{$gBitSystem->getConfig('pigeonholes_scrolling_list_number')}" />
 			{formhelp note="If you have more than this number of categories, categories selection is displayed in a scrolling list instead of checkboxes"}
+			{/forminput}
+		</div>
+	{/legend}
+
+	{legend legend="Pigeonholeable Content"}
+		<input type="hidden" name="page" value="{$page}" />
+		<div class="row">
+			{formlabel label="Pigeonholeable Content"}
+			{forminput}
+				{html_checkboxes options=$formPigeonholeable.guids value=y name=pigeonholeable_content separator="<br />" checked=$formPigeonholeable.checked}
+				{formhelp note="Here you can select what content can be pigeonholed."}
 			{/forminput}
 		</div>
 	{/legend}
