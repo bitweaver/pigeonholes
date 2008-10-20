@@ -27,7 +27,7 @@
 		<h1>{tr}Categories{/tr} <span class="total">[ {$listInfo.total_records|default:0} ]</span></h1>
 
 		{foreach from=$pigeonList item=item}
-			{if $gBitUser->hasPermission( 'p_pigeonholes_edit' )}
+			{if $gBitUser->hasPermission( 'p_pigeonholes_update' )}
 				<div class="floaticon">
 					{smartlink ititle="Change Structure" ifile="edit_structure.php" ibiticon="icons/view-refresh" structure_id=`$item.structure_id`}
 					{smartlink ititle="Insert new Category" ifile="edit_pigeonholes.php" ibiticon="icons/document-new" structure_id=`$item.structure_id` action=create}

@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_pigeonholes/Pigeonholes.php,v 1.128 2008/10/18 23:11:07 nickpalmer Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_pigeonholes/Pigeonholes.php,v 1.129 2008/10/20 21:40:11 spiderr Exp $
  *
  * +----------------------------------------------------------------------+
  * | Copyright ( c ) 2004, bitweaver.org
@@ -17,7 +17,7 @@
  * Pigeonholes class
  *
  * @author   xing <xing@synapse.plus.com>
- * @version  $Revision: 1.128 $
+ * @version  $Revision: 1.129 $
  * @package  pigeonholes
  */
 
@@ -57,8 +57,8 @@ class Pigeonholes extends LibertyMime {
 
 		// Permission setup
 		$this->mViewContentPerm  = 'p_pigeonholes_view';
-		$this->mEditContentPerm  = 'p_pigeonholes_edit';
-		$this->mAdminContentPerm = 'p_pigeonholes_edit'; // use edit until we find the need for an admin permission
+		$this->mUpdateContentPerm  = 'p_pigeonholes_update';
+		$this->mAdminContentPerm = 'p_pigeonholes_update'; // use edit until we find the need for an admin permission
 
 		// Allow specially constructed pigeonholes to mess with the
 		// getMemberList SQL so that additional data can be added on.

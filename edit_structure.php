@@ -1,6 +1,6 @@
 <?php
 /**
- * $Header: /cvsroot/bitweaver/_bit_pigeonholes/edit_structure.php,v 1.5 2008/06/25 22:21:17 spiderr Exp $
+ * $Header: /cvsroot/bitweaver/_bit_pigeonholes/edit_structure.php,v 1.6 2008/10/20 21:40:11 spiderr Exp $
  *
  * Copyright ( c ) 2004 bitweaver.org
  * Copyright ( c ) 2003 tikwiki.org
@@ -8,7 +8,7 @@
  * All Rights Reserved. See copyright.txt for details and a complete list of authors.
  * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details
  *
- * $Id: edit_structure.php,v 1.5 2008/06/25 22:21:17 spiderr Exp $
+ * $Id: edit_structure.php,v 1.6 2008/10/20 21:40:11 spiderr Exp $
  * @package pigeonholes
  * @subpackage functions
  */
@@ -19,7 +19,7 @@
 require_once( '../bit_setup_inc.php' );
 
 $gBitSystem->verifyPackage( 'pigeonholes' );
-$gBitSystem->verifyPermission( 'p_pigeonholes_edit' );
+$gBitSystem->verifyPermission( 'p_pigeonholes_create' );
 
 // we need to load some javascript and css for this page
 $gBitThemes->loadCss( UTIL_PKG_PATH.'javascript/libs/mygosu/DynamicTree.css' );
@@ -30,7 +30,7 @@ $gBitThemes->loadJavascript( UTIL_PKG_PATH.'javascript/libs/mygosu/DynamicTreeBu
 
 include_once( PIGEONHOLES_PKG_PATH.'lookup_pigeonholes_inc.php' );
 
-$verifyStructurePermission = 'p_pigeonholes_edit';
+$verifyStructurePermission = 'p_pigeonholes_create';
 include_once( LIBERTY_PKG_PATH.'edit_structure_inc.php' );
 
 // Display the template

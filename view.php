@@ -1,6 +1,6 @@
 <?php
 /**
- * $Header: /cvsroot/bitweaver/_bit_pigeonholes/view.php,v 1.19 2008/06/25 22:21:17 spiderr Exp $
+ * $Header: /cvsroot/bitweaver/_bit_pigeonholes/view.php,v 1.20 2008/10/20 21:40:11 spiderr Exp $
  *
  * Copyright ( c ) 2004 bitweaver.org
  * Copyright ( c ) 2003 tikwiki.org
@@ -8,7 +8,7 @@
  * All Rights Reserved. See copyright.txt for details and a complete list of authors.
  * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details
  *
- * $Id: view.php,v 1.19 2008/06/25 22:21:17 spiderr Exp $
+ * $Id: view.php,v 1.20 2008/10/20 21:40:11 spiderr Exp $
  * @package pigeonholes
  * @subpackage functions
  */
@@ -40,7 +40,7 @@ $gStructure = new LibertyStructure( $gContent->mInfo['root_structure_id'] );
 $gStructure->load();
 
 if( !empty( $_REQUEST['action'] ) ) {
-	if( $_REQUEST['action'] == 'dismember' && !empty( $_REQUEST['content_id'] ) && !empty( $_REQUEST['parent_id'] ) && $gBitUser->hasPermission( 'p_pigeonholes_edit' ) ) {
+	if( $_REQUEST['action'] == 'dismember' && !empty( $_REQUEST['content_id'] ) && !empty( $_REQUEST['parent_id'] ) && $gContent->hasUserPermission() ) {
 		if( $gContent->expungePigeonholeMember( array( 'parent_id' => $_REQUEST['content_id'], 'member_id' => $_REQUEST['parent_id'] ) ) ) {
 			$feedback['success'] = tra( 'The item was successfully removed' );
 		} else {
