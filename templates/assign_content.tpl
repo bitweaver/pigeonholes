@@ -43,7 +43,7 @@
 					{/forminput}
 
 					{forminput}
-						<input type="text" value="{$smarty.request.find_objects}" name="find_objects" />&nbsp;
+						<input type="text" value="{$smarty.request.find}" name="find" />&nbsp;
 						{formhelp note="You can restrict the content listing to a given content type or apply a filter."}
 					{/forminput}
 				</div>
@@ -66,7 +66,7 @@
 			{form}
 				<input type="hidden" name="sort_mode" value="{$smarty.request.sort_mode}" />
 				<input type="hidden" name="include" value="{$smarty.request.include}" />
-				<input type="hidden" name="find_objects" value="{$smarty.request.find_objects}" />
+				<input type="hidden" name="find" value="{$smarty.request.find}" />
 				<input type="hidden" name="max_records" value="{$smarty.request.max_records}" />
 				<input type="hidden" name="content_type" value="{$contentSelect}" />
 				<input type="hidden" name="root_structure_id" value="{$smarty.request.root_structure_id}" />
@@ -120,8 +120,8 @@
 				<table class="data">
 					<caption>{tr}Available Content{/tr}</caption>
 					<tr>
-						<th>{smartlink ititle="Title" isort=title idefault=1 max_rows=$smarty.request.max_rows content_type=$contentSelect find_objects=$find_objects include=$smarty.request.include page=$page}</th>
-						<th>{smartlink ititle="Content Type" isort=content_type_guid max_rows=$smarty.request.max_rows content_type=$contentSelect find_objects=$find_objects include=$smarty.request.include page=$page}</th>
+						<th>{smartlink ititle="Title" isort=title idefault=1 max_rows=$smarty.request.max_rows content_type=$contentSelect find=$smarty.request.find include=$smarty.request.include page=$page}</th>
+						<th>{smartlink ititle="Content Type" isort=content_type_guid max_rows=$smarty.request.max_rows content_type=$contentSelect find=$smarty.request.find include=$smarty.request.include page=$page}</th>
 						{if $assignableContent}
 							{foreach from=$pigeonList item=pigeon}
 								<th><abbr title="{$pigeon.title|escape}">{counter}</abbr></th>

@@ -1,6 +1,6 @@
 <?php
 /**
- * $Header: /cvsroot/bitweaver/_bit_pigeonholes/assign_content.php,v 1.14 2008/06/25 22:21:17 spiderr Exp $
+ * $Header: /cvsroot/bitweaver/_bit_pigeonholes/assign_content.php,v 1.15 2009/01/24 18:40:54 wjames5 Exp $
  *
  * Copyright ( c ) 2004 bitweaver.org
  * Copyright ( c ) 2003 tikwiki.org
@@ -8,7 +8,7 @@
  * All Rights Reserved. See copyright.txt for details and a complete list of authors.
  * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details
  *
- * $Id: assign_content.php,v 1.14 2008/06/25 22:21:17 spiderr Exp $
+ * $Id: assign_content.php,v 1.15 2009/01/24 18:40:54 wjames5 Exp $
  * @package pigeonholes
  * @subpackage functions
  */
@@ -36,7 +36,7 @@ $gBitSmarty->assign( 'contentTypes', $contentTypes );
 $gBitSmarty->assign( 'contentSelect', $contentSelect = !isset( $_REQUEST['content_type'] ) ? NULL : $_REQUEST['content_type'] );
 
 $listHash = array(
-	'find' => ( empty( $_REQUEST['find_objects'] ) ? NULL : $_REQUEST['find_objects'] ),
+	'find' => ( empty( $_REQUEST['find'] ) ? NULL : $_REQUEST['find'] ),
 	'sort_mode' => ( empty( $_REQUEST['sort_mode'] ) ? NULL : $_REQUEST['sort_mode'] ),
 	'max_records' => ( @BitBase::verifyId( $_REQUEST['max_records'] ) ) ? $_REQUEST['max_records'] : 10,
 	'include_members' => ( ( !empty( $_REQUEST['include'] ) && $_REQUEST['include'] == 'members' ) ? TRUE : FALSE ),
