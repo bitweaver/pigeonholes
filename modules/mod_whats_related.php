@@ -1,14 +1,14 @@
 <?php
 /**
- * $Header: /cvsroot/bitweaver/_bit_pigeonholes/modules/mod_whats_related.php,v 1.6 2006/04/11 13:07:42 squareing Exp $
+ * $Header: /cvsroot/bitweaver/_bit_pigeonholes/modules/mod_whats_related.php,v 1.7 2009/10/01 13:45:46 wjames5 Exp $
  *
  * Copyright (c) 2004 bitweaver.org
  * Copyright (c) 2003 tikwiki.org
  * Copyright (c) 2002-2003, Luis Argerich, Garland Foster, Eduardo Polidor, et. al.
  * All Rights Reserved. See copyright.txt for details and a complete list of authors.
- * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details
+ * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See http://www.gnu.org/copyleft/lesser.html for details
  *
- * $Id: mod_whats_related.php,v 1.6 2006/04/11 13:07:42 squareing Exp $
+ * $Id: mod_whats_related.php,v 1.7 2009/10/01 13:45:46 wjames5 Exp $
  * @package categories
  * @subpackage modules
  */
