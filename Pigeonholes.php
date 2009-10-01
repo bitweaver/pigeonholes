@@ -1,11 +1,11 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_pigeonholes/Pigeonholes.php,v 1.130 2009/10/01 13:45:46 wjames5 Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_pigeonholes/Pigeonholes.php,v 1.131 2009/10/01 14:17:03 wjames5 Exp $
  *
  * +----------------------------------------------------------------------+
  * | Copyright ( c ) 2004, bitweaver.org
  * +----------------------------------------------------------------------+
- * | All Rights Reserved. See copyright.txt for details and a complete list of authors.
+ * | All Rights Reserved. See below for details and a complete list of authors.
  * | Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See http://www.gnu.org/copyleft/lesser.html for details
  * |
  * | For comments, please use phpdocu.sourceforge.net documentation standards!!!
@@ -17,7 +17,7 @@
  * Pigeonholes class
  *
  * @author   xing <xing@synapse.plus.com>
- * @version  $Revision: 1.130 $
+ * @version  $Revision: 1.131 $
  * @package  pigeonholes
  */
 
