@@ -3,7 +3,7 @@
  * $Header
  *
  * @author   xing <xing@synapse.plus.com>
- * @version  $Revision: 1.12 $
+ * @version  $Revision: 1.13 $
  * @package  pigeonholes
  * @subpackage functions
  */
@@ -11,7 +11,7 @@
 /**
  * required setup
  */
-require_once("../bit_setup_inc.php");
+require_once("../kernel/setup_inc.php");
 
 $gBitSystem->verifyPackage( 'pigeonholes' );
 $gBitSystem->verifyPermission( 'p_pigeonholes_view' );
