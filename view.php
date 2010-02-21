@@ -1,6 +1,6 @@
 <?php
 /**
- * $Header: /cvsroot/bitweaver/_bit_pigeonholes/view.php,v 1.23 2010/02/08 21:27:24 wjames5 Exp $
+ * $Header: /cvsroot/bitweaver/_bit_pigeonholes/view.php,v 1.24 2010/02/21 10:07:46 squareing Exp $
  *
  * Copyright ( c ) 2004 bitweaver.org
  * Copyright ( c ) 2003 tikwiki.org
@@ -8,7 +8,7 @@
  * All Rights Reserved. See below for details and a complete list of authors.
  * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See http://www.gnu.org/copyleft/lesser.html for details
  *
- * $Id: view.php,v 1.23 2010/02/08 21:27:24 wjames5 Exp $
+ * $Id: view.php,v 1.24 2010/02/21 10:07:46 squareing Exp $
  * @package pigeonholes
  * @subpackage functions
  */
@@ -60,11 +60,12 @@ $gBitSmarty->assign( 'subtree', $gStructure->getSubTree( $gStructure->mStructure
 
 if( $gContent->checkPathPermissions( $gContent->getField( 'path' ) ) ) {
 	$listHash = array(
-		'root_structure_id' => $gContent->mInfo['root_structure_id'],
-		'structure_id' => $gContent->mInfo['structure_id'],
-		'load_extras' => TRUE,
-		'parse_data' => TRUE,
-		'max_records' => -1,
+		'root_structure_id'   => $gContent->mInfo['root_structure_id'],
+		'structure_id'        => $gContent->mInfo['structure_id'],
+		'parse_data'          => TRUE,
+		'max_records'         => -1,
+		'load_extras'         => TRUE,
+		'members_max_records' => -1,
 	);
 	$pigeonList = $gContent->getList( $listHash );
 	$gBitSmarty->assign( 'pigeonList', $pigeonList );
