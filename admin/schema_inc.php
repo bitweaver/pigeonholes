@@ -50,4 +50,8 @@ $gBitInstaller->registerUserPermissions( PIGEONHOLES_PKG_NAME, array(
 	//array( 'p_pigeonholes_admin', 'Can administer all aspects of pigeonholes', 'editors', PIGEONHOLES_PKG_NAME ),
 ) );
 
-?>
+// Requirements
+$gBitInstaller->registerRequirements( PIGEONHOLES_PKG_NAME, array(
+    'liberty' => array( 'min' => '2.1.4' ),
+));
+

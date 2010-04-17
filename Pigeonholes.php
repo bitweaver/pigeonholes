@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_pigeonholes/Pigeonholes.php,v 1.131 2009/10/01 14:17:03 wjames5 Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_pigeonholes/Pigeonholes.php,v 1.132 2010/04/17 22:46:09 wjames5 Exp $
  *
  * +----------------------------------------------------------------------+
  * | Copyright ( c ) 2004, bitweaver.org
@@ -17,7 +17,7 @@
  * Pigeonholes class
  *
  * @author   xing <xing@synapse.plus.com>
- * @version  $Revision: 1.131 $
+ * @version  $Revision: 1.132 $
  * @package  pigeonholes
  */
 
@@ -45,7 +45,7 @@ class Pigeonholes extends LibertyMime {
 		LibertyMime::LibertyMime();
 		$this->registerContentType( PIGEONHOLES_CONTENT_TYPE_GUID, array(
 			'content_type_guid' => PIGEONHOLES_CONTENT_TYPE_GUID,
-			'content_description' => 'Pigeonhole',
+			'content_name' => 'Pigeonhole',
 			'handler_class' => 'Pigeonholes',
 			'handler_package' => 'pigeonholes',
 			'handler_file' => 'Pigeonholes.php',
@@ -175,7 +175,7 @@ class Pigeonholes extends LibertyMime {
 		$query = "
 			SELECT pigm.*,
 			lc.`content_id`, lc.`last_modified`, lc.`user_id`, lc.`title`, lc.`content_type_guid`, lc.`created`,
-			lct.`content_description`, lcds.`data` AS `summary`,
+			lct.`content_name`, lcds.`data` AS `summary`,
 			uu.`login`, uu.`real_name`, lf.`storage_path` $select
 			FROM `".BIT_DB_PREFIX."pigeonhole_members` pigm
 				INNER JOIN `".BIT_DB_PREFIX."pigeonholes` pig ON ( pig.`content_id` = pigm.`parent_id` )

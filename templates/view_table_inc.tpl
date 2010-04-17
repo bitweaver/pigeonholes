@@ -28,7 +28,7 @@
 										{if $gBitSystem->isFeatureActive( 'pigeonholes_member_thumb' ) && $member.thumbnail_url.$size}
 											<img src="{$member.thumbnail_url.$size}" alt="{$member.title|escape}" title="{$member.title|escape}" /><br />
 										{/if}
-										{$member.title|escape}{if $gBitSystem->isFeatureActive( 'pigeonholes_display_content_type' )} &nbsp; <small>{tr}{$member.content_description}{/tr}</small>{/if}
+										{$member.title|escape}{if $gBitSystem->isFeatureActive( 'pigeonholes_display_content_type' )} &nbsp; <small>{tr}{$member.content_name}{/tr}</small>{/if}
 									</a>
 								</li>
 							{/foreach}
