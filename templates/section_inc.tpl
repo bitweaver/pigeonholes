@@ -29,7 +29,7 @@
 
 				{* open the content type <ul> *}
 				{if $ctg1 ne $ctg2}
-					<li>{$gLibertySystem->mContentTypes.$ctg1.content_description}
+					<li>{$gLibertySystem->getContentTypeName($ctg1)}
 						<ul>
 				{/if}
 

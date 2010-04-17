@@ -28,7 +28,7 @@
 					{foreach from=$pigeonItem.members item=member name=members}
 						{assign var=ctg1 value=$member.content_type_guid}
 
-						{if $ctg1 ne $ctg2 && $gBitSystem->isFeatureActive( 'pigeonholes_display_content_type' )}{if $ctg2}<br />{/if}{$gLibertySystem->mContentTypes.$ctg1.content_description}:&nbsp;{/if}
+						{if $ctg1 ne $ctg2 && $gBitSystem->isFeatureActive( 'pigeonholes_display_content_type' )}{if $ctg2}<br />{/if}{$gLibertySystem->getContentTypeName($ctg1)}:&nbsp;{/if}
 
 						{if !$gBitSystem->getConfig('pigeonholes_limit_member_number') or $member_count lt $gBitSystem->getConfig('pigeonholes_limit_member_number')}
 							{if $serviceHash.content_id == $member.content_id}<strong>{/if}
