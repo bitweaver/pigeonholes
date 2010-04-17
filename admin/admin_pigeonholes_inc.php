@@ -1,5 +1,5 @@
 <?php
-// $Header: /cvsroot/bitweaver/_bit_pigeonholes/admin/admin_pigeonholes_inc.php,v 1.22 2008/10/18 23:11:07 nickpalmer Exp $
+// $Header: /cvsroot/bitweaver/_bit_pigeonholes/admin/admin_pigeonholes_inc.php,v 1.23 2010/04/17 15:36:07 wjames5 Exp $
 
 $pigeonholeDisplaySettings = array(
 	'pigeonholes_display_path' => array(
@@ -94,7 +94,7 @@ $gBitSmarty->assign( 'imageSizes', get_image_size_options() );
 $exclude = array( 'tikisticky', 'pigeonholes' );
 foreach( $gLibertySystem->mContentTypes as $cType ) {
 	if( !in_array( $cType['content_type_guid'], $exclude ) ) {
-		$formPigeonholeable['guids']['pigeonhole_no_'.$cType['content_type_guid']]  = $cType['content_description'];
+		$formPigeonholeable['guids']['pigeonhole_no_'.$cType['content_type_guid']]  = $gLibertySystem->getContentTypeName( $cType['content_type_guid'] );
 	}
 }
 

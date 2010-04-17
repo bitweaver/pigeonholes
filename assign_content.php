@@ -1,6 +1,6 @@
 <?php
 /**
- * $Header: /cvsroot/bitweaver/_bit_pigeonholes/assign_content.php,v 1.18 2010/02/08 21:27:24 wjames5 Exp $
+ * $Header: /cvsroot/bitweaver/_bit_pigeonholes/assign_content.php,v 1.19 2010/04/17 15:36:07 wjames5 Exp $
  *
  * Copyright ( c ) 2004 bitweaver.org
  * Copyright ( c ) 2003 tikwiki.org
@@ -8,7 +8,7 @@
  * All Rights Reserved. See below for details and a complete list of authors.
  * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See http://www.gnu.org/copyleft/lesser.html for details
  *
- * $Id: assign_content.php,v 1.18 2010/02/08 21:27:24 wjames5 Exp $
+ * $Id: assign_content.php,v 1.19 2010/04/17 15:36:07 wjames5 Exp $
  * @package pigeonholes
  * @subpackage functions
  */
@@ -29,7 +29,7 @@ $gBitSmarty->assign_by_ref( 'feedback', $feedback );
 $contentTypes = array( '' => tra( 'All Content' ) );
 foreach( $gLibertySystem->mContentTypes as $cType ) {
 	if( $cType['content_type_guid'] != PIGEONHOLES_CONTENT_TYPE_GUID ) {
-		$contentTypes[$cType['content_type_guid']] = $cType['content_description'];
+		$contentTypes[$cType['content_type_guid']] = $gLibertySystem->getContentTypeName( $cType['content_type_guid'] );
 	}
 }
 $gBitSmarty->assign( 'contentTypes', $contentTypes );
