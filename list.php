@@ -3,7 +3,7 @@
  * $Header
  *
  * @author   xing <xing@synapse.plus.com>
- * @version  $Revision: 1.13 $
+ * @version  $Revision$
  * @package  pigeonholes
  * @subpackage functions
  */

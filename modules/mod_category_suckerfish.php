@@ -1,13 +1,13 @@
 <?php
 /**
- * $Header: /cvsroot/bitweaver/_bit_pigeonholes/modules/mod_category_suckerfish.php,v 1.8 2009/10/01 14:17:03 wjames5 Exp $
+ * $Header$
  *
  * Copyright (c) 2007 bitweaver.org
  *
  * All Rights Reserved. See below for details and a complete list of authors.
  * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See http://www.gnu.org/copyleft/lesser.html for details
  *
- * $Id: mod_category_suckerfish.php,v 1.8 2009/10/01 14:17:03 wjames5 Exp $
+ * $Id$
  * @package pigeonholes
  * @subpackage modules
  */

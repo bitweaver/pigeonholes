@@ -1,4 +1,4 @@
-{* $Header: /cvsroot/bitweaver/_bit_pigeonholes/modules/mod_whats_related.tpl,v 1.6 2007/04/19 06:31:47 laetzer Exp $ *}
+{* $Header$ *}
 {strip}
 {if $modRelatedPigeon}
 	{bitmodule title="$moduleTitle" name="whats_related"}

@@ -1,4 +1,4 @@
-{* $Header: /cvsroot/bitweaver/_bit_pigeonholes/templates/admin_pigeonholes.tpl,v 1.10 2008/10/18 23:11:07 nickpalmer Exp $ *}
+{* $Header$ *}
 {strip}
 {form}
 	<input type="hidden" name="page" value="{$page}" />

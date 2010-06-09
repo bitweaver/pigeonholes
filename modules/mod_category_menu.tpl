@@ -1,4 +1,4 @@
-{* $Header: /cvsroot/bitweaver/_bit_pigeonholes/modules/mod_category_menu.tpl,v 1.2 2006/04/14 20:25:52 squareing Exp $ *}
+{* $Header$ *}
 {strip}
 {if $gBitSystem->isFeatureActive( 'pigeonholes_display_members' ) and $modPigeonStructures}
 	{bitmodule title="$moduleTitle" name="whats_related"}

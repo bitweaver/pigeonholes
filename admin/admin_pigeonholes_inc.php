@@ -1,5 +1,5 @@
 <?php
-// $Header: /cvsroot/bitweaver/_bit_pigeonholes/admin/admin_pigeonholes_inc.php,v 1.23 2010/04/17 15:36:07 wjames5 Exp $
+// $Header$
 
 $pigeonholeDisplaySettings = array(
 	'pigeonholes_display_path' => array(
