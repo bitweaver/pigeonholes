@@ -1128,7 +1128,7 @@ function pigeonholes_content_expunge( $pObject=NULL ) {
  * @access public
  * @return TRUE on success, FALSE on failure - mErrors will contain reason for failure
  */
-function pigeonholes_content_preview( $pObject=NULL ) {
+function pigeonholes_content_preview( $pObject=NULL, $pParamHash ) {
 	global $gBitSmarty, $gBitUser, $gBitSystem;
 	$pigeonPathList = array();
 
@@ -1140,7 +1140,7 @@ function pigeonholes_content_preview( $pObject=NULL ) {
 		// get pigeonholes path list
 		if( $pigeonPathList = $pigeonholes->getPigeonholesPathList() ) {
 			foreach( $pigeonPathList as $key => $path ) {
-				if( !empty( $_REQUEST['pigeonholes']['pigeonhole'] ) && in_array( $key, $_REQUEST['pigeonholes']['pigeonhole'] ) ) {
+				if( !empty( $pParamHash['pigeonholes']['pigeonhole'] ) && in_array( $key, $pParamHash['pigeonholes']['pigeonhole'] ) ) {
 					$pigeonPathList[$key][0]['selected'] = TRUE;
 				} else {
 					$pigeonPathList[$key][0]['selected'] = FALSE;
@@ -1164,10 +1164,12 @@ function pigeonholes_content_store( $pObject, $pParamHash ) {
 	if( is_object($pObject) && isset($pObject->mContentTypeGuid) &&
 		!$gBitSystem->isFeatureActive('pigeonhole_no_'.$pObject->mContentTypeGuid) &&
 		$gBitUser->hasPermission( 'p_pigeonholes_insert_member' ) ) {
+
+		if( is_object( $pObject ) && empty( $pParamHash['content_id'] ) ) {
+			$pParamHash['content_id'] = $pObject->mContentId;
+		}
+
 		if( !empty( $pParamHash['content_id'] ) ) {
-			if( is_object( $pObject ) && empty( $pParamHash['content_id'] ) ) {
-				$pParamHash['content_id'] = $pObject->mContentId;
-			}
 
 			$pigeonholes = new Pigeonholes();
 			$pigeonPathList = $pigeonholes->getPigeonholesPathList( $pParamHash['content_id'] );
@@ -1185,12 +1187,12 @@ function pigeonholes_content_store( $pObject, $pParamHash ) {
 			}
 
 			// quick and dirty check to start off with
-			if( empty( $_REQUEST['pigeonholes'] ) || count( $_REQUEST['pigeonholes']['pigeonhole'] ) != count( $selectedItem ) ) {
+			if( empty( $pParamHash['pigeonholes'] ) || count( $pParamHash['pigeonholes']['pigeonhole'] ) != count( $selectedItem ) ) {
 				$modified = TRUE;
 			} else {
 				// more thorough check
 				foreach( $selectedItem as $item ) {
-					if( !in_array( $item, $_REQUEST['pigeonholes']['pigeonhole'] ) ) {
+					if( !in_array( $item, $pParamHash['pigeonholes']['pigeonhole'] ) ) {
 						$modified = TRUE;
 					}
 				}
@@ -1198,9 +1200,9 @@ function pigeonholes_content_store( $pObject, $pParamHash ) {
 
 			if( !empty( $modified ) ) {
 				// first remove all entries with this content_id
-				if( $pigeonholes->expungePigeonholeMember( array( 'member_id' => $pParamHash['content_id'] ) ) && !empty( $_REQUEST['pigeonholes'] ) ) {
+				if( $pigeonholes->expungePigeonholeMember( array( 'member_id' => $pParamHash['content_id'] ) ) && !empty( $pParamHash['pigeonholes'] ) ) {
 					// insert the content into the desired pigeonholes
-					foreach( $_REQUEST['pigeonholes']['pigeonhole'] as $p_id ) {
+					foreach( $pParamHash['pigeonholes']['pigeonhole'] as $p_id ) {
 						$memberHash[] = array(
 							'parent_id' => $p_id,
 							'content_id' => $pParamHash['content_id']
@@ -1222,7 +1224,7 @@ function pigeonholes_content_store( $pObject, $pParamHash ) {
  * When the list function is called and the template, a filter option will appear based on categories
  * 
  * @param array $pObject Current object
- * @param array $pParamHash Parameter hash - only works if $_REQUEST[pigeonholes][filter] is passed back to the list sql funciton
+ * @param array $pParamHash Parameter hash - only works if $pParamHash[pigeonholes][filter] is passed back to the list sql funciton
  * @access public
  * @return void
  */
@@ -1254,7 +1256,7 @@ function pigeonholes_content_list_sql( &$pObject, $pParamHash = NULL ) {
 	$ret = array();
 
 	if( !empty( $pParamHash['pigeonholes']['no_filter'] )) {
-		$_REQUEST['pigeonholes']['filter'] = array();
+		$pParamHash['pigeonholes']['filter'] = array();
 	} else {
 		if( !empty( $pParamHash['pigeonholes']['filter'] )) {
 			$pParamHash['liberty_categories'] = $pParamHash['pigeonholes']['filter'];
@@ -1280,7 +1282,7 @@ function pigeonholes_content_list_sql( &$pObject, $pParamHash = NULL ) {
 
 			$ret['join_sql']  = "INNER JOIN `".BIT_DB_PREFIX."pigeonhole_members` pm ON (lc.`content_id`=pm.`content_id`)";
 			$ret['where_sql'] = 'AND pm.`parent_id` IN ('.implode( ',', array_fill( 0, count( $contentIds ), '?' )).')';
-			$ret['bind_vars'] = $_REQUEST['pigeonholes']['filter'] = $contentIds;
+			$ret['bind_vars'] = $pParamHash['pigeonholes']['filter'] = $contentIds;
 		}
 
 		if( !empty( $pParamHash['pigeonholes']['root_filter'] )) {
@@ -1307,7 +1309,7 @@ function pigeonholes_content_list_sql( &$pObject, $pParamHash = NULL ) {
 
 			$ret['join_sql']  = "INNER JOIN `".BIT_DB_PREFIX."pigeonhole_members` rpm ON (rlc.`content_id`=rpm.`content_id`)";
 			$ret['where_sql'] = 'AND rpm.`parent_id` IN ('.implode( ',', array_fill( 0, count( $contentIds ), '?' )).')';
-			$ret['bind_vars'] = $_REQUEST['pigeonholes']['filter'] = $contentIds;
+			$ret['bind_vars'] = $pParamHash['pigeonholes']['filter'] = $contentIds;
 		}
 	}
 
