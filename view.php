@@ -39,8 +39,9 @@ if( !@BitBase::verifyId( $gContent->mInfo['root_structure_id'] ) ) {
 $gStructure = new LibertyStructure( $gContent->mInfo['root_structure_id'] );
 $gStructure->load();
 
+// expunge request
 if( !empty( $_REQUEST['action'] ) ) {
-	if( $_REQUEST['action'] == 'dismember' && !empty( $_REQUEST['content_id'] ) && !empty( $_REQUEST['parent_id'] ) && $gContent->hasUserPermission() ) {
+	if( $_REQUEST['action'] == 'dismember' && !empty( $_REQUEST['content_id'] ) && !empty( $_REQUEST['parent_id'] ) && $gContent->verifyUpdatePermission() ) {
 		if( $gContent->expungePigeonholeMember( array( 'parent_id' => $_REQUEST['content_id'], 'member_id' => $_REQUEST['parent_id'] ) ) ) {
 			$feedback['success'] = tra( 'The item was successfully removed' );
 		} else {
