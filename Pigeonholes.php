@@ -939,6 +939,8 @@ class Pigeonholes extends LibertyMime {
 		if( @BitBase::verifyId( $pContentId ) ) {
 			$rewrite_tag = $gBitSystem->isFeatureActive( 'pretty_urls_extended' ) ? 'view/' : '';
 			if( $gBitSystem->isFeatureActive( 'pretty_urls' ) || $gBitSystem->isFeatureActive( 'pretty_urls_extended' ) ) {
+				$ret = PIGEONHOLES_PKG_URL.$rewrite_tag.$pContentId;
+			}else{
 				$ret = PIGEONHOLES_PKG_URL.'view.php?content_id='.$pContentId;
 			}
 		}
