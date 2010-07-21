@@ -5,12 +5,12 @@
 
 	<h3 class="highlight"><a href="{$smarty.const.PIGEONHOLES_PKG_URL}{
 			if $gBitSystem->isFeatureActive('pretty_urls')
-				}structure/{
+				}{
 			elseif $gBitSystem->isFeatureActive('pretty_urls_extended')
-				}view/structure/{
+				}view/{
 			else
-				}view.php?structure_id={
-			/if}{$subtree[ix].structure_id}">{$subtree[ix].title|escape}</a></h3>
+				}view.php?content_id={
+			/if}{$subtree[ix].content_id}">{$subtree[ix].title|escape}</a></h3>
 
 	{if $pigeonList.$sid.members}
 		{if $gBitSystem->isFeatureActive('pigeonholes_display_description')}
@@ -72,12 +72,12 @@
 	{if $current}<strong>{/if}
 		<a href="{$smarty.const.PIGEONHOLES_PKG_URL}{
 			if $gBitSystem->isFeatureActive('pretty_urls')
-				}structure/{
+				}{
 			elseif $gBitSystem->isFeatureActive('pretty_urls_extended')
-				}view/structure/{
+				}view/{
 			else
-				}view.php?structure_id={
-			/if}{$subtree[ix].structure_id}#members">{$subtree[ix].title|escape}</a>
+				}view.php?content_id={
+			/if}{$subtree[ix].content_id}#members">{$subtree[ix].title|escape}</a>
 		{if $current}</strong>{/if}{if $pigeonList.$sid.members_count}<small> ({$pigeonList.$sid.members_count}) </small>{/if}
 	{biticon ipackage=liberty iname=spacer iforce=icon}
 
