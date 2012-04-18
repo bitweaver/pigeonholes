@@ -197,7 +197,7 @@ class Pigeonholes extends LibertyMime {
 					$type['content_object'] = new $type['handler_class']();
 				}
 				if( $type['content_object']->isViewable( $aux['content_id'] )) {
-					$aux['display_url']   = $type['content_object']->getDisplayUrl( NULL, $aux );
+					$aux['display_url']   = $type['content_object']->getDisplayUrlFromHash( $aux );
 					$aux['display_link']  = $type['content_object']->getDisplayLink( $aux['title'], $aux );
 					$aux['title']         = $type['content_object']->getTitle( $aux );
 					$aux['thumbnail_url'] = liberty_fetch_thumbnails( array(
@@ -425,7 +425,7 @@ class Pigeonholes extends LibertyMime {
 		if( !empty( $pPath ) && is_array( $pPath ) ) {
 			foreach( $pPath as $node ) {
 				$title = htmlspecialchars( $node['title'] );
-				$ret .= ( @BitBase::verifyId( $node['parent_id'] ) ? '&nbsp;&raquo;&nbsp;' : '' ).'<a title="'.$title.'" href="'.$this->getDisplayUrl( $node['content_id'] ).'">'.preg_replace('/ /','&nbsp;',$title).'</a>';
+				$ret .= ( @BitBase::verifyId( $node['parent_id'] ) ? '&nbsp;&raquo;&nbsp;' : '' ).'<a title="'.$title.'" href="'.$this->getDisplayUrlFromHash( $node ).'">'.preg_replace('/ /','&nbsp;',$title).'</a>';
 			}
 		}
 
@@ -926,24 +926,19 @@ class Pigeonholes extends LibertyMime {
 	* @param $pContentId is the pigeonhole id we want to see
 	* @return the link to display the page.
 	*/
-	function getDisplayUrl( $pContentId=NULL, $pMixed=NULL ) {
+	function getDisplayUrlFromHash( $pMixed=NULL ) {
 		global $gBitSystem;
 		$ret = NULL;
-		// try to get the correct content_id from anywhere possible
-		if( !@BitBase::verifyId( $pContentId ) && !empty( $this->mContentId ) ) {
-			$pContentId = $this->mContentId;
-		} elseif( !@BitBase::verifyId( $pContentId ) && !empty( $pMixed ) ) {
-			$pContentId = $pMixed['content_id'];
-		}
 
-		if( @BitBase::verifyId( $pContentId ) ) {
+		if( @BitBase::verifyId( $pMixed['content_id'] ) ) {
 			$rewrite_tag = $gBitSystem->isFeatureActive( 'pretty_urls_extended' ) ? 'view/' : '';
 			if( $gBitSystem->isFeatureActive( 'pretty_urls' ) || $gBitSystem->isFeatureActive( 'pretty_urls_extended' ) ) {
-				$ret = PIGEONHOLES_PKG_URL.$rewrite_tag.$pContentId;
+				$ret = PIGEONHOLES_PKG_URL.$rewrite_tag.$pMixed['content_id'];
 			}else{
-				$ret = PIGEONHOLES_PKG_URL.'view.php?content_id='.$pContentId;
+				$ret = PIGEONHOLES_PKG_URL.'view.php?content_id='.$pMixed['content_id'];
 			}
 		}
+
 		return $ret;
 	}
 
@@ -966,7 +961,7 @@ class Pigeonholes extends LibertyMime {
 		$ret = $pTitle;
 		if( !empty( $pTitle ) && !empty( $pMixed ) ) {
 			if( $gBitSystem->isPackageActive( 'pigeonholes' ) ) {
-				$ret = '<a title="'.htmlspecialchars( $pTitle ).'" href="'.Pigeonholes::getDisplayUrl( $pMixed['content_id'], $pMixed ).'">'.htmlspecialchars( $pTitle ).'</a>';
+				$ret = '<a title="'.htmlspecialchars( $pTitle ).'" href="'.Pigeonholes::getDisplayUrlFromHash( $pMixed ).'">'.htmlspecialchars( $pTitle ).'</a>';
 			}
 		}
 
