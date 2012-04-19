@@ -926,7 +926,7 @@ class Pigeonholes extends LibertyMime {
 	* @param $pContentId is the pigeonhole id we want to see
 	* @return the link to display the page.
 	*/
-	function getDisplayUrlFromHash( $pMixed=NULL ) {
+	public static function getDisplayUrlFromHash( $pMixed=NULL ) {
 		global $gBitSystem;
 		$ret = NULL;
 
