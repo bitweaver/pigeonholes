@@ -42,7 +42,7 @@ class Pigeonholes extends LibertyMime {
 	* @access public
 	**/
 	function Pigeonholes( $pStructureId=NULL, $pContentId=NULL, $pMemberList=Null ) {
-		LibertyMime::LibertyMime();
+		parent::__construct();
 		$this->registerContentType( PIGEONHOLES_CONTENT_TYPE_GUID, array(
 			'content_type_guid' => PIGEONHOLES_CONTENT_TYPE_GUID,
 			'content_name' => 'Pigeonhole',
