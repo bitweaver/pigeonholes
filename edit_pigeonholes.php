@@ -50,7 +50,7 @@ if( !empty( $_REQUEST['pigeonhole_store'] ) ) {
 	$pigeonStore = new Pigeonholes( NULL, !empty( $_REQUEST['pigeonhole_content_id'] ) ? $_REQUEST['pigeonhole_content_id'] : NULL );
 	$pigeonStore->load();
 	if( $pigeonStore->store( $_REQUEST['pigeonhole'] )) {
-		header( "Location: ".$_SERVER['PHP_SELF'].'?structure_id='.$pigeonStore->mStructureId.( !empty( $_REQUEST['action'] ) ? '&action='.$_REQUEST['action'] : '' )."&success=".urlencode( tra( "The category was successfully stored" ) ) );
+		header( "Location: ".$_SERVER['SCRIPT_NAME'].'?structure_id='.$pigeonStore->mStructureId.( !empty( $_REQUEST['action'] ) ? '&action='.$_REQUEST['action'] : '' )."&success=".urlencode( tra( "The category was successfully stored" ) ) );
 	} else {
 		$feedback['error'] = $gContent->mErrors;
 	}
@@ -70,7 +70,7 @@ if( !empty( $_REQUEST['action'] ) || isset( $_REQUEST["confirm"] ) ) {
 	if( $_REQUEST["action"] == 'remove' || isset( $_REQUEST["confirm"] ) ) {
 		if( isset( $_REQUEST["confirm"] ) ) {
 			if( $gContent->expunge( $_REQUEST["structure_id"] ) ) {
-				bit_redirect( $_SERVER['PHP_SELF'].'?structure_id='.$gContent->mInfo["parent_id"] );
+				bit_redirect( $_SERVER['SCRIPT_NAME'].'?structure_id='.$gContent->mInfo["parent_id"] );
 			} else {
 				$feedback['error'] = $gContent->mErrors;
 			}
