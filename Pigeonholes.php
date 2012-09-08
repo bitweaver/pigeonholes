@@ -536,7 +536,7 @@ class Pigeonholes extends LibertyMime {
 			//$content_ids[]        = $aux['content_id'];
 			$aux['user']         = $aux['creator_user'];
 			$aux['real_name']    = ( isset( $aux['creator_real_name'] ) ? $aux['creator_real_name'] : $aux['creator_user'] );
-			$aux['display_name'] = BitUser::getTitle( $aux );
+			$aux['display_name'] = BitUser::getDisplayNameFromHash( FALSE, $aux );
 			$aux['editor']       = ( isset( $aux['modifier_real_name'] ) ? $aux['modifier_real_name'] : $aux['modifier_user'] );
 			$aux['display_link'] = Pigeonholes::getDisplayLink( $aux['title'], $aux );
 			// get member count for mysql - haha
@@ -926,16 +926,16 @@ class Pigeonholes extends LibertyMime {
 	* @param $pContentId is the pigeonhole id we want to see
 	* @return the link to display the page.
 	*/
-	public static function getDisplayUrlFromHash( $pMixed=NULL ) {
+	public static function getDisplayUrlFromHash( &$pParamHash ) {
 		global $gBitSystem;
 		$ret = NULL;
 
-		if( @BitBase::verifyId( $pMixed['content_id'] ) ) {
+		if( @BitBase::verifyId( $$pParamHash['content_id'] ) ) {
 			$rewrite_tag = $gBitSystem->isFeatureActive( 'pretty_urls_extended' ) ? 'view/' : '';
 			if( $gBitSystem->isFeatureActive( 'pretty_urls' ) || $gBitSystem->isFeatureActive( 'pretty_urls_extended' ) ) {
-				$ret = PIGEONHOLES_PKG_URL.$rewrite_tag.$pMixed['content_id'];
+				$ret = PIGEONHOLES_PKG_URL.$rewrite_tag.$$pParamHash['content_id'];
 			}else{
-				$ret = PIGEONHOLES_PKG_URL.'view.php?content_id='.$pMixed['content_id'];
+				$ret = PIGEONHOLES_PKG_URL.'view.php?content_id='.$$pParamHash['content_id'];
 			}
 		}
 
@@ -948,20 +948,20 @@ class Pigeonholes extends LibertyMime {
 	* @param $pContentId content id of the pigeonhole in question
 	* @return the link to display the page.
 	*/
-	function getDisplayLink( $pTitle=NULL, $pMixed=NULL ) {
+	function getDisplayLink( $pLinkText = NULL, $pMixed = NULL, $pAnchor = NULL ) {
 		global $gBitSystem;
-		if( empty( $pTitle ) && !empty( $this ) ) {
-			$pTitle = $this->getTitle();
+		if( empty( $pLinkText ) && !empty( $this ) ) {
+			$ppLinkText = $this->getTitle();
 		}
 
 		if( empty( $pMixed ) && !empty( $this ) ) {
 			$pMixed = $this->mInfo;
 		}
 
-		$ret = $pTitle;
-		if( !empty( $pTitle ) && !empty( $pMixed ) ) {
+		$ret = $pLinkText;
+		if( !empty( $pLinkText ) && !empty( $pMixed ) ) {
 			if( $gBitSystem->isPackageActive( 'pigeonholes' ) ) {
-				$ret = '<a title="'.htmlspecialchars( $pTitle ).'" href="'.Pigeonholes::getDisplayUrlFromHash( $pMixed ).'">'.htmlspecialchars( $pTitle ).'</a>';
+				$ret = '<a title="'.htmlspecialchars( $pLinkText ).'" href="'.Pigeonholes::getDisplayUrlFromHash( $pMixed ).'">'.htmlspecialchars( $pLinkText ).'</a>';
 			}
 		}
 
