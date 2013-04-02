@@ -1,6 +1,6 @@
 {strip}
 {if $editPigeonholesEnabled && $gBitUser->hasPermission( 'p_pigeonholes_insert_member' )}
-	<div class="row">
+	<div class="control-group">
 		{formlabel label="Categorize" for="pigeonholes"}
 		{if $pigeonPathList|@count ne 0}
 			{forminput}
