@@ -79,7 +79,6 @@
 				}view.php?content_id={
 			/if}{$subtree[ix].content_id}#members">{$subtree[ix].title|escape}</a>
 		{if $current}</strong>{/if}{if $pigeonList.$sid.members_count}<small> ({$pigeonList.$sid.members_count}) </small>{/if}
-	{biticon ipackage=liberty iname=spacer iforce=icon}
 
 	{if !$no_details}
 		<br />{$pigeonList.$sid.parsed_data}
