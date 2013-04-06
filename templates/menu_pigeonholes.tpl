@@ -1,5 +1,6 @@
 {strip}
-<ul>
+<a class="dropdown-toggle" data-toggle="dropdown" href="#"> {tr}{$packageMenuTitle}{/tr} <b class="caret"></b></a>
+<ul class="{$packageMenuClass}">
 	{if $gBitUser->hasPermission( 'p_pigeonholes_create' )}
 		<li><a class="item" href="{$smarty.const.PIGEONHOLES_PKG_URL}edit_pigeonholes.php?action=create">{booticon iname="icon-file" iexplain="Create Category" ilocation=menu}</a></li>
 	{/if}

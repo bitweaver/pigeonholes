@@ -29,10 +29,10 @@
 		{foreach from=$pigeonList item=item}
 			{if $gBitUser->hasPermission( 'p_pigeonholes_update' )}
 				<div class="floaticon">
-					{smartlink ititle="Change Structure" ifile="edit_structure.php" booticon="icon-recycle" structure_id=`$item.structure_id`}
-					{smartlink ititle="Insert new Category" ifile="edit_pigeonholes.php" booticon="icon-file" structure_id=`$item.structure_id` action=create}
-					{smartlink ititle="Edit Category" ifile="edit_pigeonholes.php" booticon="icon-edit" structure_id=`$item.structure_id` action="edit"}
-					{smartlink ititle="Remove Category" ifile="edit_pigeonholes.php" booticon="icon-trash" action="remove" structure_id=`$item.structure_id`}
+					{smartlink ititle="Change Structure" ifile="edit_structure.php" booticon="icon-recycle" structure_id=$item.structure_id}
+					{smartlink ititle="Insert new Category" ifile="edit_pigeonholes.php" booticon="icon-file" structure_id=$item.structure_id action="create"}
+					{smartlink ititle="Edit Category" ifile="edit_pigeonholes.php" booticon="icon-edit" structure_id=$item.structure_id action="edit"}
+					{smartlink ititle="Remove Category" ifile="edit_pigeonholes.php" booticon="icon-trash" action="remove" structure_id=$item.structure_id}
 				</div>
 			{/if}
 			<h2>{$item.display_link}</h2>

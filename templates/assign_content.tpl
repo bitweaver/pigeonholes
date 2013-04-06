@@ -132,7 +132,7 @@
 					{foreach from=$assignableContent item=item}
 						<tr class="{cycle values='odd,even'}">
 							<td><a href="{$smarty.const.BIT_ROOT_URL}index.php?content_id={$item.content_id}">{$item.title|escape}</a></td>
-							<td>{assign var=content_type_guid value=`$item.content_type_guid`}{$contentTypes.$content_type_guid}</td>
+							<td>{assign var=content_type_guid value=$item.content_type_guid}{$contentTypes.$content_type_guid}</td>
 							{foreach from=$pigeonList item=pigeon}
 								<td style="text-align:center">
 									<input type="checkbox" name="pigeonhole[{$item.content_id}][]" value="{$pigeon.content_id}"
