@@ -6,10 +6,10 @@
 	{legend legend="Display Settings"}
 		{foreach from=$pigeonholeDisplaySettings key=feature item=output}
 			<div class="control-group">
-				{formlabel label=`$output.label` for=$feature}
+				{formlabel label=$output.label for=$feature}
 				{forminput}
 					{html_checkboxes name="$feature" values="y" checked=$gBitSystem->getConfig($feature) labels=false id=$feature}
-					{formhelp note=`$output.note` page=`$output.page`}
+					{formhelp note=$output.note page=$output.page}
 				{/forminput}
 			</div>
 		{/foreach}
@@ -26,10 +26,10 @@
 	{legend legend="Listing Settings"}
 		{foreach from=$pigeonholeListSettings key=feature item=output}
 			<div class="control-group">
-				{formlabel label=`$output.label` for=$feature}
+				{formlabel label=$output.label for=$feature}
 				{forminput}
 					{html_checkboxes name="$feature" values="y" checked=$gBitSystem->getConfig($feature) labels=false id=$feature}
-					{formhelp note=`$output.note` page=`$output.page`}
+					{formhelp note=$output.note page=$output.page}
 				{/forminput}
 			</div>
 		{/foreach}
@@ -62,10 +62,10 @@
 	{legend legend="Pigeonhole Edit Settings"}
 		{foreach from=$pigeonholeEditSettings key=feature item=output}
 			<div class="control-group">
-				{formlabel label=`$output.label` for=$feature}
+				{formlabel label=$output.label for=$feature}
 				{forminput}
 					{html_checkboxes name="$feature" values="y" checked=$gBitSystem->getConfig($feature) labels=false id=$feature}
-					{formhelp note=`$output.note` page=`$output.page`}
+					{formhelp note=$output.note page=$output.page}
 				{/forminput}
 			</div>
 		{/foreach}
@@ -74,10 +74,10 @@
 	{legend legend="Pigeonhole Content Edit Settings"}
 		{foreach from=$pigeonholeContentEditSettings key=feature item=output}
 			<div class="control-group">
-				{formlabel label=`$output.label` for=$feature}
+				{formlabel label=$output.label for=$feature}
 				{forminput}
 					{html_checkboxes name="$feature" values="y" checked=$gBitSystem->getConfig($feature) labels=false id=$feature}
-					{formhelp note=`$output.note` page=`$output.page`}
+					{formhelp note=$output.note page=$output.page}
 				{/forminput}
 			</div>
 		{/foreach}
