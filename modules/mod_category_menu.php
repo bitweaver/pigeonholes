@@ -25,7 +25,7 @@ if( !empty( $gContent->mContentId ) ) {
 			foreach( $pigeons as $pigeon ) {
 				$modPigeonStructures[] = $gStructure->getSubTree( $pigeon['root_structure_id'], TRUE );
 			}
-			$gBitSmarty->assign( 'modPigeonStructures', !empty( $modPigeonStructures ) ? $modPigeonStructures : FALSE );
+			$_template->tpl_vars['modPigeonStructures'] = new Smarty_variable( !empty( $modPigeonStructures );
 		}
 	}
 }

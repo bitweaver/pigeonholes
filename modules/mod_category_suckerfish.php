@@ -20,7 +20,7 @@ global $gBitSmarty, $gQueryUserId, $gBitThemes, $module_rows, $moduleParams, $gB
 $module_rows = $moduleParams['module_rows'];
 $module_params = $moduleParams['module_params'];
 
-$gBitSmarty->assign( 'moduleTitle', isset($moduleParams['title']) ? $moduleParams['title']: 'Categories');
+$_template->tpl_vars['moduleTitle'] = new Smarty_variable( isset($moduleParams['title']) );
 
 $ns = array();
 if($gBitSystem->isPackageActive('pigeonholes')) {
