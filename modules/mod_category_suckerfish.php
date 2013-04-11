@@ -105,15 +105,15 @@ if (!defined('MENU_LEVELS_DEFINED')) {
 
 if (!empty($module_params['expand_root']) && $module_params['expand_root']) {
 	if (isset($ns[0]) && !empty($ns[0]['children'])) {
-        	$gBitSmarty->assign('pigeonMenu', menuLevels($ns[0]['children'], 0));
+        	$_template->tpl_vars['pigeonMenu'] = new Smarty_variable( menuLevels($ns[0]['children'], 0));
 	}
 	else if (!empty($ns[0]['children'])) {
-        	$gBitSmarty->assign('pigeonMenu', menuLevels($ns['children'], 0));
+        	$_template->tpl_vars['pigeonMenu'] = new Smarty_variable( menuLevels($ns['children'], 0));
 	}
 }
 else {
-	$gBitSmarty->assign('pigeonMenu', menuLevels($ns, 0));
+	$_template->tpl_vars['pigeonMenu'] = new Smarty_variable( menuLevels($ns, 0));
 }
 
-$gBitSmarty->assign('pigeonholesPackageActive', $gBitSystem->isPackageActive('pigeonholes'));
+$_template->tpl_vars['pigeonholesPackageActive'] = new Smarty_variable( $gBitSystem->isPackageActive('pigeonholes'));
 ?>
