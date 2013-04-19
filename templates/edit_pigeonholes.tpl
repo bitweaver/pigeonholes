@@ -39,7 +39,7 @@
 
 						{if $gBitSystem->isFeatureActive('pigeonholes_display_description')}
 							<div class="control-group">
-								{textarea id="pigeonhole-desc" name="pigeonhole[edit]" help="A description of the category. This will be visible when users view this particular category." label="Description"}{$pigeonInfo.data}{/textarea}
+								{textarea id="pigeonhole-desc" name="pigeonhole[edit]" help="A description of the category. This will be visible when users view this particular category." label="Description" edit=$pigeonInfo.data}
 							</div>
 						{/if}
 
