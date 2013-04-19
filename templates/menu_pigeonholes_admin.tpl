@@ -1,5 +1,3 @@
 {strip}
-<li>
-	{smartlink ititle="Pigeonhole Settings" ipackage="kernel" ifile="admin/index.php" page="pigeonholes"}
-</li>
+	{smartlink ititle="Pigeonhole" ipackage="kernel" ifile="admin/index.php" page="pigeonholes"}
 {/strip}
