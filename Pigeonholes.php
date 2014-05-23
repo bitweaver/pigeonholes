@@ -176,7 +176,7 @@ class Pigeonholes extends LibertyMime {
 			SELECT pigm.*,
 			lc.`content_id`, lc.`last_modified`, lc.`user_id`, lc.`title`, lc.`content_type_guid`, lc.`created`,
 			lct.`content_name`, lcds.`data` AS `summary`,
-			uu.`login`, uu.`real_name`, lf.`storage_path` $select
+			uu.`login`, uu.`real_name` $select
 			FROM `".BIT_DB_PREFIX."pigeonhole_members` pigm
 				INNER JOIN `".BIT_DB_PREFIX."pigeonholes` pig ON ( pig.`content_id` = pigm.`parent_id` )
 				INNER JOIN `".BIT_DB_PREFIX."liberty_content` lc ON ( lc.`content_id` = pigm.`content_id` )
@@ -200,10 +200,7 @@ class Pigeonholes extends LibertyMime {
 					$aux['display_url']   = $type['content_object']->getDisplayUrlFromHash( $aux );
 					$aux['display_link']  = $type['content_object']->getDisplayLink( $aux['title'], $aux );
 					$aux['title']         = $type['content_object']->getTitle( $aux );
-					$aux['thumbnail_url'] = liberty_fetch_thumbnails( array(
-						'storage_path' => $aux['storage_path'],
-						'mime_image'   => FALSE
-					));
+// needs updating to bw3					$aux['thumbnail_url'] = liberty_fetch_thumbnails( array());
 					$ret[] = $aux;
 				}
 			}
