@@ -57,7 +57,7 @@
 				</div>
 
 				<div class="control-group submit">
-					<input type="submit" class="btn" value="{tr}Restrict Listing{/tr}" name="search_objects" />
+					<input type="submit" class="btn btn-default" value="{tr}Restrict Listing{/tr}" name="search_objects" />
 				</div>
 			{/form}
 
@@ -173,7 +173,7 @@
 					</div>
 
 					<div class="control-group submit">
-						<input type="submit" class="btn" name="insert_content" value="Insert Content into Categories" />
+						<input type="submit" class="btn btn-default" name="insert_content" value="Insert Content into Categories" />
 						<input type="hidden" name="list_page" value="{$listInfo.current_page}" />
 						<input type="hidden" name="find" value="{$listInfo.find}" />
 					</div>
