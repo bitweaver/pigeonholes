@@ -16,7 +16,7 @@
 							<input type="hidden" name="pigeonhole_content_id" value="{$pigeonInfo.content_id}" />
 							<input type="hidden" name="action" value="{$smarty.request.action}" />
 
-							<div class="control-group">
+							<div class="form-group">
 								{formlabel label="Parent" for="pigeonhole-parent"}
 								{forminput}
 									{* we need to disable dropdown when editing since it might confus users when nothing happens *}
@@ -30,7 +30,7 @@
 							</div>
 						{/if}
 
-						<div class="control-group">
+						<div class="form-group">
 							{formlabel label="Title" for="pigeonhole-title"}
 							{forminput}
 								<input type="text" size="50" id="pigeonhole-title" name="pigeonhole[title]" value="{$pigeonInfo.title|escape}" />
@@ -38,13 +38,13 @@
 						</div>
 
 						{if $gBitSystem->isFeatureActive('pigeonholes_display_description')}
-							<div class="control-group">
+							<div class="form-group">
 								{textarea id="pigeonhole-desc" name="pigeonhole[edit]" help="A description of the category. This will be visible when users view this particular category." label="Description" edit=$pigeonInfo.data}
 							</div>
 						{/if}
 
 						{if $gBitSystem->isFeatureActive( 'pigeonholes_allow_forbid_insertion') }
-							<div class="control-group">
+							<div class="form-group">
 								<label class="checkbox">
 									<input type="checkbox" name="pigeonhole[prefs][no_insert]" id="pigeonhole-no-insert" {if $gContent->mPrefs.no_insert}checked="checked"{/if} />Forbid Content Insertion
 									{formhelp note="Forbids inserting new content into this category. Useful for categories which are meant to hold other categories in a heirarchy where only leaf categories should hold content."}
@@ -53,7 +53,7 @@
 						{/if}
 
 						{if $gBitSystem->isFeatureActive( 'pigeonholes_themes' )}
-							<div class="control-group">
+							<div class="form-group">
 								{formlabel label="Theme" for="pigeonhole-style"}
 								{forminput}
 									{html_options id="pigeonhole-style" name="pigeonhole[prefs][style]" output=$styles values=$styles selected=$gContent->mPrefs.style}
@@ -63,7 +63,7 @@
 						{/if}
 
 						{if $gBitSystem->isFeatureActive( 'pigeonholes_permissions' )}
-							<div class="control-group">
+							<div class="form-group">
 								{formlabel label="Permission" for="perm"}
 								{forminput}
 									{html_options name="pigeonhole[prefs][permission]" id="perm" options=$perms selected=$gContent->mPrefs.permission}
@@ -73,7 +73,7 @@
 						{/if}
 
 						{if $gBitSystem->isFeatureActive( 'pigeonholes_groups' )}
-							<div class="control-group">
+							<div class="form-group">
 								{formlabel label="Group" for="group_id"}
 								{forminput}
 									{html_options name="pigeonhole[prefs][group_id]" id="group_id" options=$groups selected=$gContent->mPrefs.group_id}
@@ -84,7 +84,7 @@
 
 						{include file="bitpackage:liberty/edit_storage_list.tpl"}
 
-						<div class="control-group submit">
+						<div class="form-group submit">
 							<input type="submit" class="btn btn-default" name="pigeonhole_store" value="{tr}Save Category{/tr}" />
 						</div>
 					{/legend}
