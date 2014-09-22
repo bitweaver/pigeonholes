@@ -96,7 +96,7 @@ class Pigeonholes extends LibertyMime {
 				$this->mStructureId = $row['structure_id'];
 				$this->mInfo['user'] = $row['creator_user'];
 				$this->mInfo['real_name'] = ( isset( $row['creator_real_name'] ) ? $row['creator_real_name'] : $row['creator_user'] );
-				$this->mInfo['display_name'] = BitUser::getTitle( $this->mInfo );
+				$this->mInfo['display_name'] = BitUser::getTitleFromHash( $this->mInfo );
 				$this->mInfo['editor'] = ( isset( $row['modifier_real_name'] ) ? $row['modifier_real_name'] : $row['modifier_user'] );
 				$this->mInfo['display_link'] = $this->getDisplayLink();
 				$this->mInfo['display_url'] = $this->getDisplayUrl();
@@ -199,7 +199,7 @@ class Pigeonholes extends LibertyMime {
 				if( $type['content_object']->isViewable( $aux['content_id'] )) {
 					$aux['display_url']   = $type['content_object']->getDisplayUrlFromHash( $aux );
 					$aux['display_link']  = $type['content_object']->getDisplayLink( $aux['title'], $aux );
-					$aux['title']         = $type['content_object']->getTitle( $aux );
+					$aux['title']         = $type['content_object']->getTitleFromHash( $aux );
 // needs updating to bw3					$aux['thumbnail_url'] = liberty_fetch_thumbnails( array());
 					$ret[] = $aux;
 				}
@@ -286,7 +286,7 @@ class Pigeonholes extends LibertyMime {
 					$type['content_object'] = new $type['handler_class']();
 				}
 				$ret[$i]['display_link'] = $type['content_object']->getDisplayLink( $row['title'], $row );
-				$ret[$i]['title'] = $type['content_object']->getTitle( $row );
+				$ret[$i]['title'] = $type['content_object']->getTitleFromHash( $row );
 			}
 
 			// generate a map of what items are assigned to what pigeonholes
