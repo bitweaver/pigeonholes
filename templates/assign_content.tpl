@@ -10,7 +10,7 @@
 		{else}
 			{form legend="Assign Content"}
 				<input type="hidden" name="sort_mode" value="{$smarty.request.sort_mode}" />
-				<div class="control-group">
+				<div class="form-group">
 					{formlabel label="Restrict listing" for="content_type"}
 
 					{forminput}
@@ -48,7 +48,7 @@
 					{/forminput}
 				</div>
 
-				<div class="control-group">
+				<div class="form-group">
 					{formlabel label="Category" for="root_structure_id"}
 					{forminput}
 						{html_options values=$pigeonRoots options=$pigeonRoots name=root_structure_id id=root_structure_id selected=$smarty.request.root_structure_id}
@@ -56,8 +56,8 @@
 					{/forminput}
 				</div>
 
-				<div class="control-group submit">
-					<input type="submit" class="btn" value="{tr}Restrict Listing{/tr}" name="search_objects" />
+				<div class="form-group submit">
+					<input type="submit" class="btn btn-default" value="{tr}Restrict Listing{/tr}" name="search_objects" />
 				</div>
 			{/form}
 
@@ -166,14 +166,14 @@
 				{/if}
 
 				{if $assignableContent}
-					<div class="control-group">
+					<div class="form-group">
 						{if $smarty.request.include == 'members' && $listInfo.current_page < $listInfo.total_pages}
 							<label><input type="checkbox" name="insert_content_and_next" /> {tr}Go To Next Page After Insert{/tr}</label>
 						{/if}
 					</div>
 
-					<div class="control-group submit">
-						<input type="submit" class="btn" name="insert_content" value="Insert Content into Categories" />
+					<div class="form-group submit">
+						<input type="submit" class="btn btn-default" name="insert_content" value="Insert Content into Categories" />
 						<input type="hidden" name="list_page" value="{$listInfo.current_page}" />
 						<input type="hidden" name="find" value="{$listInfo.find}" />
 					</div>
