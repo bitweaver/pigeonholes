@@ -24,7 +24,7 @@ if( !empty( $gContent->mContentId ) ) {
 				$pigeonholes->load( TRUE );
 				$modRelatedPigeon[] = $pigeonholes->mInfo;
 			}
-			$gBitSmarty->assign( 'modRelatedPigeon', !empty( $modRelatedPigeon ) ? $modRelatedPigeon : FALSE );
+			$_template->tpl_vars['modRelatedPigeon'] = new Smarty_variable( !empty( $modRelatedPigeon );
 		}
 	}
 }

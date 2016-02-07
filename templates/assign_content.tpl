@@ -86,7 +86,7 @@
 				{/foreach}
 
 				{if $assignableContent}
-				<table class="data">
+				<table class="table data">
 					<caption>{tr}Available Categories{/tr}</caption>
 					<tr>
 						<th>Categories</th>
@@ -117,7 +117,7 @@
 				</table>
 				{/if}
 				{else}
-				<table class="data">
+				<table class="table data">
 					<caption>{tr}Available Content{/tr}</caption>
 					<tr>
 						<th>{smartlink ititle="Title" isort=title idefault=1 max_rows=$smarty.request.max_rows content_type=$contentSelect find=$smarty.request.find include=$smarty.request.include page=$page}</th>

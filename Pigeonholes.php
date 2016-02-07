@@ -96,7 +96,7 @@ class Pigeonholes extends LibertyMime {
 				$this->mStructureId = $row['structure_id'];
 				$this->mInfo['user'] = $row['creator_user'];
 				$this->mInfo['real_name'] = ( isset( $row['creator_real_name'] ) ? $row['creator_real_name'] : $row['creator_user'] );
-				$this->mInfo['display_name'] = BitUser::getTitle( $this->mInfo );
+				$this->mInfo['display_name'] = BitUser::getTitleFromHash( $this->mInfo );
 				$this->mInfo['editor'] = ( isset( $row['modifier_real_name'] ) ? $row['modifier_real_name'] : $row['modifier_user'] );
 				$this->mInfo['display_link'] = $this->getDisplayLink();
 				$this->mInfo['display_url'] = $this->getDisplayUrl();
@@ -176,7 +176,7 @@ class Pigeonholes extends LibertyMime {
 			SELECT pigm.*,
 			lc.`content_id`, lc.`last_modified`, lc.`user_id`, lc.`title`, lc.`content_type_guid`, lc.`created`,
 			lct.`content_name`, lcds.`data` AS `summary`,
-			uu.`login`, uu.`real_name`, lf.`storage_path` $select
+			uu.`login`, uu.`real_name` $select
 			FROM `".BIT_DB_PREFIX."pigeonhole_members` pigm
 				INNER JOIN `".BIT_DB_PREFIX."pigeonholes` pig ON ( pig.`content_id` = pigm.`parent_id` )
 				INNER JOIN `".BIT_DB_PREFIX."liberty_content` lc ON ( lc.`content_id` = pigm.`content_id` )
@@ -199,11 +199,8 @@ class Pigeonholes extends LibertyMime {
 				if( $type['content_object']->isViewable( $aux['content_id'] )) {
 					$aux['display_url']   = $type['content_object']->getDisplayUrlFromHash( $aux );
 					$aux['display_link']  = $type['content_object']->getDisplayLink( $aux['title'], $aux );
-					$aux['title']         = $type['content_object']->getTitle( $aux );
-					$aux['thumbnail_url'] = liberty_fetch_thumbnails( array(
-						'storage_path' => $aux['storage_path'],
-						'mime_image'   => FALSE
-					));
+					$aux['title']         = $type['content_object']->getTitleFromHash( $aux );
+// needs updating to bw3					$aux['thumbnail_url'] = liberty_fetch_thumbnails( array());
 					$ret[] = $aux;
 				}
 			}
@@ -289,7 +286,7 @@ class Pigeonholes extends LibertyMime {
 					$type['content_object'] = new $type['handler_class']();
 				}
 				$ret[$i]['display_link'] = $type['content_object']->getDisplayLink( $row['title'], $row );
-				$ret[$i]['title'] = $type['content_object']->getTitle( $row );
+				$ret[$i]['title'] = $type['content_object']->getTitleFromHash( $row );
 			}
 
 			// generate a map of what items are assigned to what pigeonholes
@@ -933,9 +930,9 @@ class Pigeonholes extends LibertyMime {
 		if( @BitBase::verifyId( $$pParamHash['content_id'] ) ) {
 			$rewrite_tag = $gBitSystem->isFeatureActive( 'pretty_urls_extended' ) ? 'view/' : '';
 			if( $gBitSystem->isFeatureActive( 'pretty_urls' ) || $gBitSystem->isFeatureActive( 'pretty_urls_extended' ) ) {
-				$ret = PIGEONHOLES_PKG_URL.$rewrite_tag.$$pParamHash['content_id'];
+				$ret = PIGEONHOLES_PKG_URL.$rewrite_tag.$pContentId;
 			}else{
-				$ret = PIGEONHOLES_PKG_URL.'view.php?content_id='.$$pParamHash['content_id'];
+				$ret = PIGEONHOLES_PKG_URL.'view.php?content_id='.$pContentId;
 			}
 		}
 

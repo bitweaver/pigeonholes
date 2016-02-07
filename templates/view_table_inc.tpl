@@ -15,7 +15,7 @@
 			{counter assign=columns}
 		{/foreach}
 		{math equation="100 / x" x=$columns assign=width format="%u"}
-		<table class="data" summary="Category listing"><tr>
+		<table class="table data" summary="Category listing"><tr>
 			{foreach from=$pigeonItem.members item=pigeonColumn}
 				<td style="vertical-align:top; width:{$width}%;">
 					{foreach from=$pigeonColumn item=members key=index}
