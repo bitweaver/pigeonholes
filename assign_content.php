@@ -24,7 +24,7 @@ $gBitSystem->verifyPermission( 'p_pigeonholes_insert_member' );
 include_once( PIGEONHOLES_PKG_PATH.'lookup_pigeonholes_inc.php' );
 
 $feedback = '';
-$gBitSmarty->assign_by_ref( 'feedback', $feedback );
+$gBitSmarty->assignByRef( 'feedback', $feedback );
 
 $contentTypes = array( '' => tra( 'All Content' ) );
 foreach( $gLibertySystem->mContentTypes as $cType ) {
@@ -101,7 +101,7 @@ if(( !empty( $_REQUEST['insert_content'] ) || !empty( $_REQUEST['insert_content_
 	$assignableContent = $gContent->getAssignableContent( $listHash );
 }
 
-$gBitSmarty->assign_by_ref( 'listInfo', $listHash['listInfo'] );
+$gBitSmarty->assignByRef( 'listInfo', $listHash['listInfo'] );
 
 $listHash = array(
 	'load_only_root' => TRUE,

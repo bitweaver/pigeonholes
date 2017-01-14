@@ -28,7 +28,7 @@ if (isset($_REQUEST['structure_id'])) {
 	header("Location:".$gContent->getDisplayUrl());
 }
 
-$gBitSmarty->assign_by_ref( 'memberFeedback', $memberFeedback = array() );
+$gBitSmarty->assignByRef( 'memberFeedback', $memberFeedback = array() );
 
 // set up structure related stuff
 global $gStructure;
@@ -55,7 +55,7 @@ if( empty( $gStructure ) || !$gStructure->isValid() ) {
 	$gBitSystem->fatalError( tra( 'Invalid structure' ));
 }
 
-$gBitSmarty->assign_by_ref( 'gStructure', $gStructure );
+$gBitSmarty->assignByRef( 'gStructure', $gStructure );
 $gBitSmarty->assign( 'structureInfo', $gStructure->mInfo );
 $gBitSmarty->assign( 'subtree', $gStructure->getSubTree( $gStructure->mStructureId ) );
 

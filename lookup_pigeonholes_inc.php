@@ -16,5 +16,5 @@
  */
 $gContent = new Pigeonholes( ( !empty( $_REQUEST['structure_id'] ) ? $_REQUEST['structure_id'] : NULL ), ( !empty( $_REQUEST['content_id'] ) ? $_REQUEST['content_id'] : NULL ) );
 $gContent->load( TRUE );
-$gBitSmarty->assign_by_ref( 'gContent', $gContent );
+$gBitSmarty->assignByRef( 'gContent', $gContent );
 ?>
