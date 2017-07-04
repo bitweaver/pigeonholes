@@ -198,7 +198,7 @@ class Pigeonholes extends LibertyMime {
 				}
 				if( $type['content_object']->isViewable( $aux['content_id'] )) {
 					$aux['display_url']   = $type['content_object']->getDisplayUrlFromHash( $aux );
-					$aux['display_link']  = $type['content_object']->getDisplayLink( $aux['title'], $aux );
+					$aux['display_link']  = $type['content_object']->getDisplayLink( $aux );
 					$aux['title']         = $type['content_object']->getTitleFromHash( $aux );
 // needs updating to bw3					$aux['thumbnail_url'] = liberty_fetch_thumbnails( array());
 					$ret[] = $aux;
