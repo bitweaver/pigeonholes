@@ -100,7 +100,7 @@ class Pigeonholes extends LibertyMime {
 				$this->mInfo['editor'] = ( isset( $row['modifier_real_name'] ) ? $row['modifier_real_name'] : $row['modifier_user'] );
 				$this->mInfo['display_link'] = $this->getDisplayLink();
 				$this->mInfo['display_url'] = $this->getDisplayUrl();
-				$this->mInfo['parsed_data'] = $this->parseData( $row );
+				$this->parseData();
 			}
 
 			if( $pLoadAttachable ) {
