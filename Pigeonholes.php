@@ -192,16 +192,18 @@ class Pigeonholes extends LibertyMime {
 			if( !empty( $contentTypes[$aux['content_type_guid']] ) ) {
 				$type = &$contentTypes[$aux['content_type_guid']];
 				if( empty( $type['content_object'] ) ) {
-					// create *one* object for each object *type* to  call virtual methods.
-					include_once( $gBitSystem->mPackages[$type['handler_package']]['path'].$type['handler_file'] );
-					$type['content_object'] = new $type['handler_class']();
-				}
-				if( $type['content_object']->isViewable( $aux['content_id'] )) {
-					$aux['display_url']   = $type['content_object']->getDisplayUrlFromHash( $aux );
-					$aux['display_link']  = $type['content_object']->getDisplayLink( $aux );
-					$aux['title']         = $type['content_object']->getTitleFromHash( $aux );
-// needs updating to bw3					$aux['thumbnail_url'] = liberty_fetch_thumbnails( array());
-					$ret[] = $aux;
+					// crate *one* object for each object *type* to  call virtual methods.
+					if( $typeClass = $gLibertySystem->getContentClassName( $type['content_type_guid'] ) ) {
+						if( $type['content_object'] = new $typeClass() ) {
+							if( $type['content_object']->isViewable( $aux['content_id'] )) {
+								$aux['display_url']   = $type['content_object']->getDisplayUrlFromHash( $aux );
+								$aux['display_link']  = $type['content_object']->getDisplayLink( $aux );
+								$aux['title']         = $type['content_object']->getTitleFromHash( $aux );
+			// needs updating to bw3					$aux['thumbnail_url'] = liberty_fetch_thumbnails( array());
+								$ret[] = $aux;
+							}
+						}
+					}
 				}
 			}
 		}
