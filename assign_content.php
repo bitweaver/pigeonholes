@@ -21,7 +21,7 @@ require_once( '../kernel/setup_inc.php' );
 $gBitSystem->verifyPackage( 'pigeonholes' );
 $gBitSystem->verifyPermission( 'p_pigeonholes_insert_member' );
 
-include_once( PIGEONHOLES_PKG_PATH.'lookup_pigeonholes_inc.php' );
+include_once( PIGEONHOLES_PKG_INCLUDE_PATH.'lookup_pigeonholes_inc.php' );
 
 $feedback = '';
 $gBitSmarty->assignByRef( 'feedback', $feedback );

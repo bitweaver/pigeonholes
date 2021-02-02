@@ -28,10 +28,10 @@ if( $gSniffer->_browser_info['browser'] == 'ie' && $gSniffer->_browser_info['maj
 }
 $gBitThemes->loadJavascript( UTIL_PKG_PATH.'javascript/libs/mygosu/DynamicTreeBuilder.js' );
 
-include_once( PIGEONHOLES_PKG_PATH.'lookup_pigeonholes_inc.php' );
+include_once( PIGEONHOLES_PKG_INCLUDE_PATH.'lookup_pigeonholes_inc.php' );
 
 $verifyStructurePermission = 'p_pigeonholes_create';
-include_once( LIBERTY_PKG_PATH.'edit_structure_inc.php' );
+include_once( LIBERTY_PKG_INCLUDE_PATH.'edit_structure_inc.php' );
 
 // Display the template
 $gBitSystem->display( 'bitpackage:pigeonholes/edit_structure.tpl', $gStructure->mInfo["title"] , array( 'display_mode' => 'edit' ));

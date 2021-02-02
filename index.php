@@ -17,7 +17,7 @@
  * required setup
  */
 require_once( '../kernel/setup_inc.php' );
-include_once( PIGEONHOLES_PKG_PATH.'lookup_pigeonholes_inc.php' );
+include_once( PIGEONHOLES_PKG_INCLUDE_PATH.'lookup_pigeonholes_inc.php' );
 if( !empty( $gContent->mStructureId ) ) {
 	header( 'Location: '.$gContent->getDisplayUrl() );
 } else {
