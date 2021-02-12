@@ -31,7 +31,7 @@ $gBitThemes->loadJavascript( UTIL_PKG_PATH.'javascript/libs/mygosu/DynamicTreeBu
 include_once( PIGEONHOLES_PKG_INCLUDE_PATH.'lookup_pigeonholes_inc.php' );
 
 $verifyStructurePermission = 'p_pigeonholes_create';
-include_once( LIBERTY_PKG_INCLUDE_PATH.'edit_structure_inc.php' );
+include_once( LIBERTY_PKG_INCLUDE_PATH.'structure_edit_inc.php' );
 
 // Display the template
 $gBitSystem->display( 'bitpackage:pigeonholes/edit_structure.tpl', $gStructure->mInfo["title"] , array( 'display_mode' => 'edit' ));

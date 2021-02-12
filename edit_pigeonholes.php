@@ -28,7 +28,7 @@ include_once( PIGEONHOLES_PKG_INCLUDE_PATH.'lookup_pigeonholes_inc.php' );
 if( !empty( $_REQUEST["structure_id"] ) && ( empty( $_REQUEST['action'] ) || $_REQUEST['action'] != 'remove' ) ) {
 	$verifyStructurePermission = 'p_pigeonholes_create';
 	$noAjaxContent = TRUE;
-	include_once( LIBERTY_PKG_INCLUDE_PATH.'edit_structure_inc.php' );
+	include_once( LIBERTY_PKG_INCLUDE_PATH.'structure_edit_inc.php' );
 
 	// get all the nodes in this structure
 	foreach( $rootTree as $node ) {
