@@ -9,7 +9,7 @@ global $gBitSystem, $gBitUser, $gLibertySystem;
 
 $registerHash = array(
 	'package_name' => 'pigeonholes',
-	'package_path' => dirname( __FILE__ ).'/',
+	'package_path' => dirname( dirname( __FILE__ ) ).'/',
 	'service' => LIBERTY_SERVICE_CATEGORIZATION,
 );
 $gBitSystem->registerPackage( $registerHash );
@@ -17,8 +17,6 @@ $gBitSystem->registerPackage( $registerHash );
 define( 'PIGEONHOLES_CONTENT_TYPE_GUID', 'pigeonholes' );
 
 if( $gBitSystem->isPackageActive( 'pigeonholes' )) {
-	// include service functions
-	require_once( PIGEONHOLES_PKG_PATH.'Pigeonholes.php' );
 
 	$tpl = $gBitSystem->isFeatureActive( 'pigeonholes_use_jstab' ) ? 'tab' : 'mini';
 	$gLibertySystem->registerService( LIBERTY_SERVICE_CATEGORIZATION, PIGEONHOLES_PKG_NAME, array(

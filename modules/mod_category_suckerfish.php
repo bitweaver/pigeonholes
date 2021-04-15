@@ -24,7 +24,7 @@ $_template->tpl_vars['moduleTitle'] = new Smarty_variable( isset($moduleParams['
 
 $ns = array();
 if($gBitSystem->isPackageActive('pigeonholes')) {
-	require_once(PIGEONHOLES_PKG_PATH.'Pigeonholes.php');
+	require_once(PIGEONHOLES_PKG_CLASS_PATH.'Pigeonholes.php');
 
 	$p = new Pigeonholes();
 	$s = new LibertyStructure();
